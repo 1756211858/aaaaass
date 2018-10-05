@@ -1,0 +1,36 @@
+package com.night.xvideos.fragment
+
+import android.content.Context
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+
+/**
+ * Created by 9 on 2018/3/6.
+ */
+
+abstract class BaseFragment : Fragment() {
+    protected var mcontext: Context? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mcontext = activity
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return initView()
+    }
+
+    protected abstract fun initView(): View
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        initData()
+    }
+
+
+    protected abstract fun initData()
+
+}

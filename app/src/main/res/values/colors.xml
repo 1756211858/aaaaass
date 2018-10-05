@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#0aab9c</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#000000</color>
+    <color name="white_text">#fafafa</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <!-- Menu Item Color -->
+    <color name="menu_transparent">#00FFFFFF</color>
+    <color name="menu_item_blue">#007ffe</color>
+    <color name="menu_item_blue_dark">#2F79DB</color>
+    <color name="menu_item_grey">#f9f4f4</color>
+    <color name="menu_item_Selected">#edffff</color>
+    <color name="menu_item_Normal">#87c5ff</color>
+    <color name="menu_background">#FFFFFF</color>
+    <color name="menu_text_color">#444444</color>
+    <color name="avatar_text">#FFFFFF</color>
+    <color name="avatar_background">#444444</color>
+
+    <color name="purple"> </color>
+
+    <!--Home Button text -->
+    <color name="homeButton_text">#1833ed</color>
+    <color name="gary">#515151</color>
+    <color name="blue_dark">#1565C0</color>
+    <!-- notification text -->
+    <color name="bottom_text">#c1c0c0</color>
+    <color name="notification_bak">#47fafafa</color>
+    <color name="theme_color_primary_dark">#e37594</color>
+    <color name="primary_material_light_1">#3f51b5</color>
+    <color name="background_material_light_1">#fafafa</color>
+    <color name="background_material_light_2">#ed02fafa</color>
+    <color name="small_font">#FF757575</color>
+    <color name="widget_background_color">#a0000000</color>
+    <!--RadioButton Color -->
+    <color name="radiobutton_item_selected">#0a85fe</color>
+    <color name="radiobutton_item_normal">#c7cbd4</color>
+    <color name="radiobutton_textcolor">#989a99</color>
+
+    <!-- 掘金app-->
+
+    <color name="Decoration_color">#f2f6f7</color>
+    <color name="text_color">#1d1e22</color>
+    <color name="text_color_2">#757f89</color>
+    <color name="toolbar_blue">#2196F3</color><!--toolbar背景色-->
+    <color name="toolbar_blue2">#0072e3</color><!--toolbar背景色-->
+    <color name="toolbar_blue3">#a8acad</color><!--toolbar背景色-->
+    <color name="toolbar_blue4">#5fa3e6</color><!--toolbar背景色-->
+
+    <color name="toolbar_color4">#FF3E302A</color>
+    <color name="text_Grey">#8496a0</color>
+    <color name="super_light_grey">#bcb7b7</color>
+    <color name="line_grey">#bcb7b7</color>
+
+    <color name="share_button_color">#767676</color>
+    <color name="More_button_color">#656f79</color>
+    <color name="RefreshColor">#af8ad1</color>
+    <color name="RefreshColor2">#7710d9</color>
+    <color name="RefreshColor3">#5f04a0</color>
+    <color name="Refresh_Pull_TextColor">#efec5d3a</color>
+    <color name="RV_NavigationColor">#ef7bcbe8</color>
+    <!-- title 半透明背景颜色 -->
+    <color name="color_title_bg">#a5ffffff</color>
+    <color name="color_title_bg2">#00ffffff</color>
+    <!-- 默认背景色 -->
+    <color name="backgroundColor">#EEEEEE</color>
+    <!-- 开眼app-->
+    <color name="header_title">#fffeff</color>
+    <color name="header_about">#cecfd1</color>
+    <color name="header_message">#c3c7ca</color>
+    <color name="radiobutton_text">#fffffd</color>
+    <color name="Divider">#4c4e4d</color>
+    <color name="Divider2">#dbece4</color>
+    <color name="Divider3_RG">#999999</color>
+    <color name="Divider_mine_activity">#eeeeee</color>
+    <color name="mine_button_text_color">#559cf8</color>
+    <color name="mine_button">#559cf8</color>
+
+
+</resources>
