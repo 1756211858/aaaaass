@@ -10,14 +10,12 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
 import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
 import com.night.xvideos.R
-import com.night.xvideos.ToastLongShow
 import com.night.xvideos.activity.VideoActivity
 import com.night.xvideos.adapter.VideoAdapter
 import com.night.xvideos.bean.speakChinese
@@ -56,7 +54,7 @@ class SpeakChineseFragment : BaseFragment() {
     @SuppressLint("WrongConstant")
     override fun initData() {
 
-        val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(loding, "rotation", 0f, 360f)
+        val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(speakChineseLoding, "rotation", 0f, 360f)
         objectAnimator.duration = 1000
         objectAnimator.repeatMode = ValueAnimator.INFINITE
         objectAnimator.repeatCount = 5
@@ -69,7 +67,7 @@ class SpeakChineseFragment : BaseFragment() {
         })
         objectAnimator.start()
         val intent = Intent()
-        swipe_target.layoutManager = LinearLayoutManager(mcontext)
+        speakChineseRecyclerView.layoutManager = LinearLayoutManager(mcontext)
         val bmobQuery: BmobQuery<speakChinese>? = BmobQuery<speakChinese>()
         bmobQuery?.order("-createdAt")
         bmobQuery?.findObjects(object : FindListener<speakChinese>() {
@@ -81,15 +79,17 @@ class SpeakChineseFragment : BaseFragment() {
                         Log.e("mlog", it.videoUrl)
                         Log.e("mlog", it.imgUrl)
                         Log.e("mlog", it.title)
-                        val bundle = Bundle()
+                        /*val bundle = Bundle()
                         bundle.putString("VIDEOTITLE", it.title)
                         bundle.putString("VIDEOIMGURL", it.imgUrl)
                         bundle.putString("VIDEOURL", it.videoUrl)
-                        intent.putExtras(bundle)
+                        intent.putExtras(bundle)*/
+                        
+
                     }
-                    startActivity(intent.setClass(context, VideoActivity::class.java))
+                    //startActivity(intent.setClass(context, VideoActivity::class.java))
                 }
-                swipe_target.adapter = videoAdapter
+                speakChineseRecyclerView.adapter = videoAdapter
             }
         })
     }

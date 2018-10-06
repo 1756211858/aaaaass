@@ -27,7 +27,6 @@ import java.io.IOException
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import com.night.xvideos.R
-import com.night.xvideos.ToastLongShow
 import com.tencent.smtt.sdk.QbSdk
 import java.util.regex.Pattern
 
@@ -134,7 +133,7 @@ class VideoActivity : AppCompatActivity() {
                     }
                 }
                 runOnUiThread {
-                    val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(loding, "rotation", 0f, 360f)
+                    val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(videoplay_loding, "rotation", 0f, 360f)
                     objectAnimator.duration = 1000
                     objectAnimator.repeatMode = ValueAnimator.INFINITE
                     objectAnimator.repeatCount = 5
@@ -157,7 +156,7 @@ class VideoActivity : AppCompatActivity() {
 
                         if (newProgress == 100) {
                             runOnUiThread {
-                                loding.visibility = View.GONE
+                                videoplay_loding.visibility = View.GONE
                             }
                         }
                         super.onProgressChanged(view, newProgress)

@@ -12,7 +12,7 @@
 
 
     <ImageView
-        android:id="@+id/loding"
+        android:id="@+id/videoplay_loding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
