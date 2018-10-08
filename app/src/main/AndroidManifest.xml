@@ -40,7 +40,7 @@
             />
         <activity
             android:name="com.night.xvideos.activity.VideoActivity"
-            android:theme="@style/AppTheme.videoPlay"
+            android:theme="@style/AppTheme.dialogTheme"
             android:configChanges="orientation|keyboardHidden|screenSize|navigation"
 
             />

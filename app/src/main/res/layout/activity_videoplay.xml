@@ -8,6 +8,7 @@
     android:layout_gravity="center"
     android:background="@color/menu_transparent"
     tools:context=".MainActivity"
+
     >
 
 

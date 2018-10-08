@@ -26,10 +26,20 @@
         <item name="android:colorBackgroundCacheHint" tools:targetApi="eclair">@null</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
+
     <style name="AppTheme.videoPlay" parent="AppTheme">
         <item name="android:windowFullscreen">true</item>
     </style>
-    <style name="AppTheme.Dialog" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/filled_box</item>
+
+    <style name="AppTheme.dialogTheme" parent="Theme.AppCompat.Dialog">
+        <!--该行代码就是设置AlertDialog的背景-->
+        <item name="android:background">@color/menu_transparent</item>
+        <item name="android:windowBackground">@color/menu_transparent</item>
+        <item name="android:windowFrame">@null</item><!--窗框-->
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowActionBar">false</item>
     </style>
 </resources>

@@ -222,6 +222,10 @@ class VideoActivity : AppCompatActivity() {
         view?.loadUrl("javascript:function setTop(){document" +
                 ".querySelector('.xv-logo')" +
                 ".style.display=\"none\";}setTop();")
+
+        view?.loadUrl("javascript:function setTop(){document" +
+                ".querySelector('.video-title')" +
+                ".style.display=\"none\";}setTop();")
     }
 
 

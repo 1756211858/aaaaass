@@ -15,6 +15,7 @@ import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
+import com.afollestad.materialdialogs.MaterialDialog
 import com.night.xvideos.R
 import com.night.xvideos.activity.VideoActivity
 import com.night.xvideos.adapter.VideoAdapter
@@ -57,11 +58,11 @@ class SpeakChineseFragment : BaseFragment() {
         val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(speakChineseLoding, "rotation", 0f, 360f)
         objectAnimator.duration = 1000
         objectAnimator.repeatMode = ValueAnimator.INFINITE
-        objectAnimator.repeatCount = 5
+        objectAnimator.repeatCount = 20
         objectAnimator.interpolator = AccelerateInterpolator()
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                Toast.makeText(mcontext, "加载失败", Toast.LENGTH_SHORT).show()
+                speakChineseLoding.visibility=View.GONE
                 super.onAnimationEnd(animation)
             }
         })
@@ -79,15 +80,14 @@ class SpeakChineseFragment : BaseFragment() {
                         Log.e("mlog", it.videoUrl)
                         Log.e("mlog", it.imgUrl)
                         Log.e("mlog", it.title)
-                        /*val bundle = Bundle()
+                        val bundle = Bundle()
                         bundle.putString("VIDEOTITLE", it.title)
                         bundle.putString("VIDEOIMGURL", it.imgUrl)
                         bundle.putString("VIDEOURL", it.videoUrl)
-                        intent.putExtras(bundle)*/
-                        
+                        intent.putExtras(bundle)
 
                     }
-                    //startActivity(intent.setClass(context, VideoActivity::class.java))
+                    startActivity(intent.setClass(context, VideoActivity::class.java))
                 }
                 speakChineseRecyclerView.adapter = videoAdapter
             }
