@@ -65,6 +65,8 @@ class SpeakChineseFragment : BaseFragment() {
                 speakChineseLoding.visibility=View.GONE
                 super.onAnimationEnd(animation)
             }
+
+
         })
         objectAnimator.start()
         val intent = Intent()
@@ -85,7 +87,6 @@ class SpeakChineseFragment : BaseFragment() {
                         bundle.putString("VIDEOIMGURL", it.imgUrl)
                         bundle.putString("VIDEOURL", it.videoUrl)
                         intent.putExtras(bundle)
-
                     }
                     startActivity(intent.setClass(context, VideoActivity::class.java))
                 }
