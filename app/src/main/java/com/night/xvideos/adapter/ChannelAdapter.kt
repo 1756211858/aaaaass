@@ -10,6 +10,9 @@ import com.night.xvideos.R
 import com.night.xvideos.bean.ChannelBean
 import kotlinx.android.synthetic.main.channel_item.view.*
 
+/**
+ * 第一个主界面
+ */
 class ChannelAdapter(private var context: Context, var list: MutableList<ChannelBean>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

@@ -3,22 +3,17 @@ package com.night.xvideos.activity
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_videoplay.*
 import android.webkit.WebSettings
 import co.metalab.asyncawait.async
 import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
-import android.content.pm.ActivityInfo
 import android.os.PersistableBundle
 import android.util.Log
 import android.view.*
-import android.webkit.JavascriptInterface
 import com.night.xvideos.getJs
 import com.tencent.smtt.export.external.interfaces.*
 import java.io.IOException
@@ -33,11 +28,12 @@ import com.tencent.sonic.sdk.SonicConfig
 import com.tencent.sonic.sdk.SonicEngine
 import com.tencent.sonic.sdk.SonicSession
 import com.tencent.sonic.sdk.SonicSessionConfig
+import kotlinx.android.synthetic.main.activity_videoplay.*
 import java.util.regex.Pattern
 
 
 @Suppress("DEPRECATION", "UNUSED_EXPRESSION")
-class VideoActivity : AppCompatActivity() {
+class VideoActivity : BaseActivity() {
     private lateinit var videoTitle: String
     lateinit var videoUrl: String
     private lateinit var videoImgUrl: String
@@ -46,10 +42,12 @@ class VideoActivity : AppCompatActivity() {
     private var sonicSession: SonicSession? = null
     private var sonicSessionClient: SonicSessionClientImpl? = null
     @SuppressLint("WrongConstant")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        Log.e("mlog", "onCreate")
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_videoplay)
+    override fun setLayoutId(): Int {
+        return R.layout.activity_videoplay
+    }
+
+    @SuppressLint("WrongConstant")
+    override fun initContentView() {
         //硬件加速
         window.addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
         //webView相关设置
@@ -115,7 +113,7 @@ class VideoActivity : AppCompatActivity() {
                 }
 
                 override fun shouldInterceptRequest(view: WebView, url: String): WebResourceResponse? {
-                    var response: WebResourceResponse? = null
+                    val response: WebResourceResponse?
                     if (url.contains("logo")) {
                         try {
                             val localCopy = assets.open("droidyue.png")
@@ -163,6 +161,7 @@ class VideoActivity : AppCompatActivity() {
                 objectAnimator.repeatMode = ValueAnimator.INFINITE
                 objectAnimator.repeatCount = 5
                 objectAnimator.interpolator = AccelerateDecelerateInterpolator()
+                //todo 动画优化
                 /*objectAnimator.addListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
                         super.onAnimationEnd(animation)
@@ -211,17 +210,9 @@ class VideoActivity : AppCompatActivity() {
         }
     }
 
-
-    /**
-     * 初始化WebView设置
-     */
     @SuppressLint("SetJavaScriptEnabled")
-    private fun initWebSetting() {
+    override fun initWebSetting() {
         val webSettings = videoplay_webView.settings
-        // step 4: bind javascript
-        // note:if api level lower than 17(android 4.2), addJavascriptInterface has security
-        // issue, please use x5 or see https://developer.android.com/reference/android/webkit/
-        // WebView.html#addJavascriptInterface(java.lang.Object, java.lang.String)
         webSettings.javaScriptEnabled = true
         videoplay_webView.removeJavascriptInterface("searchBoxJavaBridge_")
         intent.putExtra("loadUrlTime", System.currentTimeMillis())
@@ -253,55 +244,6 @@ class VideoActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * 屏蔽广告
-     */
-    fun blockAds(view: com.tencent.smtt.sdk.WebView?) {
-        //屏蔽右下角的Button
-        view?.loadUrl("javascript:function setTop(){document" +
-                ".querySelector('buttons-bar.right')[3]" +
-                ".style.display=\"none\";}setTop();")
-        view?.loadUrl("javascript:function setTop(){document" +
-                ".querySelector('.xv-logo')" +
-                ".style.display=\"none\";}setTop();")
-
-        view?.loadUrl("javascript:function setTop(){document" +
-                ".querySelector('.video-title')" +
-                ".style.display=\"none\";}setTop();")
-    }
-
-
-    /**
-     * 监听返回键~
-
-    var timeSpace: Long = 0
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-    if (keyCode == KeyEvent.KEYCODE_BACK) {
-
-    if (System.currentTimeMillis() - timeSpace > 2000) {
-    timeSpace = System.currentTimeMillis()
-    if (chromeClient != null) {
-    chromeClient!!.onHideCustomView()
-    }
-    ToastShortShow(this, "再按一次退出视频播放界面")
-    } else {
-    finish()
-    }
-    Log.e("mlog", "onBackPressed")
-    }
-    return super.onKeyDown(keyCode, event)
-    }
-     */
-
-    private fun fullScreen() {
-        requestedOrientation = if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        } else {
-            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
-    }
-
     @SuppressLint("WrongConstant")
     /**
      * 正则匹配网址URL
@@ -319,30 +261,20 @@ class VideoActivity : AppCompatActivity() {
         }
         videoTitle = intent.getStringExtra("VIDEOTITLE")
         videoImgUrl = intent.getStringExtra("VIDEOIMGURL")
-        Log.e("mlog", videoUrl)
     }
 
-    private open inner class JsObject {
-        @JavascriptInterface
-        fun fullscreen() {
-            //监听到用户点击全屏按钮
-            fullScreen()
-        }
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        videoplay_webView.saveState(outState)
+        Log.e("mlog", "onSaveInstanceState")
+
     }
 
-    override fun onConfigurationChanged(config: Configuration) {
-        super.onConfigurationChanged(config)
-        when (config.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            }
-            Configuration.ORIENTATION_PORTRAIT -> {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-                window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-            }
-        }
-        Log.e("mlog", "onConfigurationChanged")
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        videoplay_webView.restoreState(savedInstanceState)
+        Log.e("mlog", "onRestoreInstanceState")
+
     }
 
     override fun onPause() {
@@ -361,23 +293,9 @@ class VideoActivity : AppCompatActivity() {
 
     }
 
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        videoplay_webView.saveState(outState)
-        Log.e("mlog", "onSaveInstanceState")
-
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        videoplay_webView.restoreState(savedInstanceState)
-        Log.e("mlog", "onRestoreInstanceState")
-
-    }
 
     override fun onDestroy() {
         Log.e("mlog", "onDestroy")
-
         /**
          * 防止内存泄露
          */

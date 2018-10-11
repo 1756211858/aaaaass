@@ -11,7 +11,10 @@ import com.night.xvideos.R
 import com.night.xvideos.bean.speakChinese
 import kotlinx.android.synthetic.main.video_item.view.*
 
-class VideoAdapter (private var context: Context, var list: MutableList<speakChinese>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+/**
+ * 热门视频界面
+ */
+class VideoAdapter(private var context: Context, var list: MutableList<speakChinese>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder.setIsRecyclable(false)
@@ -26,9 +29,11 @@ class VideoAdapter (private var context: Context, var list: MutableList<speakChi
                 , mClickListener)
 
     }
+
     fun setOnItemClickListener(listener: ((View, Int) -> Unit)?) {
         mClickListener = listener
     }
+
     override fun getItemCount(): Int {
         return list.size
     }
@@ -39,6 +44,7 @@ class VideoAdapter (private var context: Context, var list: MutableList<speakChi
         init {
             itemView.setOnClickListener(this)
         }
+
         override fun onClick(v: View?) {
             if (v != null) {
                 mClickListener?.invoke(v, layoutPosition)
@@ -49,7 +55,7 @@ class VideoAdapter (private var context: Context, var list: MutableList<speakChi
         fun bind(bean: speakChinese) {
             Glide.with(context).load(bean.imgUrl).into(itemView.video_imageView)
             itemView.video_title.text = bean.title
-            itemView.video_duration.text="视频时长：${bean.duration}"
+            itemView.video_duration.text = "视频时长：${bean.duration}"
         }
     }
 }

@@ -26,10 +26,8 @@ class OutofFragment : BaseFragment() {
     }
 
     @SuppressLint("InflateParams")
-    override fun initView(): View {
-        val view = layoutInflater.inflate(R.layout.fragment_outof, null, false)
-
-        return view
+    override fun initView(): Int {
+        return R.layout.fragment_outof
     }
 
     override fun initData() {

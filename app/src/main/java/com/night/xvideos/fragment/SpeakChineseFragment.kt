@@ -45,11 +45,8 @@ class SpeakChineseFragment : BaseFragment() {
     }
 
     @SuppressLint("InflateParams")
-    override fun initView(): View {
-        val view = layoutInflater.inflate(R.layout.fragment_speakchinese, null, false)
-
-
-        return view
+    override fun initView(): Int {
+        return R.layout.fragment_speakchinese
     }
 
     @SuppressLint("WrongConstant")
@@ -62,7 +59,7 @@ class SpeakChineseFragment : BaseFragment() {
         objectAnimator.interpolator = AccelerateInterpolator()
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                speakChineseLoding.visibility=View.GONE
+                speakChineseLoding.visibility = View.GONE
                 super.onAnimationEnd(animation)
             }
         })

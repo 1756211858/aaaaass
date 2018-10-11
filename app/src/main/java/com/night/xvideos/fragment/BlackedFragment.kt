@@ -26,9 +26,8 @@ class BlackedFragment : BaseFragment() {
     }
 
     @SuppressLint("InflateParams")
-    override fun initView(): View {
-        val view = layoutInflater.inflate(R.layout.fragment_blacked, null, false)
-        return view
+    override fun initView(): Int {
+        return R.layout.fragment_blacked
     }
 
     override fun initData() {

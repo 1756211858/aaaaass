@@ -20,10 +20,11 @@ abstract class BaseFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return initView()
+
+        return layoutInflater.inflate(initView(),null,false)
     }
 
-    protected abstract fun initView(): View
+    protected abstract fun initView(): Int
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

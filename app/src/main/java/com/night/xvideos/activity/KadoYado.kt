@@ -1,10 +1,8 @@
 package com.night.xvideos.activity
 
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.StaggeredGridLayoutManager
 import com.night.xvideos.R
-import com.night.xvideos.ToastShortShow
+import com.night.xvideos.ShortShow
 import com.night.xvideos.adapter.ChannelAdapter
 import com.night.xvideos.bean.ChannelBean
 import kotlinx.android.synthetic.main.activity_channel.*
@@ -12,17 +10,15 @@ import kotlinx.android.synthetic.main.activity_channel.*
 /**
  * 显示4个按钮的功能页
  */
-class KadoYado : AppCompatActivity() {
+class KadoYado : BaseActivity() {
     private var channelList: MutableList<ChannelBean>? = mutableListOf()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_channel)
-        swipe_target.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-        initList()
+    override fun setLayoutId(): Int {
+        return R.layout.activity_channel
     }
 
-    private fun initList() {
+    override fun initContentView() {
+        swipe_target.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         channel_toolBar.setNavigationOnClickListener {
             finish()
         }
@@ -34,15 +30,14 @@ class KadoYado : AppCompatActivity() {
         adapter.setOnItemClickListener { _, position ->
             when (position) {
                 0 -> startActivity(intent.setClass(this, HotVideo::class.java))
-                1 -> ToastShortShow(this, "暂不支持$position")
-                2 -> ToastShortShow(this, "暂不支持$position")
-                3 -> ToastShortShow(this, "暂不支持$position")
+                1 -> ShortShow(this, "暂不支持$position")
+                2 -> ShortShow(this, "暂不支持$position")
+                3 -> ShortShow(this, "暂不支持$position")
 
             }
         }
         swipe_target.adapter = adapter
     }
-
 }
 
 

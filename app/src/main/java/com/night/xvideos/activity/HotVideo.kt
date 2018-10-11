@@ -1,11 +1,8 @@
 package com.night.xvideos.activity
 
-import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
-import android.support.v7.app.AppCompatActivity
-import android.widget.Toast
 import com.night.xvideos.R
 import com.night.xvideos.fragment.BaseFragment
 import com.night.xvideos.fragment.BlackedFragment
@@ -13,26 +10,25 @@ import com.night.xvideos.fragment.OutofFragment
 import com.night.xvideos.fragment.SpeakChineseFragment
 import kotlinx.android.synthetic.main.activity_hotvideo.*
 
-class HotVideo : AppCompatActivity() {
+class HotVideo : BaseActivity() {
     private val titles = arrayOf("说中文的色情", "黑人", "中出")
-    var fragmentPagerAdapter: FragmentPagerAdapter? = null
+    private var fragmentPagerAdapter: FragmentPagerAdapter? = null
     var fragmentList: MutableList<BaseFragment>? = mutableListOf()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_hotvideo)
-        initView()
+    override fun setLayoutId(): Int {
+        return R.layout.activity_hotvideo
     }
 
-    /**
-     * tabLayout的初始化
-     */
-    private fun initView() {
+    override fun initContentView() {
+        fragmentList?.add(SpeakChineseFragment.get())
+        fragmentList?.add(BlackedFragment.get())
+        fragmentList?.add(OutofFragment.get())
+
         for (i in 0 until titles.size) {
             hotVideo_tabLayout.addTab(hotVideo_tabLayout.newTab())
             hotVideo_tabLayout.getTabAt(i)?.text = titles[i]
         }
         hotVideo_tabLayout.tabMode = TabLayout.MODE_FIXED
-        initFragment()
+
         fragmentPagerAdapter = object : FragmentPagerAdapter(this.supportFragmentManager) {
             override fun getItem(position: Int): Fragment {
                 return fragmentList?.get(position)!!
@@ -48,13 +44,8 @@ class HotVideo : AppCompatActivity() {
         }
         hotVideo_tabLayout.setupWithViewPager(hotVideo_viewPager)
         hotVideo_viewPager.adapter = fragmentPagerAdapter
-        //设置刚进入时显示哪个tab
         hotVideo_tabLayout.getTabAt(0)?.select()
+
     }
 
-    private fun initFragment() {
-        fragmentList?.add(SpeakChineseFragment.get())
-        fragmentList?.add(BlackedFragment.get())
-        fragmentList?.add(OutofFragment.get())
-    }
 }
