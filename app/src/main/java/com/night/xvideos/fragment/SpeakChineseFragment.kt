@@ -62,6 +62,8 @@ class SpeakChineseFragment : BaseFragment() {
                 speakChineseLoding.visibility = View.GONE
                 super.onAnimationEnd(animation)
             }
+
+
         })
         objectAnimator.start()
         val intent = Intent()

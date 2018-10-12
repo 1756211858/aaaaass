@@ -31,6 +31,5 @@ class BlackedFragment : BaseFragment() {
     }
 
     override fun initData() {
-
     }
 }
