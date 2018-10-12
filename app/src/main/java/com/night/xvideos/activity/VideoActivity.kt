@@ -3,34 +3,30 @@ package com.night.xvideos.activity
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
-import android.webkit.WebSettings
 import co.metalab.asyncawait.async
-import com.tencent.smtt.sdk.WebChromeClient
-import com.tencent.smtt.sdk.WebView
-import com.tencent.smtt.sdk.WebViewClient
 import android.os.PersistableBundle
 import android.util.Log
 import android.view.*
 import com.night.xvideos.getJs
-import com.tencent.smtt.export.external.interfaces.*
 import java.io.IOException
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.webkit.*
 import com.night.xvideos.R
 import com.night.xvideos.webView.SonicJavaScriptInterface
 import com.night.xvideos.webView.SonicRuntimeImpl
 import com.night.xvideos.webView.SonicSessionClientImpl
-import com.tencent.smtt.sdk.QbSdk
 import com.tencent.sonic.sdk.SonicConfig
 import com.tencent.sonic.sdk.SonicEngine
 import com.tencent.sonic.sdk.SonicSession
 import com.tencent.sonic.sdk.SonicSessionConfig
 import kotlinx.android.synthetic.main.activity_videoplay.*
-import java.util.regex.Pattern
-
 
 @Suppress("DEPRECATION", "UNUSED_EXPRESSION")
 class VideoActivity : BaseActivity() {
@@ -38,7 +34,7 @@ class VideoActivity : BaseActivity() {
     lateinit var videoUrl: String
     private lateinit var videoImgUrl: String
     private var chromeClient: WebChromeClient? = null
-    private var callBack: IX5WebChromeClient.CustomViewCallback? = null
+    private var callBack: WebChromeClient.CustomViewCallback? = null
     private var sonicSession: SonicSession? = null
     private var sonicSessionClient: SonicSessionClientImpl? = null
     @SuppressLint("WrongConstant")
@@ -46,23 +42,20 @@ class VideoActivity : BaseActivity() {
         return R.layout.activity_videoplay
     }
 
-    @SuppressLint("WrongConstant")
+    @SuppressLint("WrongConstant", "JavascriptInterface")
     override fun initContentView() {
+        videoTitle = intent.getStringExtra("VIDEOTITLE")
+        videoImgUrl = intent.getStringExtra("VIDEOIMGURL")
+        videoUrl = "https://www.xvideos.com/embedframe/${intent.getStringExtra("VIDEOURL")
+                .substring(6)}"
+        Log.e("mlog", videoUrl)
         //硬件加速
         window.addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
         //webView相关设置
+        //Bmob后端云
         async {
             //获得Url，标题，视频封面图
-            getData()
-            //Bmob后端云
-            val cb = object : QbSdk.PreInitCallback {
-                override fun onViewInitFinished(arg0: Boolean) {
-                    Log.d("app", " onViewInitFinished is $arg0")
-                }
 
-                override fun onCoreInitFinished() {}
-            }
-            QbSdk.initX5Environment(applicationContext, cb)
 
             //硬件加速
             window.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
@@ -70,11 +63,8 @@ class VideoActivity : BaseActivity() {
             //webView设置
             initWebSetting()
             //webView全屏按钮监听
-            videoplay_webView.addJavascriptInterface(this, "fullscreen")
-            //屏蔽广告，获取标题，加载Url
-        }
-        //播放视频时的监听，过滤等操作
-        async {
+
+
             // step 1: Initialize sonic engine if necessary, or maybe u can do this when application created
             if (!SonicEngine.isGetInstanceAllowed()) {
                 SonicEngine.createInstance(SonicRuntimeImpl(application), SonicConfig.Builder().build())
@@ -92,6 +82,7 @@ class VideoActivity : BaseActivity() {
             }
 
             videoplay_webView.loadUrl(videoUrl)
+            videoplay_webView.addJavascriptInterface(this, "fullscreen")
             videoplay_webView.addJavascriptInterface(JsObject(), "onClick")
             videoplay_webView.webViewClient = object : WebViewClient() {
 
@@ -102,7 +93,7 @@ class VideoActivity : BaseActivity() {
                     super.onPageStarted(p0, p1, p2)
                 }
 
-                override fun shouldOverrideUrlLoading(p0: com.tencent.smtt.sdk.WebView?, p1: String?): Boolean {
+                override fun shouldOverrideUrlLoading(p0: WebView?, p1: String?): Boolean {
                     if (p1?.contains("https://www.xvideos.com/video")!!) {
                         blockAds(p0)
                         p0?.stopLoading()
@@ -176,7 +167,7 @@ class VideoActivity : BaseActivity() {
                 /**
                  * 获取加载进度
                  */
-                override fun onProgressChanged(view: com.tencent.smtt.sdk.WebView?, newProgress: Int) {
+                override fun onProgressChanged(view: WebView?, newProgress: Int) {
 
                     if (newProgress == 100) {
                         runOnUiThread {
@@ -186,7 +177,7 @@ class VideoActivity : BaseActivity() {
                     super.onProgressChanged(view, newProgress)
                 }
 
-                override fun onShowCustomView(p0: View?, p1: IX5WebChromeClient.CustomViewCallback?) {
+                override fun onShowCustomView(p0: View?, p1: WebChromeClient.CustomViewCallback?) {
                     fullScreen()
                     videoplay_webView.visibility = View.GONE
                     videoplay_Container.visibility = View.VISIBLE
@@ -231,7 +222,7 @@ class VideoActivity : BaseActivity() {
         webSettings.cacheMode = WebSettings.LOAD_NORMAL
         webSettings.cacheMode = WebSettings.LOAD_DEFAULT
         webSettings.domStorageEnabled = true
-        webSettings.pluginState = com.tencent.smtt.sdk.WebSettings.PluginState.ON
+        webSettings.pluginState = WebSettings.PluginState.ON
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             videoplay_webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
@@ -240,34 +231,64 @@ class VideoActivity : BaseActivity() {
             sonicSessionClient!!.bindWebView(videoplay_webView)
             sonicSessionClient!!.clientReady()
         } else { // default mode
+
+            videoUrl = "https://www.xvideos.com/embedframe/${intent.getStringExtra("VIDEOURL")
+                    .substring(6)}"
             videoplay_webView.loadUrl(videoUrl)
         }
     }
 
     @SuppressLint("WrongConstant")
-    /**
-     * 正则匹配网址URL
-     */
-    private fun getData() {
-        try {
-            val pattern = Pattern.compile("(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]")
-            val url = intent.getStringExtra("VIDEOURL")
-            val matcher = pattern.matcher(url)
-            while (matcher.find()) {
-                videoUrl = matcher.group()
-            }
-        } catch (e: IOException) {
-            "https://www.xvideos.com/embedframe/31433477"
+
+    /* //正则匹配网址URL
+   private fun getData() {
+       try {
+           val pattern = Pattern.compile("(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]")
+           val url = intent.getStringExtra("VIDEOURL")
+           val matcher = pattern.matcher(url)
+           while (matcher.find()) {
+               videoUrl = matcher.group()
+           }
+       } catch (e: IOException) {
+           intent.getStringExtra("VIDEOURL")
+       }
+   }*/
+
+    protected fun fullScreen() {
+        requestedOrientation = if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
-        videoTitle = intent.getStringExtra("VIDEOTITLE")
-        videoImgUrl = intent.getStringExtra("VIDEOIMGURL")
+    }
+
+    override fun onConfigurationChanged(config: Configuration) {
+        super.onConfigurationChanged(config)
+        when (config.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            }
+            Configuration.ORIENTATION_PORTRAIT -> {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+            }
+        }
+        Log.e("mlog", "onConfigurationChanged")
+    }
+
+    private inner class JsObject {
+        @JavascriptInterface
+        fun fullscreen() {
+            //监听到用户点击全屏按钮
+            fullScreen()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
         super.onSaveInstanceState(outState, outPersistentState)
         videoplay_webView.saveState(outState)
         Log.e("mlog", "onSaveInstanceState")
-
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {

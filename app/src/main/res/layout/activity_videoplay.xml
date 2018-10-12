@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <com.tencent.smtt.sdk.WebView
+    <WebView
         android:id="@+id/videoplay_webView"
         android:layout_width="match_parent"
         android:layout_height="400dp"

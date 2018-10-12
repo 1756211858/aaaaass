@@ -1,7 +1,8 @@
 package com.night.xvideos.webView
 
 import android.os.Bundle
-import com.tencent.smtt.sdk.WebView
+import android.webkit.WebView
+
 import com.tencent.sonic.sdk.SonicSessionClient
 import java.util.HashMap
 

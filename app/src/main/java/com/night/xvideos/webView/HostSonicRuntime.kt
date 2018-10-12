@@ -14,7 +14,7 @@ import java.io.InputStream
 import android.text.TextUtils
 import android.os.Build
 import android.webkit.CookieManager
-import com.tencent.smtt.export.external.interfaces.WebResourceResponse
+import android.webkit.WebResourceResponse
 import com.tencent.sonic.sdk.BuildConfig
 
 
