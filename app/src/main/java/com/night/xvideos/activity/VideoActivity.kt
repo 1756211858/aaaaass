@@ -51,20 +51,12 @@ class VideoActivity : BaseActivity() {
         Log.e("mlog", videoUrl)
         //硬件加速
         window.addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
-        //webView相关设置
-        //Bmob后端云
         async {
-            //获得Url，标题，视频封面图
-
-
             //硬件加速
             window.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                     WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
             //webView设置
             initWebSetting()
-            //webView全屏按钮监听
-
-
             // step 1: Initialize sonic engine if necessary, or maybe u can do this when application created
             if (!SonicEngine.isGetInstanceAllowed()) {
                 SonicEngine.createInstance(SonicRuntimeImpl(application), SonicConfig.Builder().build())
@@ -310,6 +302,7 @@ class VideoActivity : BaseActivity() {
         super.onResume()
         videoplay_webView.onResume()
         videoplay_webView.resumeTimers()
+        //sonicSession?.refresh()
         Log.e("mlog", "onResume")
 
     }
@@ -326,6 +319,10 @@ class VideoActivity : BaseActivity() {
 
         (videoplay_webView.parent as ViewGroup).removeView(videoplay_webView)
         videoplay_webView.destroy()
+        if (null != sonicSession) {
+            sonicSession!!.destroy()
+            sonicSession = null
+        }
         super.onDestroy()
     }
 }

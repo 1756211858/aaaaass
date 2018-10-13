@@ -38,7 +38,10 @@ class SonicRuntimeImpl(context: Context) : SonicRuntime(context) {
 
     override fun getCookie(url: String): String {
         val cookieManager = CookieManager.getInstance()
-        return cookieManager.getCookie(url)
+        if(cookieManager.getCookie(url)!=null){
+            return cookieManager.getCookie(url)
+        }
+        return ""
     }
 
     override fun log(tag: String, level: Int, message: String) {
@@ -70,7 +73,7 @@ class SonicRuntimeImpl(context: Context) : SonicRuntime(context) {
     }
 
     override fun setCookie(url: String, cookies: List<String>?): Boolean {
-        if (!TextUtils.isEmpty(url) && cookies != null && cookies.size > 0) {
+        if (!TextUtils.isEmpty(url) && cookies != null && cookies.isNotEmpty()) {
             val cookieManager = CookieManager.getInstance()
             for (cookie in cookies) {
                 cookieManager.setCookie(url, cookie)
