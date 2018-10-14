@@ -25,35 +25,16 @@
             />
     </android.support.v7.widget.Toolbar>
 
-    <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
-        android:id="@+id/swipeToLoadLayout"
+
+    <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
+        android:id="@+id/swipe_target"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channel_toolBar"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toTopOf="parent">
 
-       <!-- <com.aspsine.swipetoloadlayout.SwipeRefreshHeaderLayout
-            android:id="@id/swipe_refresh_header"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:gravity="center"/>-->
+    </com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/swipe_target"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </android.support.v7.widget.RecyclerView>
-
-    <!--    <com.aspsine.swipetoloadlayout.SwipeLoadMoreFooterLayout
-            android:id="@id/swipe_load_more_footer"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:gravity="center"/>-->
-    </com.marshalchen.ultimaterecyclerview.UltimateRecyclerView>
 </android.support.constraint.ConstraintLayout>

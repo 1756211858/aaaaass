@@ -18,7 +18,7 @@
     <color name="avatar_text">#FFFFFF</color>
     <color name="avatar_background">#444444</color>
 
-    <color name="purple"> </color>
+    <color name="purple"></color>
 
     <!--Home Button text -->
     <color name="homeButton_text">#1833ed</color>
@@ -65,17 +65,9 @@
     <color name="color_title_bg2">#00ffffff</color>
     <!-- 默认背景色 -->
     <color name="backgroundColor">#EEEEEE</color>
-    <!-- 开眼app-->
-    <color name="header_title">#fffeff</color>
-    <color name="header_about">#cecfd1</color>
-    <color name="header_message">#c3c7ca</color>
-    <color name="radiobutton_text">#fffffd</color>
-    <color name="Divider">#4c4e4d</color>
-    <color name="Divider2">#dbece4</color>
-    <color name="Divider3_RG">#999999</color>
-    <color name="Divider_mine_activity">#eeeeee</color>
-    <color name="mine_button_text_color">#559cf8</color>
-    <color name="mine_button">#559cf8</color>
+
+    <!--斗鱼-->
+    <color name="toolBarColor">#fe7c31</color>
 
 
 </resources>

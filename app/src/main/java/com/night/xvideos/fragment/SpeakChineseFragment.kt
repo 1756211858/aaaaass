@@ -24,9 +24,9 @@ import kotlinx.android.synthetic.main.fragment_speakchinese.*
  * 说中文的色情
  */
 class SpeakChineseFragment : BaseFragment() {
-    var videoAdapter: VideoAdapter? = null
-    var chineseList: MutableList<speakChinese>? = null
-    val bmobQuery: BmobQuery<speakChinese>? = BmobQuery<speakChinese>()
+    private var videoAdapter: VideoAdapter? = null
+    private var chineseList: MutableList<speakChinese>? = null
+    private val bmobQuery: BmobQuery<speakChinese>? = BmobQuery<speakChinese>()
 
     companion object {
         @SuppressLint("StaticFieldLeak")
@@ -45,26 +45,13 @@ class SpeakChineseFragment : BaseFragment() {
 
     @SuppressLint("InflateParams")
     override fun initView(): Int {
+        speakChineseRecyclerView.layoutManager = LinearLayoutManager(mcontext)
         return R.layout.fragment_speakchinese
     }
 
-    @SuppressLint("WrongConstant")
+    private val intent = Intent()
     override fun initData() {
-        val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(speakChineseLoding, "rotation", 0f, 360f)
-        objectAnimator.duration = 900
-        objectAnimator.repeatMode = ValueAnimator.INFINITE
-        objectAnimator.repeatCount = 5
-        objectAnimator.interpolator = AccelerateInterpolator()
-        objectAnimator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
-                speakChineseLoding.visibility = View.GONE
-                super.onAnimationEnd(animation)
-            }
-
-        })
-        objectAnimator.start()
-        val intent = Intent()
-        speakChineseRecyclerView.layoutManager = LinearLayoutManager(mcontext)
+        startAnimation()
 
         bmobQuery?.order("-createdAt")
         bmobQuery?.findObjects(object : FindListener<speakChinese>() {
@@ -72,15 +59,13 @@ class SpeakChineseFragment : BaseFragment() {
                 chineseList = p0
                 if (chineseList?.size!! >= 1) {
                     speakChineseLoding.visibility = View.GONE
-                }else if (chineseList?.size!! <= 1) {
+                } else if (chineseList?.size!! <= 1) {
+                    //todo 对话框提示
                     Toast.makeText(mcontext, "请检查网络", Toast.LENGTH_SHORT).show()
                 }
                 videoAdapter = context?.let { chineseList?.let { it1 -> VideoAdapter(it, it1) } }
                 videoAdapter?.setOnItemClickListener { _, position ->
                     chineseList!![position].let {
-                        /*  Log.e("mlog", it.videoUrl)
-                          Log.e("mlog", it.imgUrl)
-                          Log.e("mlog", it.title)*/
                         val bundle = Bundle()
                         bundle.putString("VIDEOTITLE", it.title)
                         bundle.putString("VIDEOIMGURL", it.imgUrl)
@@ -92,6 +77,21 @@ class SpeakChineseFragment : BaseFragment() {
                 speakChineseRecyclerView.adapter = videoAdapter
             }
         })
+    }
 
+    @SuppressLint("WrongConstant")
+    private fun startAnimation() {
+        val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(speakChineseLoding, "rotation", 0f, 360f)
+        objectAnimator.duration = 900
+        objectAnimator.repeatMode = ValueAnimator.INFINITE
+        objectAnimator.repeatCount = 5
+        objectAnimator.interpolator = AccelerateInterpolator()
+        objectAnimator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                speakChineseLoding.visibility = View.GONE
+                super.onAnimationEnd(animation)
+            }
+        })
+        objectAnimator.start()
     }
 }
