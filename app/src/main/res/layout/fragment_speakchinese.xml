@@ -21,9 +21,8 @@
         tools:context=".MainActivity"
         >
 
-
             <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
-                android:id="@+id/speakChineseRecyclerView"
+                android:id="@+id/PMRV"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -20,12 +20,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.design.widget.TabLayout
-            android:id="@+id/hotVideo_tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            app:tabSelectedTextColor="@color/mine_button_text_color"
-            app:tabTextColor="@color/black"
-            />
+        android:id="@+id/hotVideo_tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:tabSelectedTextColor="@color/black"
+        app:tabTextColor="@color/black"
+        />
 
     </android.support.v4.view.ViewPager>
     <FrameLayout

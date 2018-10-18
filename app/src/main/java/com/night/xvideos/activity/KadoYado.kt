@@ -18,7 +18,7 @@ class KadoYado : BaseActivity() {
     }
 
     override fun initContentView() {
-        swipe_target.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        swipe_target.setStaggeredGridLayout(2)
         channel_toolBar.setNavigationOnClickListener {
             finish()
         }
@@ -36,7 +36,7 @@ class KadoYado : BaseActivity() {
 
             }
         }
-        swipe_target.adapter = adapter
+        swipe_target.setAdapter(adapter)
     }
 }
 
