@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@color/menu_transparent"
+    android:background="#01000000"
     tools:context=".MainActivity"
 
     >

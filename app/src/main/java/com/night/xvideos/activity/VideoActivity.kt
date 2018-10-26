@@ -1,5 +1,7 @@
 package com.night.xvideos.activity
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -37,6 +39,7 @@ class VideoActivity : BaseActivity() {
     private var callBack: WebChromeClient.CustomViewCallback? = null
     private var sonicSession: SonicSession? = null
     private var sonicSessionClient: SonicSessionClientImpl? = null
+    var hashMap: HashMap<String, String>? = hashMapOf()
     @SuppressLint("WrongConstant")
     override fun setLayoutId(): Int {
         return R.layout.activity_videoplay
@@ -52,144 +55,159 @@ class VideoActivity : BaseActivity() {
         //硬件加速
         window.addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
 
-            //硬件加速
-            window.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
-            //webView设置
-            initWebSetting()
-            // step 1: Initialize sonic engine if necessary, or maybe u can do this when application created
-            if (!SonicEngine.isGetInstanceAllowed()) {
-                SonicEngine.createInstance(SonicRuntimeImpl(application), SonicConfig.Builder().build())
-            }
+        //硬件加速
+        window.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
+        //webView设置
+        initWebSetting()
+        // step 1: Initialize sonic engine if necessary, or maybe u can do this when application created
+        if (!SonicEngine.isGetInstanceAllowed()) {
+            SonicEngine.createInstance(SonicRuntimeImpl(application), SonicConfig.Builder().build())
+        }
 
-            // step 2: Create SonicSession
-            sonicSession = SonicEngine.getInstance().createSession(videoUrl, SonicSessionConfig.Builder().build())
-            if (null != sonicSession) {
-                sonicSessionClient = SonicSessionClientImpl()
-                sonicSession!!.bindClient(sonicSessionClient)
-            } else {
-                // this only happen when a same sonic session is already running,
-                // u can comment following codes to feedback as a default mode.
-                throw UnknownError("create session fail!")
-            }
+        // step 2: Create SonicSession
+        sonicSession = SonicEngine.getInstance().createSession(videoUrl, SonicSessionConfig.Builder().build())
+        if (null != sonicSession) {
+            sonicSessionClient = SonicSessionClientImpl()
+            sonicSession!!.bindClient(sonicSessionClient)
+        } else {
+            // this only happen when a same sonic session is already running,
+            // u can comment following codes to feedback as a default mode.
+            throw UnknownError("create session fail!")
+        }
+        //hashMap!!["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
+        /* hashMap!!["Accept-Encoding"] = "gzip, deflate, br"
+         hashMap!!["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8"
+         hashMap!!["Cache-Control"] = "max-age=0"
+         hashMap!!["Connection"] = "keep-alive"
+         hashMap!!["User-Agent"] = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
+         hashMap!!["DNT"] = "1"
+         hashMap!!["Upgrade-Insecure-Requests"] = "1"
+         hashMap!!["Host"] = "www.xvideos.com"
+         hashMap!!["Referer"]=videoUrl
+         videoplay_webView.loadUrl(videoUrl,hashMap)*/
+        videoplay_webView.loadUrl(videoUrl)
+        videoplay_webView.addJavascriptInterface(this, "fullscreen")
+        videoplay_webView.addJavascriptInterface(JsObject(), "onClick")
+        videoplay_webView.webViewClient = object : WebViewClient() {
 
-            videoplay_webView.loadUrl(videoUrl)
-            videoplay_webView.addJavascriptInterface(this, "fullscreen")
-            videoplay_webView.addJavascriptInterface(JsObject(), "onClick")
-            videoplay_webView.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(p0: WebView?, p1: String?, p2: Bitmap?) {
+                runOnUiThread {
+                    p0?.visibility = View.GONE
+                    //屏蔽设置
 
-                override fun onPageStarted(p0: WebView?, p1: String?, p2: Bitmap?) {
-                    runOnUiThread {
-                        p0?.visibility = View.GONE
-                    }
-                    super.onPageStarted(p0, p1, p2)
                 }
+                super.onPageStarted(p0, p1, p2)
+            }
 
-                override fun shouldOverrideUrlLoading(p0: WebView?, p1: String?): Boolean {
-                    if (p1?.contains("https://www.xvideos.com/video")!!) {
-                        blockAds(p0)
-                        p0?.stopLoading()
-                        return true
-                    }
-                    p0?.loadUrl(p1)
+            override fun shouldOverrideUrlLoading(p0: WebView?, p1: String?): Boolean {
+                if (p1?.contains("https://www.xvideos.com/video")!!) {
+                    blockAds(p0)
+                    p0?.stopLoading()
                     return true
                 }
+                p0?.loadUrl(p1)
+                return true
+            }
 
-                override fun shouldInterceptRequest(view: WebView, url: String): WebResourceResponse? {
-                    val response: WebResourceResponse?
-                    if (url.contains("logo")) {
-                        try {
-                            val localCopy = assets.open("droidyue.png")
-                            response = WebResourceResponse("image/png", "UTF-8", localCopy)
-                            //response = WebResourceResponse(null, null, null)
-                            return response
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
+            override fun shouldInterceptRequest(view: WebView, url: String): WebResourceResponse? {
+                val response: WebResourceResponse?
+                if (url.contains("logo")) {
+                    try {
+                        val localCopy = assets.open("droidyue.png")
+                        response = WebResourceResponse("image/png", "UTF-8", localCopy)
+                        //response = WebResourceResponse(null, null, null)
+                        return response
+                    } catch (e: IOException) {
+                        e.printStackTrace()
                     }
+                }
 
+                if (sonicSession != null) {
+                    val requestResponse = sonicSessionClient?.requestResource(url)
+                    if (requestResponse is WebResourceResponse) {
+                        return requestResponse
+                    }
+                }
+                return null
+
+            }
+
+            override fun onPageFinished(p0: WebView?, p1: String?) {
+                async {
+                    blockAds(p0)
+                    p0?.loadUrl(getJs())
+                    Thread.sleep(100)
+                    p0?.visibility = View.VISIBLE
                     if (sonicSession != null) {
-                        val requestResponse = sonicSessionClient?.requestResource(url)
-                        if (requestResponse is WebResourceResponse) {
-                            return requestResponse
-                        }
-                    }
-                    return null
-
-                }
-
-                override fun onPageFinished(p0: WebView?, p1: String?) {
-                    async {
-                        blockAds(p0)
-                        p0?.loadUrl(getJs())
-                        Thread.sleep(100)
-                        p0?.visibility = View.VISIBLE
-                        if (sonicSession != null) {
-                            sonicSession!!.sessionClient.pageFinish(videoUrl)
-                        }
+                        sonicSession!!.sessionClient.pageFinish(videoUrl)
                     }
 
                 }
 
-                override fun onReceivedSslError(p0: WebView?, p1: SslErrorHandler?, p2: SslError?) {
-                    p1?.proceed()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        videoplay_webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-                    }
+            }
+
+            override fun onReceivedSslError(p0: WebView?, p1: SslErrorHandler?, p2: SslError?) {
+                p1?.proceed()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    videoplay_webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                 }
             }
-            runOnUiThread {
-                val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(videoplay_loding, "rotation", 0f, 360f)
-                objectAnimator.duration = 1000
-                objectAnimator.repeatMode = ValueAnimator.INFINITE
-                objectAnimator.repeatCount = 5
-                objectAnimator.interpolator = AccelerateDecelerateInterpolator()
-                //todo 动画优化
-                /*objectAnimator.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        super.onAnimationEnd(animation)
-                    }
-                })*/
-                objectAnimator.start()
-            }
+        }
+        runOnUiThread {
+            val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(videoplay_loding, "rotation", 0f, 360f)
+            objectAnimator.duration = 1000
+            objectAnimator.repeatMode = ValueAnimator.INFINITE
+            objectAnimator.repeatCount = 10
+            objectAnimator.interpolator = AccelerateDecelerateInterpolator()
+
+            objectAnimator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    //todo 点击重新加载
+                    videoplay_loding.visibility = View.GONE
+                    super.onAnimationEnd(animation)
+                }
+            })
+            objectAnimator.start()
+        }
+        /**
+         * 设置WebChromeClient类
+         */
+        chromeClient = object : WebChromeClient() {
             /**
-             * 设置WebChromeClient类
+             * 获取加载进度
              */
-            chromeClient = object : WebChromeClient() {
-                /**
-                 * 获取加载进度
-                 */
-                override fun onProgressChanged(view: WebView?, newProgress: Int) {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
 
-                    if (newProgress == 100) {
-                        runOnUiThread {
-                            videoplay_loding.visibility = View.GONE
-                        }
+                if (newProgress == 100) {
+                    runOnUiThread {
+                        videoplay_loding.visibility = View.GONE
                     }
-                    super.onProgressChanged(view, newProgress)
                 }
-
-                override fun onShowCustomView(p0: View?, p1: WebChromeClient.CustomViewCallback?) {
-                    fullScreen()
-                    videoplay_webView.visibility = View.GONE
-                    videoplay_Container.visibility = View.VISIBLE
-                    videoplay_Container.addView(p0)
-                    callBack = p1
-                    super.onShowCustomView(p0, p1)
-                }
-
-                override fun onHideCustomView() {
-                    fullScreen()
-                    if (callBack != null) {
-                        callBack!!.onCustomViewHidden()
-                    }
-                    videoplay_webView.visibility = View.VISIBLE
-                    videoplay_Container.removeAllViews()
-                    videoplay_Container.visibility = View.GONE
-                    super.onHideCustomView()
-                }
+                super.onProgressChanged(view, newProgress)
             }
-            videoplay_webView.webChromeClient = chromeClient
+
+            override fun onShowCustomView(p0: View?, p1: WebChromeClient.CustomViewCallback?) {
+                fullScreen()
+                videoplay_webView.visibility = View.GONE
+                videoplay_Container.visibility = View.VISIBLE
+                videoplay_Container.addView(p0)
+                callBack = p1
+                super.onShowCustomView(p0, p1)
+            }
+
+            override fun onHideCustomView() {
+                fullScreen()
+                if (callBack != null) {
+                    callBack!!.onCustomViewHidden()
+                }
+                videoplay_webView.visibility = View.VISIBLE
+                videoplay_Container.removeAllViews()
+                videoplay_Container.visibility = View.GONE
+                super.onHideCustomView()
+            }
+        }
+        videoplay_webView.webChromeClient = chromeClient
 
     }
 

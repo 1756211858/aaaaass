@@ -28,8 +28,9 @@ abstract class BaseActivity : AppCompatActivity() {
 
     //屏蔽广告
     protected open fun blockAds(view: WebView?) {
+        //#hlsplayer > div.buttons-bar.right > div 设置按钮
         view?.loadUrl("javascript:function setTop(){document" +
-                ".querySelector('buttons-bar.right')[3]" +
+                ".getElementById('externalplayer')" +
                 ".style.display=\"none\";}setTop();")
         view?.loadUrl("javascript:function setTop(){document" +
                 ".querySelector('.xv-logo')" +
