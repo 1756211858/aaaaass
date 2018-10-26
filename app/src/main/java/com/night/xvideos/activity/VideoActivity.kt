@@ -51,7 +51,7 @@ class VideoActivity : BaseActivity() {
         Log.e("mlog", videoUrl)
         //硬件加速
         window.addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
-        async {
+
             //硬件加速
             window.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                     WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
@@ -190,7 +190,7 @@ class VideoActivity : BaseActivity() {
                 }
             }
             videoplay_webView.webChromeClient = chromeClient
-        }
+
     }
 
     @SuppressLint("SetJavaScriptEnabled")

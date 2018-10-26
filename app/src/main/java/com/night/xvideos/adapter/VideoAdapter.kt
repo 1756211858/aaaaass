@@ -14,12 +14,13 @@ import kotlinx.android.synthetic.main.video_item.view.*
 /**
  * 热门视频界面
  */
-class VideoAdapter(private var context: Context, var list: MutableList<speakChinese>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class VideoAdapter(private var context: Context, var dataList: MutableList<speakChinese>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.setIsRecyclable(false)
+        //造成性能下降，先删除
+        //holder.setIsRecyclable(false)
         with(holder as ViewHolder) {
-            holder.bind(list[position])
+            holder.bind(dataList[position])
         }
     }
 
@@ -34,8 +35,14 @@ class VideoAdapter(private var context: Context, var list: MutableList<speakChin
         mClickListener = listener
     }
 
+    fun addFooter(position: Int,list:MutableList<speakChinese>){
+        dataList.addAll(position,list)
+        notifyItemInserted(position)
+        notifyItemRangeChanged(10,10)
+    }
+
     override fun getItemCount(): Int {
-        return list.size
+        return dataList.size
     }
 
 

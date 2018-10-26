@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.channel_item.view.*
 class ChannelAdapter(private var context: Context, var list: MutableList<ChannelBean>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.setIsRecyclable(false)
+        //holder.setIsRecyclable(false)
         with(holder as ChannelViewHolder) {
             holder.bind(list[position])
         }

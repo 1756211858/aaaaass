@@ -27,6 +27,11 @@ class SpeakChineseFragment : BaseFragment() {
     private var videoAdapter: VideoAdapter? = null
     private var chineseList: MutableList<speakChinese>? = null
     private val bmobQuery: BmobQuery<speakChinese>? = BmobQuery<speakChinese>()
+    private var position: Int = 10
+    private val intent = Intent()
+    private var currentDataSize: Int = 0
+    private var flag = false
+
     companion object {
         @SuppressLint("StaticFieldLeak")
         private var instance: SpeakChineseFragment? = null
@@ -46,72 +51,75 @@ class SpeakChineseFragment : BaseFragment() {
     override fun initView(): Int {
         return R.layout.fragment_speakchinese
     }
-    private var position:Int=10
-    private val intent = Intent()
+
     override fun initData() {
-        PMRV.setLinearLayout()
+        initRecyclerView()
+        //开始动画
         startAnimation()
         bmobQuery?.order("-createdAt")
         bmobQuery?.setLimit(10)
-
         bmobQuery?.findObjects(object : FindListener<speakChinese>() {
             override fun done(p0: MutableList<speakChinese>?, p1: BmobException?) {
                 chineseList = p0
-                if (chineseList?.size!! >= 1) {
-                    speakChineseLoding.visibility = View.GONE
-                } else if (chineseList?.size!! <= 1) {
-                    //todo 对话框提示
-                    Toast.makeText(mcontext, "请检查网络", Toast.LENGTH_SHORT).show()
-                }
+                currentDataSize += p0!!.size
+                setVideoList()
             }
         })
 
+        //监听上滑刷新
+        speakChineseRecyclerView.setOnPullLoadMoreListener(object : PullLoadMoreRecyclerView.PullLoadMoreListener {
+            override fun onRefresh() {
 
-        videoAdapter = context?.let { chineseList?.let { it1 -> VideoAdapter(it, it1) } }
-        PMRV.setAdapter(videoAdapter)
+            }
 
-
-
-
-
-
-
-
-
-       /* PMRV.setOnPullLoadMoreListener(object : PullLoadMoreRecyclerView.PullLoadMoreListener {
-                    override fun onRefresh() {
-
-                    }
-
-                    override fun onLoadMore() {
-                        bmobQuery?.order("-createdAt")
-                        bmobQuery?.setLimit(10)
-                        position+=10
-                        bmobQuery?.setSkip(position)
-                        bmobQuery?.findObjects(object : FindListener<speakChinese>() {
-                            override fun done(p0: MutableList<speakChinese>?, p1: BmobException?) {
-                                videoAdapter?.list= p0!!
-                                if (chineseList?.size!! >= 1) {
-                                    speakChineseLoding.visibility = View.GONE
-                                } else if (chineseList?.size!! <= 1) {
-                                    //todo 对话框提示
-                                    Toast.makeText(mcontext, "请检查网络", Toast.LENGTH_SHORT).show()
-                                }
+            override fun onLoadMore() {
+                bmobQuery?.order("-createdAt")
+                bmobQuery?.setLimit(10)
+                bmobQuery?.setSkip(position)
+                position += 10
+                //开始加载动画
+                startAnimation()
+                bmobQuery?.findObjects(object : FindListener<speakChinese>() {
+                    override fun done(p0: MutableList<speakChinese>?, p1: BmobException?) {
+                        chineseList = p0
+                        flag = true
+                        currentDataSize += p0?.size!!
+                        setVideoList()
                     }
                 })
+                speakChineseRecyclerView.setPullLoadMoreCompleted()
             }
-        })*/
-        //点击事件
+        })
+    }
 
-        videoAdapter?.setOnItemClickListener { _, position ->
-            chineseList!![position].let {
-                val bundle = Bundle()
-                bundle.putString("VIDEOTITLE", it.title)
-                bundle.putString("VIDEOIMGURL", it.imgUrl)
-                bundle.putString("VIDEOURL", it.videoUrl)
-                intent.putExtras(bundle)
+    /**
+     * 给RecyclerView填充数据和点击事件
+     */
+    private fun setVideoList() {
+        if (chineseList?.size!! >= 1) {
+
+            //设置Adapter中的数据和点击事件
+            speakChineseLoding.visibility = View.GONE
+            //假如adapter中没有数据，那就代表第一次加载数据。
+            if (!flag) {
+                videoAdapter = VideoAdapter(this.mcontext!!, chineseList!!)
+                speakChineseRecyclerView.setAdapter(videoAdapter)
+            } else {
+                videoAdapter?.addFooter(currentDataSize - chineseList!!.size, chineseList!!)
             }
-            startActivity(intent.setClass(context, VideoActivity::class.java))
+            videoAdapter?.setOnItemClickListener { _, position ->
+                videoAdapter!!.dataList[position].let {
+                    val bundle = Bundle()
+                    bundle.putString("VIDEOTITLE", it.title)
+                    bundle.putString("VIDEOIMGURL", it.imgUrl)
+                    bundle.putString("VIDEOURL", it.videoUrl)
+                    intent.putExtras(bundle)
+                }
+                startActivity(intent.setClass(context, VideoActivity::class.java))
+            }
+        } else if (chineseList?.size!! <= 1) {
+            //todo 对话框提示
+            Toast.makeText(mcontext, "请检查网络", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -121,15 +129,25 @@ class SpeakChineseFragment : BaseFragment() {
         val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(speakChineseLoding, "rotation", 0f, 360f)
         objectAnimator.duration = 900
         objectAnimator.repeatMode = ValueAnimator.INFINITE
-        objectAnimator.repeatCount = 5
+        objectAnimator.repeatCount = 50
         objectAnimator.interpolator = AccelerateInterpolator()
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 speakChineseLoding.visibility = View.GONE
+                //todo 重新加载
                 super.onAnimationEnd(animation)
             }
         })
         objectAnimator.start()
     }
 
+    //初始化RecyclerView
+    private fun initRecyclerView() {
+        //缓存数量
+        speakChineseRecyclerView.setLinearLayout()
+        speakChineseRecyclerView.setRefreshing(false)
+        speakChineseRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
+        speakChineseRecyclerView.setFooterViewTextColor(R.color.menu_transparent)
+        speakChineseRecyclerView.setFooterViewText(" ")
+    }
 }

@@ -37,6 +37,9 @@ class KadoYado : BaseActivity() {
             }
         }
         swipe_target.setAdapter(adapter)
+        //禁用刷新
+        swipe_target.pullRefreshEnable=false
+        swipe_target.pushRefreshEnable=false
     }
 }
 
