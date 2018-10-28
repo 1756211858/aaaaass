@@ -1,5 +1,7 @@
 package com.night.xvideos.activity
 
+import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
@@ -16,6 +18,10 @@ class HotVideo : BaseActivity() {
     var fragmentList: MutableList<BaseFragment>? = mutableListOf()
     override fun setLayoutId(): Int {
         return R.layout.activity_hotvideo
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
     }
 
     override fun initContentView() {
@@ -44,8 +50,12 @@ class HotVideo : BaseActivity() {
         }
         hotVideo_tabLayout.setupWithViewPager(hotVideo_viewPager)
         hotVideo_viewPager.adapter = fragmentPagerAdapter
+        hotVideo_viewPager.offscreenPageLimit=3
         hotVideo_tabLayout.getTabAt(0)?.select()
-
     }
 
+    override fun onDestroy() {
+
+        super.onDestroy()
+    }
 }

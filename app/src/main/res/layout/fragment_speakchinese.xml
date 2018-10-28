@@ -19,18 +19,19 @@
         android:layout_gravity="center"
         android:background="@color/white"
         tools:context=".MainActivity"
+        android:id="@+id/speakChineseReLoding"
         >
 
-            <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
-                android:id="@+id/speakChineseRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+        <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
+            android:id="@+id/speakChineseRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            </com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView>
+        </com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView>
 
         <ImageView
             android:id="@+id/speakChineseLoding"

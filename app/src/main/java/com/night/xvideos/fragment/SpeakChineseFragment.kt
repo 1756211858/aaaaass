@@ -13,7 +13,9 @@ import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
+import com.night.xvideos.LongShow
 import com.night.xvideos.R
+import com.night.xvideos.ShortShow
 import com.night.xvideos.activity.VideoActivity
 import com.night.xvideos.adapter.VideoAdapter
 import com.night.xvideos.bean.speakChinese
@@ -96,32 +98,35 @@ class SpeakChineseFragment : BaseFragment() {
      * 给RecyclerView填充数据和点击事件
      */
     private fun setVideoList() {
-        if (chineseList?.size!! >= 1) {
+        when {
+            chineseList?.size!! >= 1 -> {
 
-            //设置Adapter中的数据和点击事件
-            speakChineseLoding.visibility = View.GONE
-            //假如adapter中没有数据，那就代表第一次加载数据。
-            if (!flag) {
-                videoAdapter = VideoAdapter(this.mcontext!!, chineseList!!)
-                speakChineseRecyclerView.setAdapter(videoAdapter)
-            } else {
-                videoAdapter?.addFooter(currentDataSize - chineseList!!.size, chineseList!!)
-            }
-            videoAdapter?.setOnItemClickListener { _, position ->
-                videoAdapter!!.dataList[position].let {
-                    val bundle = Bundle()
-                    bundle.putString("VIDEOTITLE", it.title)
-                    bundle.putString("VIDEOIMGURL", it.imgUrl)
-                    bundle.putString("VIDEOURL", it.videoUrl)
-                    intent.putExtras(bundle)
+                //设置Adapter中的数据和点击事件
+                speakChineseLoding.visibility = View.GONE
+                //假如adapter中没有数据，那就代表第一次加载数据。
+                if (!flag) {
+                    videoAdapter = VideoAdapter(this.mcontext!!, chineseList!!)
+                    speakChineseRecyclerView.setAdapter(videoAdapter)
+                } else {
+                    videoAdapter?.addFooter(currentDataSize - chineseList!!.size, chineseList!!)
                 }
-                startActivity(intent.setClass(context, VideoActivity::class.java))
+                videoAdapter?.setOnItemClickListener { _, position ->
+                    videoAdapter!!.dataList[position].let {
+                        val bundle = Bundle()
+                        bundle.putString("VIDEOTITLE", it.title)
+                        bundle.putString("VIDEOIMGURL", it.imgUrl)
+                        bundle.putString("VIDEOURL", it.videoUrl)
+                        intent.putExtras(bundle)
+                    }
+                    startActivity(intent.setClass(context, VideoActivity::class.java))
+                }
             }
-        } else if (chineseList?.size!! <= 1) {
-            //todo 对话框提示
-            Toast.makeText(mcontext, "请检查网络", Toast.LENGTH_SHORT).show()
+            videoAdapter?.dataList?.size == 0 -> //todo 对话框提示
+                LongShow(this.mcontext!!,"请点击重新加载")
+            else -> speakChineseReLoding.setOnClickListener {
+                initData()
+            }
         }
-
     }
 
     @SuppressLint("WrongConstant")
@@ -129,12 +134,14 @@ class SpeakChineseFragment : BaseFragment() {
         val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(speakChineseLoding, "rotation", 0f, 360f)
         objectAnimator.duration = 900
         objectAnimator.repeatMode = ValueAnimator.INFINITE
-        objectAnimator.repeatCount = 50
+        objectAnimator.repeatCount = 8
         objectAnimator.interpolator = AccelerateInterpolator()
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                speakChineseLoding.visibility = View.GONE
-                //todo 重新加载
+                if (videoAdapter?.dataList?.size == 0) {
+                    speakChineseLoding.visibility = View.GONE
+                }
+                //todo 点击重新加载
                 super.onAnimationEnd(animation)
             }
         })
