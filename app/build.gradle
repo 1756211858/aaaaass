@@ -13,7 +13,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
+        versionName "FirstVersion"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk{abiFilters "armeabi"}
     }
@@ -60,7 +60,7 @@ dependencies {
     //如果你想应用能够兼容Android6.0，请添加此依赖(org.apache.http.legacy.jar)
     compile 'cn.bmob.android:http-legacy:1.0'
     compile 'cn.bmob.android:bmob-sdk:3.6.6'
-    compile 'com.afollestad.material-dialogs:core:0.9.4.4'
+    compile 'com.afollestad.material-dialogs:core:0.9.6.0'
     compile 'com.afollestad.material-dialogs:commons:0.9.4.4'
     compile 'com.tencent.sonic:sdk:3.0.0'
 }

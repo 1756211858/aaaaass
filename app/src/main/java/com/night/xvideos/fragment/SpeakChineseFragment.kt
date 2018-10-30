@@ -54,6 +54,10 @@ class SpeakChineseFragment : BaseFragment() {
         return R.layout.fragment_speakchinese
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+    }
+
     override fun initData() {
         initRecyclerView()
         //开始动画

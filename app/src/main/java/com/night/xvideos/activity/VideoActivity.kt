@@ -32,6 +32,8 @@ import kotlinx.android.synthetic.main.activity_videoplay.*
 
 @Suppress("DEPRECATION", "UNUSED_EXPRESSION")
 class VideoActivity : BaseActivity() {
+
+
     private lateinit var videoTitle: String
     lateinit var videoUrl: String
     private lateinit var videoImgUrl: String
@@ -39,7 +41,6 @@ class VideoActivity : BaseActivity() {
     private var callBack: WebChromeClient.CustomViewCallback? = null
     private var sonicSession: SonicSession? = null
     private var sonicSessionClient: SonicSessionClientImpl? = null
-    var hashMap: HashMap<String, String>? = hashMapOf()
     @SuppressLint("WrongConstant")
     override fun setLayoutId(): Int {
         return R.layout.activity_videoplay

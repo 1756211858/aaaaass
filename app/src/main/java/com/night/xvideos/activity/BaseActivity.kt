@@ -1,13 +1,8 @@
 package com.night.xvideos.activity
 
-import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
-import android.view.WindowManager
-import android.webkit.JavascriptInterface
 import android.webkit.WebView
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -18,6 +13,12 @@ abstract class BaseActivity : AppCompatActivity() {
         setContentView(view)
         initWebSetting()
         initContentView()
+        initData()
+    }
+
+    //初始化数据
+    protected open fun initData(){
+
     }
 
     abstract fun setLayoutId(): Int
@@ -43,7 +44,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
     //初始化View
     abstract fun initContentView()
-
 
 
     /**
