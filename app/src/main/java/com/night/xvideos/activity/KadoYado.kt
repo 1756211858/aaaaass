@@ -1,7 +1,14 @@
 package com.night.xvideos.activity
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.support.v4.content.FileProvider
 import android.util.Log
+import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
@@ -11,10 +18,18 @@ import com.night.xvideos.R
 import com.night.xvideos.ShortShow
 import com.night.xvideos.adapter.ChannelAdapter
 import com.night.xvideos.bean.ChannelBean
+import com.night.xvideos.getVerName
 import com.night.xvideos.getVersionCode
 import com.night.xvideos.update.update
 import kotlinx.android.synthetic.main.activity_channel.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.net.URL
 import java.text.NumberFormat
+
+
+
 
 
 /**
@@ -25,6 +40,7 @@ class KadoYado : BaseActivity() {
     private lateinit var apkUrl: String
     private var code: Int = 0
     private lateinit var text: String
+    private lateinit var mSavePath: File
     override fun setLayoutId(): Int {
         return R.layout.activity_channel
     }
@@ -94,23 +110,25 @@ class KadoYado : BaseActivity() {
     }
 
     private fun showDialog() {
-        val dialog = MaterialDialog.Builder(applicationContext).title("2.0版本")
-                .positiveText("立即更新").onPositive { dialog, which ->
-                    dialog.cancel()
+        MaterialDialog.Builder(this)
+                .title("2.0版本").content(text)
+                .positiveText("立即更新").positiveColor(resources.getColor(R.color.menu_item_blue_dark))
+                .onPositive { _, _ ->
                     //下载apk文件
-                    showProgressBar()
-
+                    downloadAPK()
+                    mIsCanDownLoad=true
                 }
-                .negativeText("暂不更新").onNegative { dialog, which ->
-                    dialog.cancel()
-                }
-        dialog.show()
+                .negativeText("暂不更新").negativeColor(resources.getColor(R.color.black))
+                .cancelable(false)
+                .show()
     }
 
+    private var mIsCanDownLoad: Boolean = true
     /**
      * 下载apk文件
      */
-    private fun showProgressBar() {
+    @SuppressLint("ResourceAsColor")
+    private fun downloadAPK() {
         val progressBar = MaterialDialog.Builder(this)
                 .title("正在下载文件....")
                 .titleColor(Color.BLACK)
@@ -119,13 +137,79 @@ class KadoYado : BaseActivity() {
                 .progressPercentFormat(NumberFormat.getPercentInstance())
                 .contentColor(resources.getColor(R.color.black))
                 .cancelable(false)
-                .positiveText("取消")
+                .positiveText("取消").positiveColor(R.color.black)
+                .onPositive { _, _ -> mIsCanDownLoad = false }
                 .build()
         progressBar.show()
         async {
-            //todo
-
+            //todo 下载apk
+            try {
+                val mPath = "/data/data/com.night.xvideos/files"
+                //val mPath="/mnt/sdcard/Download/"
+                mSavePath = File(mPath)
+                if (!mSavePath.exists()) {
+                    mSavePath.mkdir()
+                }
+                await {
+                    val con = URL(apkUrl).openConnection()
+                    con.connect()
+                    val inputStream = con.getInputStream()
+                    val length = con.contentLength
+                    val apkFile = File(mSavePath, getVerName(mContext = applicationContext))
+                    val fileOutputStream = FileOutputStream(apkFile)
+                    var count = 0
+                    val buffer = ByteArray(1024)
+                    while (mIsCanDownLoad) {
+                        val numread = inputStream.read(buffer)
+                        count += numread
+                        progressBar.setProgress((count.toFloat() / length * 100).toInt())
+                        if (numread < 0) {
+                            progressBar.dismiss()
+                            installApk()
+                        }
+                        fileOutputStream.write(buffer, 0, numread)
+                    }
+                    fileOutputStream.close()
+                    inputStream.close()
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
+    }
+
+    /**
+     * 安装apk
+     */
+    private fun installApk() {
+        val apkFile = File(mSavePath, getVerName(applicationContext))
+        if (!apkFile.exists()) {
+            Log.e("mlog", "没有找到apk")
+            return
+        }
+        val command = arrayOf("chmod", "777", apkFile.path)
+        val builder = ProcessBuilder(*command)
+        try {
+            builder.start()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.N) {
+            //使用intent打开apk必加
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            val uri = FileProvider.getUriForFile(applicationContext,
+                    "com.night.xvideos.update.provider", apkFile)
+            //  val uri = Uri.parse("file://$apkFile")
+            intent.setDataAndType(uri, "application/vnd.android.package-archive")
+        }else{
+            intent.setDataAndType(Uri.fromFile(apkFile),
+                    "application/vnd.android.package-archive")
+        }
+        application.startActivity(intent)
+        //Uri photoURI = FileProvider.getUriForFile(context, context.getApplicationContext()
+        // .getPackageName() + ".my.package.name.provider", createImageFile());
     }
 }
 

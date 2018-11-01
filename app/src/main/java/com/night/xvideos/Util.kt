@@ -39,7 +39,7 @@ fun Any.getVersionCode(mContext:Context):Int{
 fun Any.getVerName(mContext: Context):String{
     var verName=""
     try {
-        verName=mContext.packageManager.getPackageInfo(mContext.packageName,0).versionName
+        verName=mContext.packageManager.getPackageInfo(mContext.packageName,0).versionName+".apk"
     }catch (e:IOException) {
         e.printStackTrace()
     }

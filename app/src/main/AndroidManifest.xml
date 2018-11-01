@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.night.xvideos">
     <!--允许联网 -->
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -12,8 +13,10 @@
     <!--获取sd卡写的权限，用于文件上传和下载-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <!--允许读取手机状态 用于创建BmobInstallation-->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-
+    <!--在sdcard中创建/删除文件的权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,6 +24,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         >
+        <!--api>=24的使用FileProvider安装-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.night.xvideos.update.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/fileprovider"
+                tools:replace="android:resource"/>
+        </provider>
+
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.Splash"
@@ -41,8 +57,8 @@
             />
         <activity
             android:name="com.night.xvideos.activity.VideoActivity"
-            android:theme="@style/AppTheme.videoPlay"
             android:configChanges="orientation|keyboardHidden|screenSize|navigation"
+            android:theme="@style/AppTheme.videoPlay"
 
             />
     </application>
