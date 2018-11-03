@@ -29,9 +29,6 @@ import java.net.URL
 import java.text.NumberFormat
 
 
-
-
-
 /**
  * 显示4个按钮的功能页
  */
@@ -116,7 +113,7 @@ class KadoYado : BaseActivity() {
                 .onPositive { _, _ ->
                     //下载apk文件
                     downloadAPK()
-                    mIsCanDownLoad=true
+                    mIsCanDownLoad = true
                 }
                 .negativeText("暂不更新").negativeColor(resources.getColor(R.color.black))
                 .cancelable(false)
@@ -166,6 +163,7 @@ class KadoYado : BaseActivity() {
                         if (numread < 0) {
                             progressBar.dismiss()
                             installApk()
+                            break
                         }
                         fileOutputStream.write(buffer, 0, numread)
                     }
@@ -196,20 +194,16 @@ class KadoYado : BaseActivity() {
         }
         val intent = Intent(Intent.ACTION_VIEW)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.N) {
-            //使用intent打开apk必加
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            val uri = FileProvider.getUriForFile(applicationContext,
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+            val uri = FileProvider.getUriForFile(this,
                     "com.night.xvideos.update.provider", apkFile)
-            //  val uri = Uri.parse("file://$apkFile")
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.setDataAndType(uri, "application/vnd.android.package-archive")
-        }else{
+        } else {
             intent.setDataAndType(Uri.fromFile(apkFile),
                     "application/vnd.android.package-archive")
         }
-        application.startActivity(intent)
-        //Uri photoURI = FileProvider.getUriForFile(context, context.getApplicationContext()
-        // .getPackageName() + ".my.package.name.provider", createImageFile());
+        startActivity(intent)
     }
 }
 
