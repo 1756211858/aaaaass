@@ -5,10 +5,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.support.v4.content.FileProvider
 import android.util.Log
-import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
@@ -20,6 +18,8 @@ import com.night.xvideos.adapter.ChannelAdapter
 import com.night.xvideos.bean.ChannelBean
 import com.night.xvideos.getVerName
 import com.night.xvideos.getVersionCode
+import com.night.xvideos.main.Contract
+import com.night.xvideos.main.Presenter
 import com.night.xvideos.update.update
 import kotlinx.android.synthetic.main.activity_channel.*
 import java.io.File
@@ -32,18 +32,26 @@ import java.text.NumberFormat
 /**
  * 显示4个按钮的功能页
  */
-class KadoYado : BaseActivity() {
+class KadoYado : BaseActivity(), Contract.KadoYado {
     private var channelList: MutableList<ChannelBean>? = mutableListOf()
     private lateinit var apkUrl: String
     private var code: Int = 0
     private lateinit var text: String
     private lateinit var mSavePath: File
+    private var mPresenter:Presenter?=null
+    override fun showNetWorkError() {
+        MaterialDialog.Builder(this).title("无法连接Google，导致无法播放国外视频")
+                .content("首先找到本软件所提供的VPN地址，然后注册，测试可以访问Google后，就可以使用啦。")
+                .show()
+    }
+
     override fun setLayoutId(): Int {
         return R.layout.activity_channel
     }
 
     override fun initData() {
         queryData()
+        mPresenter= Presenter(this,null)
     }
 
     override fun initContentView() {

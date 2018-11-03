@@ -32,8 +32,6 @@ import kotlinx.android.synthetic.main.activity_videoplay.*
 
 @Suppress("DEPRECATION", "UNUSED_EXPRESSION")
 class VideoActivity : BaseActivity() {
-
-
     private lateinit var videoTitle: String
     lateinit var videoUrl: String
     private lateinit var videoImgUrl: String

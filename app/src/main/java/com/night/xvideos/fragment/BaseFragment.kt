@@ -6,12 +6,13 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.night.xvideos.main.Contract
 
 /**
  * Created by 9 on 2018/3/6.
  */
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : Fragment(),Contract.BaseFragment {
     protected var mcontext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +32,9 @@ abstract class BaseFragment : Fragment() {
         initData()
     }
 
+    override fun showNetWorkError() {
+
+    }
 
     protected abstract fun initData()
 
