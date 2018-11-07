@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">xVideos</string>
+    <string name="kkFast_1">KKFast Network是基于V2Ray平台的网络加速服务</string>
+    <string name="kkFast_2">什么是V2ray？</string>
+    <string name="kkFast_3">"\n"  按照V2ray官方的介绍，Project V 提供了单一的内核和多种界面操作方式。内核（V2Ray）用于实际的网络交互、路由等针对网络数据的处理，而外围的用户界面程序提供了方便直接的操作流程。
+        "\n"V2Ray 的主要作用是根据用户的配置，对于传入的网络连接进行一定处理，然后发往指定的服务器。它是一个命令行程序，可以接受一个 JSON 格式的配置文件。
+        "\n"用白话文说，v2ray就是一个网络工具，它可以用来“富强”，就目前的情况来看，它比酸酸乳更加不易被墙盯上。
+"\n"V2ray原生支持多协议，包括但不限于Socks、HTTP、Sha（酸）do（酸）wso（乳）cks、VMess等，你可以在一个进程中可以配置不同的端口使用不同的协议进行通讯，同时，上述协议均可使用 TLS、TCP、mKCP、WebSocket 等传输方式进行传输。
+        "\n"v2ray内置灵活的路由，通过内置的路由功能，V2Ray 可以灵活地实现选择性转发、直连或是阻止部分连接。
+
+"\n"看自己的需求购买，我现在用V3套餐，感觉还不错，看1080P没啥问题，放张YouTube截图。
+
+"\n"速度与节点、时间有差距，日常使用是没有什么问题的。</string>
+    <string name="kkFast_4">如何购买?</string>
+    <string name="kkFast_5"><u>点此购买KKFast Network</u></string>
+    <string name="kkFast_6">他们的后台系统自带语言选项，如下图：</string>
+    <string name="kkFast_7">点击继续后即可转到注册~结账页面，请务必填写正确的邮箱（以后找回密码用得到）其他名字、地址、手机随便填写，仅支持支付宝付款。</string>
+    <string name="kkFast_8">点击【结账】然后会转到支付宝收款页面，然后用手机支付宝扫码支付就完成购买了。</string>
 </resources>

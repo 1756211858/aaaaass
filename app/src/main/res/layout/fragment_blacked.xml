@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:text="黑人频道"
         android:textColor="@color/black"
-
         android:textSize="24sp"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"

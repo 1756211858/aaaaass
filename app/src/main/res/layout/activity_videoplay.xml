@@ -6,14 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="#01000000"
+    android:background="@color/white"
     tools:context=".MainActivity"
-
     >
 
-
     <ImageView
-        android:id="@+id/videoplay_loding"
+        android:id="@+id/lodingImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -24,10 +22,28 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <TextView
+        android:id="@+id/lodingText"
+        android:layout_width="361dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="147dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="146dp"
+        android:layout_marginBottom="216dp"
+        android:gravity="center"
+        android:text="0.0%"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lodingImageView"
+        app:layout_constraintVertical_bias="0.0"/>
+
     <WebView
         android:id="@+id/videoplay_webView"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="500dp"
         android:layout_gravity="top"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

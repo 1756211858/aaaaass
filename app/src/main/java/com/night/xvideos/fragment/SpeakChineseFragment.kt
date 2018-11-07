@@ -9,14 +9,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateInterpolator
-import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
 import com.night.xvideos.LongShow
 import com.night.xvideos.R
-import com.night.xvideos.ShortShow
-import com.night.xvideos.activity.VideoActivity
+import com.night.xvideos.activity.VideoPlay
 import com.night.xvideos.adapter.VideoAdapter
 import com.night.xvideos.bean.speakChinese
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
@@ -122,7 +120,7 @@ class SpeakChineseFragment : BaseFragment() {
                         bundle.putString("VIDEOURL", it.videoUrl)
                         intent.putExtras(bundle)
                     }
-                    startActivity(intent.setClass(context, VideoActivity::class.java))
+                    startActivity(intent.setClass(context, VideoPlay::class.java))
                 }
             }
             videoAdapter?.dataList?.size == 0 -> //todo 对话框提示

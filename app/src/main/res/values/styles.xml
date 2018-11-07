@@ -12,12 +12,13 @@
         <item name="windowActionBar">false</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="HasActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBar">true</item>
+        <item name="colorPrimaryDark">@color/toolbar_blue2</item>
+        <item name="colorPrimary">@color/toolbar_blue2</item>
     </style>
 
-    <style name="AppTheme.Full" parent="AppTheme.NoActionBar">
+    <style name="AppTheme.Full" parent="AppTheme">
         <item name="android:windowFullscreen">true</item>
     </style>
 

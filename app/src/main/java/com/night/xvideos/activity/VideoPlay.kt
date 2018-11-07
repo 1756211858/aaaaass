@@ -20,6 +20,7 @@ import java.io.IOException
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.webkit.*
+import android.widget.Toast
 import com.night.xvideos.R
 import com.night.xvideos.webView.SonicJavaScriptInterface
 import com.night.xvideos.webView.SonicRuntimeImpl
@@ -29,9 +30,11 @@ import com.tencent.sonic.sdk.SonicEngine
 import com.tencent.sonic.sdk.SonicSession
 import com.tencent.sonic.sdk.SonicSessionConfig
 import kotlinx.android.synthetic.main.activity_videoplay.*
+import java.lang.Thread.sleep
+import kotlin.concurrent.thread
 
 @Suppress("DEPRECATION", "UNUSED_EXPRESSION")
-class VideoActivity : BaseActivity() {
+class VideoPlay : BaseActivity() {
     private lateinit var videoTitle: String
     lateinit var videoUrl: String
     private lateinit var videoImgUrl: String
@@ -51,6 +54,8 @@ class VideoActivity : BaseActivity() {
         videoUrl = "https://www.xvideos.com/embedframe/${intent.getStringExtra("VIDEOURL")
                 .substring(6)}"
         Log.e("mlog", videoUrl)
+
+
         //硬件加速
         window.addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
 
@@ -79,6 +84,7 @@ class VideoActivity : BaseActivity() {
          hashMap!!["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8"
          hashMap!!["Cache-Control"] = "max-age=0"
          hashMap!!["Connection"] = "keep-alive"
+
          hashMap!!["User-Agent"] = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
          hashMap!!["DNT"] = "1"
          hashMap!!["Upgrade-Insecure-Requests"] = "1"
@@ -141,9 +147,7 @@ class VideoActivity : BaseActivity() {
                     if (sonicSession != null) {
                         sonicSession!!.sessionClient.pageFinish(videoUrl)
                     }
-
                 }
-
             }
 
             override fun onReceivedSslError(p0: WebView?, p1: SslErrorHandler?, p2: SslError?) {
@@ -152,9 +156,21 @@ class VideoActivity : BaseActivity() {
                     videoplay_webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                 }
             }
+
+            override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
+                Log.e("mlog", errorCode.toString())
+                view?.loadUrl("file:///android_asset/videoError.html")
+                Toast.makeText(applicationContext, "无法播放视频，10秒后本界面自动关闭，谢谢你！！", Toast.LENGTH_LONG).show()
+                async {
+                    thread {
+                        sleep(10000)
+                        finish()
+                    }
+                }
+            }
         }
         runOnUiThread {
-            val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(videoplay_loding, "rotation", 0f, 360f)
+            val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(lodingImageView, "rotation", 0f, 360f)
             objectAnimator.duration = 1000
             objectAnimator.repeatMode = ValueAnimator.INFINITE
             objectAnimator.repeatCount = 10
@@ -163,7 +179,8 @@ class VideoActivity : BaseActivity() {
             objectAnimator.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     //todo 点击重新加载
-                    videoplay_loding.visibility = View.GONE
+                    lodingImageView.visibility = View.GONE
+                    lodingText.visibility = View.GONE
                     super.onAnimationEnd(animation)
                 }
             })
@@ -177,10 +194,11 @@ class VideoActivity : BaseActivity() {
              * 获取加载进度
              */
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
-
+                lodingText.text = "请稍等，这取决于你的网速,$newProgress%"
                 if (newProgress == 100) {
                     runOnUiThread {
-                        videoplay_loding.visibility = View.GONE
+                        lodingImageView.visibility = View.GONE
+                        lodingText.visibility = View.GONE
                     }
                 }
                 super.onProgressChanged(view, newProgress)
@@ -291,6 +309,10 @@ class VideoActivity : BaseActivity() {
         fun fullscreen() {
             //监听到用户点击全屏按钮
             fullScreen()
+        }
+
+        fun videoState(s: String) {
+            Log.e("mlog", s)
         }
     }
 
