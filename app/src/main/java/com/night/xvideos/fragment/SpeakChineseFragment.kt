@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateInterpolator
+import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
@@ -89,9 +90,10 @@ class SpeakChineseFragment : BaseFragment() {
                         flag = true
                         currentDataSize += p0?.size!!
                         setVideoList()
+                        speakChineseRecyclerView.setPullLoadMoreCompleted()
                     }
                 })
-                speakChineseRecyclerView.setPullLoadMoreCompleted()
+
             }
         })
     }
@@ -100,32 +102,30 @@ class SpeakChineseFragment : BaseFragment() {
      * 给RecyclerView填充数据和点击事件
      */
     private fun setVideoList() {
-        when {
-            chineseList?.size!! >= 1 -> {
-
-                //设置Adapter中的数据和点击事件
-                speakChineseLoding.visibility = View.GONE
-                //假如adapter中没有数据，那就代表第一次加载数据。
-                if (!flag) {
-                    videoAdapter = VideoAdapter(this.mcontext!!, chineseList!!)
-                    speakChineseRecyclerView.setAdapter(videoAdapter)
-                } else {
-                    videoAdapter?.addFooter(currentDataSize - chineseList!!.size, chineseList!!)
-                }
-                videoAdapter?.setOnItemClickListener { _, position ->
-                    videoAdapter!!.dataList[position].let {
-                        val bundle = Bundle()
-                        bundle.putString("VIDEOTITLE", it.title)
-                        bundle.putString("VIDEOIMGURL", it.imgUrl)
-                        bundle.putString("VIDEOURL", it.videoUrl)
-                        intent.putExtras(bundle)
-                    }
-                    startActivity(intent.setClass(context, VideoPlay::class.java))
-                }
+        if (chineseList?.size!! >= 1) {
+            //设置Adapter中的数据和点击事件
+            speakChineseLoding.visibility = View.GONE
+            //假如adapter中没有数据，那就代表第一次加载数据。
+            if (!flag) {
+                videoAdapter = VideoAdapter(this.mcontext!!, chineseList!!)
+                speakChineseRecyclerView.setAdapter(videoAdapter)
+            } else {
+                videoAdapter?.addFooter(currentDataSize - chineseList!!.size, chineseList!!)
             }
-            videoAdapter?.dataList?.size == 0 -> //todo 对话框提示
-                LongShow(this.mcontext!!,"请点击重新加载")
-            else -> speakChineseReLoding.setOnClickListener {
+            videoAdapter?.setOnItemClickListener { _, position ->
+                videoAdapter!!.dataList[position].let {
+                    val bundle = Bundle()
+                    bundle.putString("VIDEOTITLE", it.title)
+                    bundle.putString("VIDEOIMGURL", it.imgUrl)
+                    bundle.putString("VIDEOURL", it.videoUrl)
+                    intent.putExtras(bundle)
+                }
+                startActivity(intent.setClass(context, VideoPlay::class.java))
+            }
+        } else {
+            speakChineseLoding.setImageResource(R.drawable.loding_error)
+            Toast.makeText(mcontext, "点击图标重新加载", Toast.LENGTH_SHORT).show()
+            speakChineseLoding.setOnClickListener {
                 initData()
             }
         }
@@ -133,15 +133,17 @@ class SpeakChineseFragment : BaseFragment() {
 
     @SuppressLint("WrongConstant")
     private fun startAnimation() {
+        speakChineseLoding.setImageResource(R.drawable.loding)
+        speakChineseLoding.visibility = View.VISIBLE
         val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(speakChineseLoding, "rotation", 0f, 360f)
-        objectAnimator.duration = 900
+        objectAnimator.duration = 1000
         objectAnimator.repeatMode = ValueAnimator.INFINITE
         objectAnimator.repeatCount = 8
         objectAnimator.interpolator = AccelerateInterpolator()
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 if (videoAdapter?.dataList?.size == 0) {
-                    speakChineseLoding.visibility = View.GONE
+                    speakChineseLoding.setImageResource(R.drawable.loding_error)
                 }
                 //todo 点击重新加载
                 super.onAnimationEnd(animation)

@@ -12,12 +12,9 @@ import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
 import co.metalab.asyncawait.async
 import com.afollestad.materialdialogs.MaterialDialog
-import com.night.xvideos.R
-import com.night.xvideos.ShortShow
+import com.night.xvideos.*
 import com.night.xvideos.adapter.ChannelAdapter
 import com.night.xvideos.bean.ChannelBean
-import com.night.xvideos.getVerName
-import com.night.xvideos.getVersionCode
 import com.night.xvideos.main.Contract
 import com.night.xvideos.main.Presenter
 import com.night.xvideos.update.update
@@ -63,7 +60,11 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
         val adapter = ChannelAdapter(context = this, list = this.channelList!!)
         adapter.setOnItemClickListener { _, position ->
             when (position) {
-                0 -> startActivity(intent.setClass(this, HotVideo::class.java))
+                0 ->if(isNetWorkAvailable(mContext = applicationContext)){
+                    startActivity(intent.setClass(this, HotVideo::class.java))
+                } else{
+                    LongShow(applicationContext,"请连接网络并打开VPN")
+                }
                 1 -> ShortShow(this, "暂不支持$position")
                 2 -> startActivity(intent.setClass(this, Description::class.java))
                 3 -> ShortShow(this, "暂不支持$position")
