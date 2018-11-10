@@ -1,9 +1,14 @@
 package com.night.xvideos.main
 
-class Presenter(kadoYado: Contract.KadoYado, baseFragment: Contract.BaseFragment?) : Contract.Presenter {
+import android.content.Context
+
+class Presenter(var context:Context,var kadoYado: Contract.KadoYado,var baseFragment: Contract.BaseFragment?) : Contract.Presenter {
     private var moudel:Moudel=Moudel()
 
-    override fun checkNetWork() {
+    override fun analyzeIP() {
+        moudel.mContext=context
+        moudel.analyzeIP {
 
+        }
     }
 }

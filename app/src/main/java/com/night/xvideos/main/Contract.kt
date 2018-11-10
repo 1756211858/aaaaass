@@ -6,6 +6,6 @@ class Contract{
     interface BaseFragment:BaseView<Presenter>
 
     interface Presenter:BasePresenter{
-        fun checkNetWork()
+        fun analyzeIP()
     }
 }

@@ -48,7 +48,8 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
 
     override fun initData() {
         queryData()
-        mPresenter= Presenter(this,null)
+        mPresenter= Presenter(applicationContext,this,null)
+        //mPresenter!!.analyzeIP()
     }
 
     override fun initContentView() {
@@ -61,6 +62,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
         adapter.setOnItemClickListener { _, position ->
             when (position) {
                 0 ->if(isNetWorkAvailable(mContext = applicationContext)){
+                   // Log.e("mlog", )
                     startActivity(intent.setClass(this, HotVideo::class.java))
                 } else{
                     LongShow(applicationContext,"请连接网络并打开VPN")
@@ -135,7 +137,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
                 .titleColor(Color.BLACK)
                 .progress(false, 100, true)
                 .progressNumberFormat("%1d/%2d")
-                .progressPercentFormat(NumberFormat.getPercentInstance())
+                .progressPercentFormat(NumberFormat.getPercentInstance( ))
                 .contentColor(resources.getColor(R.color.black))
                 .cancelable(false)
                 .positiveText("取消").positiveColor(R.color.black)

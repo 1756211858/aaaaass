@@ -113,6 +113,7 @@ class SpeakChineseFragment : BaseFragment() {
                 videoAdapter?.addFooter(currentDataSize - chineseList!!.size, chineseList!!)
             }
             videoAdapter?.setOnItemClickListener { _, position ->
+
                 videoAdapter!!.dataList[position].let {
                     val bundle = Bundle()
                     bundle.putString("VIDEOTITLE", it.title)
