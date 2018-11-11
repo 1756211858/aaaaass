@@ -30,7 +30,6 @@ import com.tencent.sonic.sdk.SonicEngine
 import com.tencent.sonic.sdk.SonicSession
 import com.tencent.sonic.sdk.SonicSessionConfig
 import kotlinx.android.synthetic.main.activity_videoplay.*
-import kotlinx.android.synthetic.main.fragment_speakchinese.*
 import java.lang.Thread.sleep
 import kotlin.concurrent.thread
 
@@ -55,11 +54,8 @@ class VideoPlay : BaseActivity() {
         videoUrl = "https://www.xvideos.com/embedframe/${intent.getStringExtra("VIDEOURL")
                 .substring(6)}"
         Log.e("mlog", videoUrl)
-
-
         //硬件加速
         window.addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
-
         //硬件加速
         window.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
@@ -171,8 +167,8 @@ class VideoPlay : BaseActivity() {
             }
         }
         runOnUiThread {
-            speakChineseLoding.setImageResource(R.drawable.loding)
-            val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(speakChineseLoding, "rotation", 0f, 360f)
+            videoPlayLodingImageView.setImageResource(R.drawable.loding)
+            val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(videoPlayLodingImageView, "rotation", 0f, 360f)
             objectAnimator.duration = 1000
             objectAnimator.repeatMode = ValueAnimator.INFINITE
             objectAnimator.repeatCount = 10
@@ -181,7 +177,7 @@ class VideoPlay : BaseActivity() {
             objectAnimator.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     //todo 点击重新加载
-                    speakChineseLoding.visibility = View.GONE
+                    videoPlayLodingImageView.visibility = View.GONE
                     lodingText.visibility = View.GONE
                     super.onAnimationEnd(animation)
                 }
@@ -199,7 +195,7 @@ class VideoPlay : BaseActivity() {
                 lodingText.text = "请稍等，这取决于你的网速,$newProgress%"
                 if (newProgress == 100) {
                     runOnUiThread {
-                        speakChineseLoding.visibility = View.GONE
+                        videoPlayLodingImageView.visibility = View.GONE
                         lodingText.visibility = View.GONE
                     }
                 }

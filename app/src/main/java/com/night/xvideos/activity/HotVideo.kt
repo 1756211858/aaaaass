@@ -51,7 +51,7 @@ class HotVideo : BaseActivity() {
         hotVideo_tabLayout.setupWithViewPager(hotVideo_viewPager)
         hotVideo_viewPager.adapter = fragmentPagerAdapter
         hotVideo_viewPager.offscreenPageLimit=3
-        hotVideo_tabLayout.getTabAt(0)?.select()
+        hotVideo_tabLayout.getTabAt(1)?.select()
     }
 
     override fun onDestroy() {

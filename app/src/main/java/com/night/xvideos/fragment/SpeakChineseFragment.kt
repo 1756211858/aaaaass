@@ -13,10 +13,9 @@ import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
-import com.night.xvideos.LongShow
 import com.night.xvideos.R
 import com.night.xvideos.activity.VideoPlay
-import com.night.xvideos.adapter.VideoAdapter
+import com.night.xvideos.adapter.SpeakChineseAdapter
 import com.night.xvideos.bean.speakChinese
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.fragment_speakchinese.*
@@ -25,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_speakchinese.*
  * 说中文的色情
  */
 class SpeakChineseFragment : BaseFragment() {
-    private var videoAdapter: VideoAdapter? = null
+    private var mSpeakChineseAdapter: SpeakChineseAdapter? = null
     private var chineseList: MutableList<speakChinese>? = null
     private val bmobQuery: BmobQuery<speakChinese>? = BmobQuery<speakChinese>()
     private var position: Int = 10
@@ -107,14 +106,14 @@ class SpeakChineseFragment : BaseFragment() {
             speakChineseLoding.visibility = View.GONE
             //假如adapter中没有数据，那就代表第一次加载数据。
             if (!flag) {
-                videoAdapter = VideoAdapter(this.mcontext!!, chineseList!!)
-                speakChineseRecyclerView.setAdapter(videoAdapter)
+                mSpeakChineseAdapter = SpeakChineseAdapter(this.mcontext!!, chineseList!!)
+                speakChineseRecyclerView.setAdapter(mSpeakChineseAdapter)
             } else {
-                videoAdapter?.addFooter(currentDataSize - chineseList!!.size, chineseList!!)
+                mSpeakChineseAdapter?.addFooter(currentDataSize - chineseList!!.size, chineseList!!)
             }
-            videoAdapter?.setOnItemClickListener { _, position ->
+            mSpeakChineseAdapter?.setOnItemClickListener { _, position ->
 
-                videoAdapter!!.dataList[position].let {
+                mSpeakChineseAdapter!!.dataList[position].let {
                     val bundle = Bundle()
                     bundle.putString("VIDEOTITLE", it.title)
                     bundle.putString("VIDEOIMGURL", it.imgUrl)
@@ -143,7 +142,7 @@ class SpeakChineseFragment : BaseFragment() {
         objectAnimator.interpolator = AccelerateInterpolator()
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                if (videoAdapter?.dataList?.size == 0) {
+                if (mSpeakChineseAdapter?.dataList?.size == 0) {
                     speakChineseLoding.setImageResource(R.drawable.loding_error)
                 }
                 //todo 点击重新加载
