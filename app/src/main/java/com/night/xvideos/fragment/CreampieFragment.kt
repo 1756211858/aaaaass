@@ -15,105 +15,101 @@ import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
 import com.night.xvideos.R
 import com.night.xvideos.activity.VideoPlay
-import com.night.xvideos.adapter.BlackManAdapter
-import com.night.xvideos.bean.blackMan
+import com.night.xvideos.adapter.CreampieAdapter
+import com.night.xvideos.bean.Creampie
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
-import kotlinx.android.synthetic.main.fragment_blacked.*
+import kotlinx.android.synthetic.main.fragment_creampie.*
 
 /**
- * 黑人频道
+ * 中出频道
  */
-class BlackedFragment : BaseFragment() {
-    private var mBlackManAdapter: BlackManAdapter? = null
-    private var blackManList: MutableList<blackMan>? = null
-    private val bmobQuery: BmobQuery<blackMan>? = BmobQuery<blackMan>()
+class CreampieFragment : BaseFragment() {
+    private var mCreapieAdapter: CreampieAdapter? = null
+    private var mCreampieList: MutableList<Creampie>? = null
+    private val mBmobQuery: BmobQuery<Creampie>? = BmobQuery<Creampie>()
     private var position: Int = 10
     private val intent = Intent()
     private var currentDataSize: Int = 0
     private var flag = false
-
     companion object {
         @SuppressLint("StaticFieldLeak")
-        private var instance: BlackedFragment? = null
+        private var instance: CreampieFragment? = null
             get() {
                 if (field == null) {
-                    field = BlackedFragment()
+                    field = CreampieFragment()
                 }
                 return field
             }
 
-        fun get(): BlackedFragment {
+        fun get(): CreampieFragment {
             return instance!!
         }
     }
-
-    @SuppressLint("InflateParams")
-    override fun initView(): Int {
-        return R.layout.fragment_blacked
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+    }
+    @SuppressLint("InflateParams")
+    override fun initView(): Int {
+        return R.layout.fragment_creampie
     }
 
     override fun initData() {
         initRecyclerView()
         //开始动画
         startAnimation()
-        bmobQuery?.order("-createdAt")
-        bmobQuery?.setLimit(10)
-        bmobQuery?.findObjects(object : FindListener<blackMan>() {
-            override fun done(p0: MutableList<blackMan>?, p1: BmobException?) {
-                blackManList = p0
+        mBmobQuery?.order("-createdAt")
+        mBmobQuery?.setLimit(10)
+        mBmobQuery?.findObjects(object : FindListener<Creampie>() {
+            override fun done(p0: MutableList<Creampie>?, p1: BmobException?) {
+                mCreampieList = p0
                 currentDataSize += p0!!.size
                 setVideoList()
             }
         })
 
         //监听上滑刷新
-        blackManRecyclerView.setOnPullLoadMoreListener(object : PullLoadMoreRecyclerView.PullLoadMoreListener {
+        creamPieRecyclerView.setOnPullLoadMoreListener(object : PullLoadMoreRecyclerView.PullLoadMoreListener {
             override fun onRefresh() {
 
             }
 
             override fun onLoadMore() {
-                bmobQuery?.order("-createdAt")
-                bmobQuery?.setLimit(10)
-                bmobQuery?.setSkip(position)
+                mBmobQuery?.order("-createdAt")
+                mBmobQuery?.setLimit(10)
+                mBmobQuery?.setSkip(position)
                 position += 10
                 //开始加载动画
                 startAnimation()
-                bmobQuery?.findObjects(object : FindListener<blackMan>() {
-                    override fun done(p0: MutableList<blackMan>?, p1: BmobException?) {
-                        blackManList = p0
+                mBmobQuery?.findObjects(object : FindListener<Creampie>() {
+                    override fun done(p0: MutableList<Creampie>?, p1: BmobException?) {
+                        mCreampieList = p0
                         flag = true
                         currentDataSize += p0?.size!!
                         setVideoList()
-                        blackManRecyclerView.setPullLoadMoreCompleted()
+                        creamPieRecyclerView.setPullLoadMoreCompleted()
                     }
                 })
 
             }
         })
     }
-
     /**
      * 给RecyclerView填充数据和点击事件
      */
     private fun setVideoList() {
-        if (blackManList?.size!! >= 1) {
+        if (mCreampieList?.size!! >= 1) {
             //设置Adapter中的数据和点击事件
-            blackManLoading.visibility = View.GONE
+            creamPieLodingImageView.visibility = View.GONE
             //假如adapter中没有数据，那就代表第一次加载数据。
             if (!flag) {
-                mBlackManAdapter = BlackManAdapter(this.mcontext!!, blackManList!!)
-                blackManRecyclerView.setAdapter(mBlackManAdapter)
+                mCreapieAdapter = CreampieAdapter(this.mcontext!!, mCreampieList!!)
+                creamPieRecyclerView.setAdapter(mCreapieAdapter)
             } else {
-                mBlackManAdapter?.addFooter(currentDataSize - blackManList!!.size, blackManList!!)
+                mCreapieAdapter?.addFooter(currentDataSize - mCreampieList!!.size, mCreampieList!!)
             }
-            mBlackManAdapter?.setOnItemClickListener { _, position ->
+            mCreapieAdapter?.setOnItemClickListener { _, position ->
 
-                mBlackManAdapter!!.dataList[position].let {
+                mCreapieAdapter!!.dataList[position].let {
                     val bundle = Bundle()
                     bundle.putString("VIDEOTITLE", it.title)
                     bundle.putString("VIDEOIMGURL", it.imgUrl)
@@ -123,26 +119,27 @@ class BlackedFragment : BaseFragment() {
                 startActivity(intent.setClass(context, VideoPlay::class.java))
             }
         } else {
-            blackManLoading.setImageResource(R.drawable.loding_error)
+            creamPieLodingImageView.setImageResource(R.drawable.loding_error)
             Toast.makeText(mcontext, "点击图标重新加载", Toast.LENGTH_SHORT).show()
-            blackManLoading.setOnClickListener {
+            creamPieLodingImageView.setOnClickListener {
                 initData()
             }
         }
     }
+
     @SuppressLint("WrongConstant")
     private fun startAnimation() {
-        blackManLoading.setImageResource(R.drawable.loding)
-        blackManLoading.visibility = View.VISIBLE
-        val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(blackManLoading, "rotation", 0f, 360f)
+        creamPieLodingImageView.setImageResource(R.drawable.loding)
+        creamPieLodingImageView.visibility = View.VISIBLE
+        val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(creamPieLodingImageView, "rotation", 0f, 360f)
         objectAnimator.duration = 1000
         objectAnimator.repeatMode = ValueAnimator.INFINITE
         objectAnimator.repeatCount = 8
         objectAnimator.interpolator = AccelerateInterpolator()
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                if (mBlackManAdapter?.dataList?.size == 0) {
-                    blackManLoading.setImageResource(R.drawable.loding_error)
+                if (mCreapieAdapter?.dataList?.size == 0) {
+                    creamPieLodingImageView.setImageResource(R.drawable.loding_error)
                 }
                 //todo 点击重新加载
                 super.onAnimationEnd(animation)
@@ -154,10 +151,10 @@ class BlackedFragment : BaseFragment() {
     //初始化RecyclerView
     private fun initRecyclerView() {
         //缓存数量
-        blackManRecyclerView.setLinearLayout()
-        blackManRecyclerView.setRefreshing(false)
-        blackManRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
-        blackManRecyclerView.setFooterViewTextColor(R.color.menu_transparent)
-        blackManRecyclerView.setFooterViewText(" ")
+        creamPieRecyclerView.setLinearLayout()
+        creamPieRecyclerView.setRefreshing(false)
+        creamPieRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
+        creamPieRecyclerView.setFooterViewTextColor(R.color.menu_transparent)
+        creamPieRecyclerView.setFooterViewText(" ")
     }
 }

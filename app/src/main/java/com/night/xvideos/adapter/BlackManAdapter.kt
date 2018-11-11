@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.night.xvideos.R
 import com.night.xvideos.bean.blackMan
-import com.night.xvideos.bean.speakChinese
 import kotlinx.android.synthetic.main.video_item.view.*
 
 /**

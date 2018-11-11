@@ -68,26 +68,14 @@ class VideoPlay : BaseActivity() {
 
         // step 2: Create SonicSession
         sonicSession = SonicEngine.getInstance().createSession(videoUrl, SonicSessionConfig.Builder().build())
-        if (null != sonicSession) {
+       /* if (null != sonicSession) {*/
             sonicSessionClient = SonicSessionClientImpl()
             sonicSession!!.bindClient(sonicSessionClient)
-        } else {
+        /*} else {
             // this only happen when a same sonic session is already running,
             // u can comment following codes to feedback as a default mode.
             throw UnknownError("create session fail!")
-        }
-        //hashMap!!["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
-        /* hashMap!!["Accept-Encoding"] = "gzip, deflate, br"
-         hashMap!!["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8"
-         hashMap!!["Cache-Control"] = "max-age=0"
-         hashMap!!["Connection"] = "keep-alive"
-
-         hashMap!!["User-Agent"] = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
-         hashMap!!["DNT"] = "1"
-         hashMap!!["Upgrade-Insecure-Requests"] = "1"
-         hashMap!!["Host"] = "www.xvideos.com"
-         hashMap!!["Referer"]=videoUrl
-         videoplay_webView.loadUrl(videoUrl,hashMap)*/
+        }*/
         videoplay_webView.loadUrl(videoUrl)
         videoplay_webView.addJavascriptInterface(this, "fullscreen")
         videoplay_webView.addJavascriptInterface(JsObject(), "onClick")
@@ -97,7 +85,6 @@ class VideoPlay : BaseActivity() {
                 runOnUiThread {
                     p0?.visibility = View.GONE
                     //屏蔽设置
-
                 }
                 super.onPageStarted(p0, p1, p2)
             }

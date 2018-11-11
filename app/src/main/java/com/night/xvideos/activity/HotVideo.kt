@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import com.night.xvideos.R
 import com.night.xvideos.fragment.BaseFragment
 import com.night.xvideos.fragment.BlackedFragment
-import com.night.xvideos.fragment.OutofFragment
+import com.night.xvideos.fragment.CreampieFragment
 import com.night.xvideos.fragment.SpeakChineseFragment
 import kotlinx.android.synthetic.main.activity_hotvideo.*
 
@@ -27,7 +27,7 @@ class HotVideo : BaseActivity() {
     override fun initContentView() {
         fragmentList?.add(SpeakChineseFragment.get())
         fragmentList?.add(BlackedFragment.get())
-        fragmentList?.add(OutofFragment.get())
+        fragmentList?.add(CreampieFragment.get())
 
         for (i in 0 until titles.size) {
             hotVideo_tabLayout.addTab(hotVideo_tabLayout.newTab())
