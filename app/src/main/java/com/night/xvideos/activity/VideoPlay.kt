@@ -119,7 +119,6 @@ class VideoPlay : BaseActivity() {
                     }
                 }
                 return null
-
             }
 
             override fun onPageFinished(p0: WebView?, p1: String?) {

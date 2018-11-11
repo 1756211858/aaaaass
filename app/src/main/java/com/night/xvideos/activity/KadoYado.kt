@@ -67,7 +67,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
                 } else{
                     LongShow(applicationContext,"请连接网络并打开VPN")
                 }
-                1 -> ShortShow(this, "暂不支持$position")
+                1 -> startActivity(intent.setClass(this,TopRanking::class.java))
                 2 -> startActivity(intent.setClass(this, Description::class.java))
                 3 -> ShortShow(this, "暂不支持$position")
             }

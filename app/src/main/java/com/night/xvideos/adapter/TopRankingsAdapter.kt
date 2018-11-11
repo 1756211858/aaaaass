@@ -8,13 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.night.xvideos.R
-import com.night.xvideos.bean.SpeakChinese
+import com.night.xvideos.bean.Creampie
+import com.night.xvideos.bean.TopRankings
 import kotlinx.android.synthetic.main.video_item.view.*
 
 /**
  * 热门视频界面
  */
-class SpeakChineseAdapter(private var context: Context, var dataList: MutableList<SpeakChinese>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TopRankingsAdapter(private var context: Context, var dataList: MutableList<TopRankings>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //造成性能下降，先删除
@@ -35,7 +36,7 @@ class SpeakChineseAdapter(private var context: Context, var dataList: MutableLis
         mClickListener = listener
     }
 
-    fun addFooter(position: Int,list:MutableList<SpeakChinese>){
+    fun addFooter(position: Int,list:MutableList<TopRankings>){
         dataList.addAll(position,list)
         notifyItemInserted(position)
         notifyItemRangeChanged(10,10)
@@ -59,7 +60,7 @@ class SpeakChineseAdapter(private var context: Context, var dataList: MutableLis
         }
 
         @SuppressLint("SetTextI18n")
-        fun bind(bean: SpeakChinese) {
+        fun bind(bean: TopRankings) {
             Glide.with(context).load(bean.imgUrl).into(itemView.video_imageView)
             itemView.video_title.text = bean.title
             itemView.video_duration.text = "视频时长：${bean.duration}"

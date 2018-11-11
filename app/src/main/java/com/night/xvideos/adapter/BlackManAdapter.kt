@@ -8,13 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.night.xvideos.R
-import com.night.xvideos.bean.blackMan
+import com.night.xvideos.bean.BlackMan
 import kotlinx.android.synthetic.main.video_item.view.*
 
 /**
  * 热门视频界面
  */
-class BlackManAdapter(private var context: Context, var dataList: MutableList<blackMan>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class BlackManAdapter(private var context: Context, var dataList: MutableList<BlackMan>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //造成性能下降，先删除
@@ -35,7 +35,7 @@ class BlackManAdapter(private var context: Context, var dataList: MutableList<bl
         mClickListener = listener
     }
 
-    fun addFooter(position: Int, list: MutableList<blackMan>) {
+    fun addFooter(position: Int, list: MutableList<BlackMan>) {
         dataList.addAll(position, list)
         notifyItemInserted(position)
         notifyItemRangeChanged(10, 10)
@@ -59,7 +59,7 @@ class BlackManAdapter(private var context: Context, var dataList: MutableList<bl
         }
 
         @SuppressLint("SetTextI18n")
-        fun bind(bean: blackMan) {
+        fun bind(bean: BlackMan) {
             Glide.with(context).load(bean.imgUrl).into(itemView.video_imageView)
             itemView.video_title.text = bean.title
             itemView.video_duration.text = "视频时长：${bean.duration}"

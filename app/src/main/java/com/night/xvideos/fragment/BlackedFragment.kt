@@ -16,7 +16,7 @@ import cn.bmob.v3.listener.FindListener
 import com.night.xvideos.R
 import com.night.xvideos.activity.VideoPlay
 import com.night.xvideos.adapter.BlackManAdapter
-import com.night.xvideos.bean.blackMan
+import com.night.xvideos.bean.BlackMan
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.fragment_blacked.*
 
@@ -25,8 +25,8 @@ import kotlinx.android.synthetic.main.fragment_blacked.*
  */
 class BlackedFragment : BaseFragment() {
     private var mBlackManAdapter: BlackManAdapter? = null
-    private var blackManList: MutableList<blackMan>? = null
-    private val bmobQuery: BmobQuery<blackMan>? = BmobQuery<blackMan>()
+    private var mBlackManList: MutableList<BlackMan>? = null
+    private val mBmobQuery: BmobQuery<BlackMan>? = BmobQuery<BlackMan>()
     private var position: Int = 10
     private val intent = Intent()
     private var currentDataSize: Int = 0
@@ -60,11 +60,11 @@ class BlackedFragment : BaseFragment() {
         initRecyclerView()
         //开始动画
         startAnimation()
-        bmobQuery?.order("-createdAt")
-        bmobQuery?.setLimit(10)
-        bmobQuery?.findObjects(object : FindListener<blackMan>() {
-            override fun done(p0: MutableList<blackMan>?, p1: BmobException?) {
-                blackManList = p0
+        mBmobQuery?.order("-createdAt")
+        mBmobQuery?.setLimit(10)
+        mBmobQuery?.findObjects(object : FindListener<BlackMan>() {
+            override fun done(p0: MutableList<BlackMan>?, p1: BmobException?) {
+                mBlackManList = p0
                 currentDataSize += p0!!.size
                 setVideoList()
             }
@@ -77,15 +77,15 @@ class BlackedFragment : BaseFragment() {
             }
 
             override fun onLoadMore() {
-                bmobQuery?.order("-createdAt")
-                bmobQuery?.setLimit(10)
-                bmobQuery?.setSkip(position)
+                mBmobQuery?.order("-createdAt")
+                mBmobQuery?.setLimit(10)
+                mBmobQuery?.setSkip(position)
                 position += 10
                 //开始加载动画
                 startAnimation()
-                bmobQuery?.findObjects(object : FindListener<blackMan>() {
-                    override fun done(p0: MutableList<blackMan>?, p1: BmobException?) {
-                        blackManList = p0
+                mBmobQuery?.findObjects(object : FindListener<BlackMan>() {
+                    override fun done(p0: MutableList<BlackMan>?, p1: BmobException?) {
+                        mBlackManList = p0
                         flag = true
                         currentDataSize += p0?.size!!
                         setVideoList()
@@ -101,15 +101,15 @@ class BlackedFragment : BaseFragment() {
      * 给RecyclerView填充数据和点击事件
      */
     private fun setVideoList() {
-        if (blackManList?.size!! >= 1) {
+        if (mBlackManList?.size!! >= 1) {
             //设置Adapter中的数据和点击事件
             blackManLoading.visibility = View.GONE
             //假如adapter中没有数据，那就代表第一次加载数据。
             if (!flag) {
-                mBlackManAdapter = BlackManAdapter(this.mcontext!!, blackManList!!)
+                mBlackManAdapter = BlackManAdapter(this.mcontext!!, mBlackManList!!)
                 blackManRecyclerView.setAdapter(mBlackManAdapter)
             } else {
-                mBlackManAdapter?.addFooter(currentDataSize - blackManList!!.size, blackManList!!)
+                mBlackManAdapter?.addFooter(currentDataSize - mBlackManList!!.size, mBlackManList!!)
             }
             mBlackManAdapter?.setOnItemClickListener { _, position ->
 

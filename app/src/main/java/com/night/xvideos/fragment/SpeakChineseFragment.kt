@@ -16,8 +16,7 @@ import cn.bmob.v3.listener.FindListener
 import com.night.xvideos.R
 import com.night.xvideos.activity.VideoPlay
 import com.night.xvideos.adapter.SpeakChineseAdapter
-import com.night.xvideos.bean.Creampie
-import com.night.xvideos.bean.speakChinese
+import com.night.xvideos.bean.SpeakChinese
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.fragment_speakchinese.*
 
@@ -26,8 +25,8 @@ import kotlinx.android.synthetic.main.fragment_speakchinese.*
  */
 class SpeakChineseFragment : BaseFragment() {
     private var mSpeakChineseAdapter: SpeakChineseAdapter? = null
-    private var chineseList: MutableList<speakChinese>? = null
-    private val bmobQuery: BmobQuery<speakChinese>? = BmobQuery<speakChinese>()
+    private var mChineseList: MutableList<SpeakChinese>? = null
+    private val mBmobQuery: BmobQuery<SpeakChinese>? = BmobQuery<SpeakChinese>()
     private var position: Int = 10
     private val intent = Intent()
     private var currentDataSize: Int = 0
@@ -61,11 +60,11 @@ class SpeakChineseFragment : BaseFragment() {
         initRecyclerView()
         //开始动画
         startAnimation()
-        bmobQuery?.order("-createdAt")
-        bmobQuery?.setLimit(10)
-        bmobQuery?.findObjects(object : FindListener<speakChinese>() {
-            override fun done(p0: MutableList<speakChinese>?, p1: BmobException?) {
-                chineseList = p0
+        mBmobQuery?.order("-createdAt")
+        mBmobQuery?.setLimit(10)
+        mBmobQuery?.findObjects(object : FindListener<SpeakChinese>() {
+            override fun done(p0: MutableList<SpeakChinese>?, p1: BmobException?) {
+                mChineseList = p0
                 currentDataSize += p0!!.size
                 setVideoList()
             }
@@ -78,15 +77,15 @@ class SpeakChineseFragment : BaseFragment() {
             }
 
             override fun onLoadMore() {
-                bmobQuery?.order("-createdAt")
-                bmobQuery?.setLimit(10)
-                bmobQuery?.setSkip(position)
+                mBmobQuery?.order("-createdAt")
+                mBmobQuery?.setLimit(10)
+                mBmobQuery?.setSkip(position)
                 position += 10
                 //开始加载动画
                 startAnimation()
-                bmobQuery?.findObjects(object : FindListener<speakChinese>() {
-                    override fun done(p0: MutableList<speakChinese>?, p1: BmobException?) {
-                        chineseList = p0
+                mBmobQuery?.findObjects(object : FindListener<SpeakChinese>() {
+                    override fun done(p0: MutableList<SpeakChinese>?, p1: BmobException?) {
+                        mChineseList = p0
                         flag = true
                         currentDataSize += p0?.size!!
                         setVideoList()
@@ -102,15 +101,15 @@ class SpeakChineseFragment : BaseFragment() {
      * 给RecyclerView填充数据和点击事件
      */
     private fun setVideoList() {
-        if (chineseList?.size!! >= 1) {
+        if (mChineseList?.size!! >= 1) {
             //设置Adapter中的数据和点击事件
-            speakChineseLoding.visibility = View.GONE
+            speakChineseLodingImageView.visibility = View.GONE
             //假如adapter中没有数据，那就代表第一次加载数据。
             if (!flag) {
-                mSpeakChineseAdapter = SpeakChineseAdapter(this.mcontext!!, chineseList!!)
+                mSpeakChineseAdapter = SpeakChineseAdapter(this.mcontext!!, mChineseList!!)
                 speakChineseRecyclerView.setAdapter(mSpeakChineseAdapter)
             } else {
-                mSpeakChineseAdapter?.addFooter(currentDataSize - chineseList!!.size, chineseList!!)
+                mSpeakChineseAdapter?.addFooter(currentDataSize - mChineseList!!.size, mChineseList!!)
             }
             mSpeakChineseAdapter?.setOnItemClickListener { _, position ->
 
@@ -124,9 +123,9 @@ class SpeakChineseFragment : BaseFragment() {
                 startActivity(intent.setClass(context, VideoPlay::class.java))
             }
         } else {
-            speakChineseLoding.setImageResource(R.drawable.loding_error)
+            speakChineseLodingImageView.setImageResource(R.drawable.loding_error)
             Toast.makeText(mcontext, "点击图标重新加载", Toast.LENGTH_SHORT).show()
-            speakChineseLoding.setOnClickListener {
+            speakChineseLodingImageView.setOnClickListener {
                 initData()
             }
         }
@@ -134,9 +133,9 @@ class SpeakChineseFragment : BaseFragment() {
 
     @SuppressLint("WrongConstant")
     private fun startAnimation() {
-        speakChineseLoding.setImageResource(R.drawable.loding)
-        speakChineseLoding.visibility = View.VISIBLE
-        val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(speakChineseLoding, "rotation", 0f, 360f)
+        speakChineseLodingImageView.setImageResource(R.drawable.loding)
+        speakChineseLodingImageView.visibility = View.VISIBLE
+        val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(speakChineseLodingImageView, "rotation", 0f, 360f)
         objectAnimator.duration = 1000
         objectAnimator.repeatMode = ValueAnimator.INFINITE
         objectAnimator.repeatCount = 8
@@ -144,7 +143,7 @@ class SpeakChineseFragment : BaseFragment() {
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 if (mSpeakChineseAdapter?.dataList?.size == 0) {
-                    speakChineseLoding.setImageResource(R.drawable.loding_error)
+                    speakChineseLodingImageView.setImageResource(R.drawable.loding_error)
                 }
                 //todo 点击重新加载
                 super.onAnimationEnd(animation)

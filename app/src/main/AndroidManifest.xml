@@ -67,6 +67,9 @@
             android:name=".activity.Description"
             android:theme="@style/AppTheme"
             />
+        <activity android:name=".activity.TopRanking"
+            android:theme="@style/AppTheme"
+            />
     </application>
 
 </manifest>
