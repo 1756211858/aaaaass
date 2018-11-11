@@ -17,6 +17,7 @@ import com.night.xvideos.R
 import com.night.xvideos.activity.VideoPlay
 import com.night.xvideos.adapter.CreampieAdapter
 import com.night.xvideos.bean.Creampie
+import com.night.xvideos.isNetWorkAvailable
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_toprankings.*
 import kotlinx.android.synthetic.main.fragment_creampie.*
@@ -75,6 +76,7 @@ class CreampieFragment : BaseFragment() {
             }
 
             override fun onLoadMore() {
+                if (mcontext?.let { isNetWorkAvailable(mContext = it) }!!) {
                 mBmobQuery?.order("-createdAt")
                 mBmobQuery?.setLimit(10)
                 mBmobQuery?.setSkip(position)
@@ -90,7 +92,10 @@ class CreampieFragment : BaseFragment() {
                         creamPieRecyclerView.setPullLoadMoreCompleted()
                     }
                 })
-
+                } else {
+                    topRankingsRecyclerView.setPullLoadMoreCompleted()
+                    Toast.makeText(mcontext, "网络连接失败", Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }

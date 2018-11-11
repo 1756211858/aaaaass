@@ -35,7 +35,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
     private var code: Int = 0
     private lateinit var text: String
     private lateinit var mSavePath: File
-    private var mPresenter:Presenter?=null
+    private var mPresenter: Presenter? = null
     override fun showNetWorkError() {
         MaterialDialog.Builder(this).title("无法连接Google，导致无法播放国外视频")
                 .content("首先找到本软件所提供的VPN地址，然后注册，测试可以访问Google后，就可以使用啦。")
@@ -48,7 +48,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
 
     override fun initData() {
         queryData()
-        mPresenter= Presenter(applicationContext,this,null)
+        mPresenter = Presenter(applicationContext, this, null)
         //分析ip地址是否属于国外
         //analyzeIP(applicationContext)
     }
@@ -62,13 +62,17 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
         val adapter = ChannelAdapter(context = this, list = this.channelList!!)
         adapter.setOnItemClickListener { _, position ->
             when (position) {
-                0 ->if(isNetWorkAvailable(mContext = applicationContext)){
-                   // Log.e("mlog", )
+                0 -> if (isNetWorkAvailable(mContext = applicationContext)) {
+                    // Log.e("mlog", )
                     startActivity(intent.setClass(this, HotVideo::class.java))
-                } else{
-                    LongShow(applicationContext,"请连接网络并打开VPN")
+                } else {
+                    LongShow(applicationContext, "请连接网络并打开VPN")
                 }
-                1 -> startActivity(intent.setClass(this,TopRanking::class.java))
+                1 -> if (isNetWorkAvailable(mContext = applicationContext)) {
+                    startActivity(intent.setClass(this, TopRanking::class.java))
+                } else {
+                    LongShow(applicationContext, "请连接网络并打开VPN")
+                }
                 2 -> startActivity(intent.setClass(this, Description::class.java))
                 3 -> ShortShow(this, "暂不支持$position")
             }
@@ -138,7 +142,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
                 .titleColor(Color.BLACK)
                 .progress(false, 100, true)
                 .progressNumberFormat("%1d/%2d")
-                .progressPercentFormat(NumberFormat.getPercentInstance( ))
+                .progressPercentFormat(NumberFormat.getPercentInstance())
                 .contentColor(resources.getColor(R.color.black))
                 .cancelable(false)
                 .positiveText("取消").positiveColor(R.color.black)

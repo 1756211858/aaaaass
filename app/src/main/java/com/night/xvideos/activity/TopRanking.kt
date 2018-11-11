@@ -13,9 +13,11 @@ import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
+import co.metalab.asyncawait.async
 import com.night.xvideos.R
 import com.night.xvideos.adapter.TopRankingsAdapter
 import com.night.xvideos.bean.TopRankings
+import com.night.xvideos.isNetWorkAvailable
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_toprankings.*
 
@@ -34,6 +36,7 @@ class TopRanking : BaseActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
     }
+
     override fun initContentView() {
         initRecyclerView()
         //开始动画
@@ -55,22 +58,27 @@ class TopRanking : BaseActivity() {
             }
 
             override fun onLoadMore() {
-                mBmobQuery?.order("-createdAt")
-                mBmobQuery?.setLimit(10)
-                mBmobQuery?.setSkip(position)
-                position += 10
-                //开始加载动画
-                startAnimation()
-                mBmobQuery?.findObjects(object : FindListener<TopRankings>() {
-                    override fun done(p0: MutableList<TopRankings>?, p1: BmobException?) {
-                        mTopRankingLists = p0
-                        flag = true
-                        currentDataSize += p0?.size!!
-                        setVideoList()
-                        topRankingsRecyclerView.setPullLoadMoreCompleted()
-                    }
-                })
-
+                //检测网络是否可用
+                if (isNetWorkAvailable(applicationContext)) {
+                    mBmobQuery?.order("-createdAt")
+                    mBmobQuery?.setLimit(10)
+                    mBmobQuery?.setSkip(position)
+                    position += 10
+                    //开始加载动画
+                    startAnimation()
+                    mBmobQuery?.findObjects(object : FindListener<TopRankings>() {
+                        override fun done(p0: MutableList<TopRankings>?, p1: BmobException?) {
+                            mTopRankingLists = p0
+                            flag = true
+                            currentDataSize += p0?.size!!
+                            setVideoList()
+                            topRankingsRecyclerView.setPullLoadMoreCompleted()
+                        }
+                    })
+                } else {
+                    topRankingsRecyclerView.setPullLoadMoreCompleted()
+                    Toast.makeText(applicationContext, "网络连接失败", Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }
@@ -78,7 +86,7 @@ class TopRanking : BaseActivity() {
     //初始化RecyclerView
     private fun initRecyclerView() {
         //缓存数量
-        topRankingsRecyclerView.pullRefreshEnable=false
+        topRankingsRecyclerView.pullRefreshEnable = false
         topRankingsRecyclerView.setLinearLayout()
         topRankingsRecyclerView.setRefreshing(false)
         topRankingsRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
@@ -107,6 +115,7 @@ class TopRanking : BaseActivity() {
         })
         objectAnimator.start()
     }
+
     /**
      * 给RecyclerView填充数据和点击事件
      */
@@ -130,8 +139,8 @@ class TopRanking : BaseActivity() {
                     intent.putExtras(bundle)
                 }
                 startActivity(intent.setClass(applicationContext, VideoPlay::class.java))
-            },listener2 = { _: View, i: Int ->
-                Toast.makeText(applicationContext,"长按上传错误视频ID",Toast.LENGTH_SHORT).show()
+            }, listener2 = { _: View, i: Int ->
+                Toast.makeText(applicationContext, "长按上传错误视频ID", Toast.LENGTH_SHORT).show()
             })
         } else {
             topRankingsLodingImageView.setImageResource(R.drawable.loding_error)

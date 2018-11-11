@@ -64,7 +64,7 @@ fun Any.getVerName(mContext: Context): String {
 /**
  * 判断网络连接是否可用
  */
-fun KadoYado.isNetWorkAvailable(mContext: Context): Boolean {
+fun Any.isNetWorkAvailable(mContext: Context): Boolean {
     val connectivityManager = mContext
             .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     if (connectivityManager.activeNetworkInfo != null) {
