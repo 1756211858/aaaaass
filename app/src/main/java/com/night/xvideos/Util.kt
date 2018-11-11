@@ -6,6 +6,13 @@ import android.widget.Toast
 import com.night.xvideos.activity.KadoYado
 import java.io.IOException
 import android.net.wifi.WifiManager
+import android.util.Log
+import com.night.xvideos.retrofit.ApiStore
+import com.night.xvideos.retrofit.ipAddressApi
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 import java.net.Inet4Address
 import java.net.NetworkInterface
 import java.net.SocketException
@@ -116,6 +123,32 @@ fun intIP2StringIP(ip: Int): String {
             (ip shr 8 and 0xFF) + "." +
             (ip shr 16 and 0xFF) + "." +
             (ip shr 24 and 0xFF)
+}
+
+/**
+ * 获取iP地址
+ */
+fun Any.analyzeIP(context: Context): Boolean {
+    val config = AppConfig()
+    var bool: Boolean? = false
+    try {
+        val retrofit = Retrofit.Builder().baseUrl(config.baseUrl).build()
+        val apiStore = retrofit.create(ipAddressApi::class.java)
+        val call = apiStore.getIpAddress(getIPAddress(context)!!)
+        call.enqueue(object : Callback<ApiStore> {
+            override fun onFailure(call: Call<ApiStore>, t: Throwable) {
+
+            }
+
+            override fun onResponse(call: Call<ApiStore>, response: Response<ApiStore>) {
+                val list = response.body()
+                bool = true
+            }
+        })
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+    return bool!!
 }
 
 

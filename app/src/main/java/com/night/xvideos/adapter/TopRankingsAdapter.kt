@@ -7,16 +7,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.night.xvideos.R
-import com.night.xvideos.bean.Creampie
 import com.night.xvideos.bean.TopRankings
 import kotlinx.android.synthetic.main.video_item.view.*
+import com.bumptech.glide.request.RequestOptions
+
 
 /**
  * 热门视频界面
  */
-class TopRankingsAdapter(private var context: Context, var dataList: MutableList<TopRankings>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TopRankingsAdapter(private var context: Context, var dataList: MutableList<TopRankings>)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
+    private var mLongClickListener: ((View, Int) -> Unit)? = null
+    val options = RequestOptions()
+            .error(R.drawable.thumb2)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //造成性能下降，先删除
         //holder.setIsRecyclable(false)
@@ -28,18 +36,19 @@ class TopRankingsAdapter(private var context: Context, var dataList: MutableList
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder(LayoutInflater.from(context)
                 .inflate(R.layout.video_item, parent, false)
-                , mClickListener)
-
+                , mClickListener, mLongClickListener)
     }
 
-    fun setOnItemClickListener(listener: ((View, Int) -> Unit)?) {
+    fun setOnItemListener(listener: ((View, Int) -> Unit)?, listener2: ((View, Int) -> Unit)?) {
         mClickListener = listener
+        mLongClickListener = listener2
     }
 
-    fun addFooter(position: Int,list:MutableList<TopRankings>){
-        dataList.addAll(position,list)
+
+    fun addFooter(position: Int, list: MutableList<TopRankings>) {
+        dataList.addAll(position, list)
         notifyItemInserted(position)
-        notifyItemRangeChanged(10,10)
+        notifyItemRangeChanged(10, 10)
     }
 
     override fun getItemCount(): Int {
@@ -47,10 +56,14 @@ class TopRankingsAdapter(private var context: Context, var dataList: MutableList
     }
 
 
-    inner class ViewHolder(itemView: View, private var mClickListener: ((View, Int) -> Unit)?)
-        : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class ViewHolder(itemView: View, private var mClickListener: ((View, Int) -> Unit)?
+                           , private var mLongClickListener: ((View, Int) -> Unit)?)
+        : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
+
+
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
 
         override fun onClick(v: View?) {
@@ -59,9 +72,22 @@ class TopRankingsAdapter(private var context: Context, var dataList: MutableList
             }
         }
 
+        override fun onLongClick(v: View?): Boolean {
+            if (mClickListener != null && itemView != null) {
+                mLongClickListener?.invoke(v!!, layoutPosition)
+            }
+            return true
+        }
+
         @SuppressLint("SetTextI18n")
         fun bind(bean: TopRankings) {
-            Glide.with(context).load(bean.imgUrl).into(itemView.video_imageView)
+            Glide.with(context)
+                    .load(bean.imgUrl)
+                    .apply(options)
+                    .apply(options)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(itemView.video_imageView)
+
             itemView.video_title.text = bean.title
             itemView.video_duration.text = "视频时长：${bean.duration}"
         }

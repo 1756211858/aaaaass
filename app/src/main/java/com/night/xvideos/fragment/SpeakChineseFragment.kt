@@ -154,8 +154,8 @@ class SpeakChineseFragment : BaseFragment() {
 
     //初始化RecyclerView
     private fun initRecyclerView() {
-        //缓存数量
-        speakChineseRecyclerView.setLinearLayout()
+        speakChineseRecyclerView.pullRefreshEnable = false
+        speakChineseRecyclerView.setStaggeredGridLayout(2)
         speakChineseRecyclerView.setRefreshing(false)
         speakChineseRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
         speakChineseRecyclerView.setFooterViewTextColor(R.color.menu_transparent)

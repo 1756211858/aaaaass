@@ -18,6 +18,7 @@ import com.night.xvideos.activity.VideoPlay
 import com.night.xvideos.adapter.BlackManAdapter
 import com.night.xvideos.bean.BlackMan
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
+import kotlinx.android.synthetic.main.activity_toprankings.*
 import kotlinx.android.synthetic.main.fragment_blacked.*
 
 /**
@@ -154,6 +155,7 @@ class BlackedFragment : BaseFragment() {
     //初始化RecyclerView
     private fun initRecyclerView() {
         //缓存数量
+        blackManRecyclerView.pullRefreshEnable=false
         blackManRecyclerView.setLinearLayout()
         blackManRecyclerView.setRefreshing(false)
         blackManRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)

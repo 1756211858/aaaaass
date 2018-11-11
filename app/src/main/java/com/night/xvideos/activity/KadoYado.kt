@@ -49,7 +49,8 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
     override fun initData() {
         queryData()
         mPresenter= Presenter(applicationContext,this,null)
-        //mPresenter!!.analyzeIP()
+        //分析ip地址是否属于国外
+        //analyzeIP(applicationContext)
     }
 
     override fun initContentView() {

@@ -8,18 +8,16 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateInterpolator
+import android.widget.AdapterView
 import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
 import com.night.xvideos.R
-import com.night.xvideos.adapter.SpeakChineseAdapter
 import com.night.xvideos.adapter.TopRankingsAdapter
-import com.night.xvideos.bean.SpeakChinese
 import com.night.xvideos.bean.TopRankings
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_toprankings.*
-import kotlinx.android.synthetic.main.fragment_speakchinese.*
 
 class TopRanking : BaseActivity() {
     override fun setLayoutId(): Int {
@@ -32,10 +30,10 @@ class TopRanking : BaseActivity() {
     private var position: Int = 10
     private var currentDataSize: Int = 0
     private var flag = false
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
     }
-
     override fun initContentView() {
         initRecyclerView()
         //开始动画
@@ -80,6 +78,7 @@ class TopRanking : BaseActivity() {
     //初始化RecyclerView
     private fun initRecyclerView() {
         //缓存数量
+        topRankingsRecyclerView.pullRefreshEnable=false
         topRankingsRecyclerView.setLinearLayout()
         topRankingsRecyclerView.setRefreshing(false)
         topRankingsRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
@@ -122,8 +121,8 @@ class TopRanking : BaseActivity() {
             } else {
                 mTopRankingsAdapter?.addFooter(currentDataSize - mTopRankingLists!!.size, mTopRankingLists!!)
             }
-            mTopRankingsAdapter?.setOnItemClickListener { _, position ->
-                mTopRankingsAdapter!!.dataList[position].let {
+            mTopRankingsAdapter?.setOnItemListener(listener = { view: View, i: Int ->
+                mTopRankingsAdapter!!.dataList[i].let {
                     val bundle = Bundle()
                     bundle.putString("VIDEOTITLE", it.title)
                     bundle.putString("VIDEOIMGURL", it.imgUrl)
@@ -131,7 +130,9 @@ class TopRanking : BaseActivity() {
                     intent.putExtras(bundle)
                 }
                 startActivity(intent.setClass(applicationContext, VideoPlay::class.java))
-            }
+            },listener2 = { _: View, i: Int ->
+                Toast.makeText(applicationContext,"长按上传错误视频ID",Toast.LENGTH_SHORT).show()
+            })
         } else {
             topRankingsLodingImageView.setImageResource(R.drawable.loding_error)
             Toast.makeText(applicationContext, "点击图标重新加载", Toast.LENGTH_SHORT).show()

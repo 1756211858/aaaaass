@@ -18,6 +18,7 @@ import com.night.xvideos.activity.VideoPlay
 import com.night.xvideos.adapter.CreampieAdapter
 import com.night.xvideos.bean.Creampie
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
+import kotlinx.android.synthetic.main.activity_toprankings.*
 import kotlinx.android.synthetic.main.fragment_creampie.*
 
 /**
@@ -150,7 +151,7 @@ class CreampieFragment : BaseFragment() {
 
     //初始化RecyclerView
     private fun initRecyclerView() {
-        //缓存数量
+        creamPieRecyclerView.pullRefreshEnable=false
         creamPieRecyclerView.setLinearLayout()
         creamPieRecyclerView.setRefreshing(false)
         creamPieRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)

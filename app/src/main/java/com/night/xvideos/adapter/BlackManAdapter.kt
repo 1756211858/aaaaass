@@ -7,6 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.night.xvideos.R
 import com.night.xvideos.bean.BlackMan
 import kotlinx.android.synthetic.main.video_item.view.*
@@ -16,6 +19,8 @@ import kotlinx.android.synthetic.main.video_item.view.*
  */
 class BlackManAdapter(private var context: Context, var dataList: MutableList<BlackMan>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
+    val options = RequestOptions()
+            .error(R.drawable.thumb2).diskCacheStrategy(DiskCacheStrategy.RESOURCE)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //造成性能下降，先删除
         //holder.setIsRecyclable(false)
@@ -60,7 +65,11 @@ class BlackManAdapter(private var context: Context, var dataList: MutableList<Bl
 
         @SuppressLint("SetTextI18n")
         fun bind(bean: BlackMan) {
-            Glide.with(context).load(bean.imgUrl).into(itemView.video_imageView)
+            Glide.with(context)
+                    .load(bean.imgUrl)
+                    .apply(options)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(itemView.video_imageView)
             itemView.video_title.text = bean.title
             itemView.video_duration.text = "视频时长：${bean.duration}"
         }

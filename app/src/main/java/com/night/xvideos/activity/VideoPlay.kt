@@ -336,12 +336,12 @@ class VideoPlay : BaseActivity() {
         /**
          * 防止内存泄露
          */
-        if (videoplay_webView != null)
-            videoplay_webView.loadDataWithBaseURL(null, "", "text/回头ml", "utf-8", null)
-        videoplay_webView.clearHistory()
-
-        (videoplay_webView.parent as ViewGroup).removeView(videoplay_webView)
-        videoplay_webView.destroy()
+        if (videoplay_webView != null) {
+            videoplay_webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null)
+            videoplay_webView.clearHistory()
+            videoplay_webView.removeAllViews()
+            videoplay_webView.destroy()
+        }
         if (null != sonicSession) {
             sonicSession!!.destroy()
             sonicSession = null
