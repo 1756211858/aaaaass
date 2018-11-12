@@ -48,15 +48,15 @@ class SpeakChineseFragment : BaseFragment() {
             return instance!!
         }
     }
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+    }
 
     @SuppressLint("InflateParams")
     override fun initView(): Int {
         return R.layout.fragment_speakchinese
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-    }
 
     override fun initData() {
         initRecyclerView()

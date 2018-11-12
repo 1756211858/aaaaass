@@ -68,14 +68,14 @@ class VideoPlay : BaseActivity() {
 
         // step 2: Create SonicSession
         sonicSession = SonicEngine.getInstance().createSession(videoUrl, SonicSessionConfig.Builder().build())
-       /* if (null != sonicSession) {*/
+        if (null != sonicSession) {
             sonicSessionClient = SonicSessionClientImpl()
             sonicSession!!.bindClient(sonicSessionClient)
-        /*} else {
+        } else {
             // this only happen when a same sonic session is already running,
             // u can comment following codes to feedback as a default mode.
             throw UnknownError("create session fail!")
-        }*/
+        }
         videoplay_webView.loadUrl(videoUrl)
         videoplay_webView.addJavascriptInterface(this, "fullscreen")
         videoplay_webView.addJavascriptInterface(JsObject(), "onClick")
@@ -91,6 +91,9 @@ class VideoPlay : BaseActivity() {
 
             override fun shouldOverrideUrlLoading(p0: WebView?, p1: String?): Boolean {
                 if (p1?.contains("https://www.xvideos.com/video")!!) {
+                    p0?.loadUrl("javascript:function setTop(){document" +
+                            ".querySelector('.related')" +
+                            ".style.display=\"none\";}setTop();")
                     blockAds(p0)
                     p0?.stopLoading()
                     return true
@@ -141,12 +144,10 @@ class VideoPlay : BaseActivity() {
             }
 
             override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
-                Log.e("mlog", errorCode.toString())
                 view?.loadUrl("file:///android_asset/videoError.html")
-                Toast.makeText(applicationContext, "无法播放视频，10秒后本界面自动关闭，谢谢你！！", Toast.LENGTH_LONG).show()
                 async {
                     thread {
-                        sleep(10000)
+                        sleep(5000)
                         finish()
                     }
                 }
@@ -157,14 +158,16 @@ class VideoPlay : BaseActivity() {
             val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(videoPlayLodingImageView, "rotation", 0f, 360f)
             objectAnimator.duration = 1000
             objectAnimator.repeatMode = ValueAnimator.INFINITE
-            objectAnimator.repeatCount = 10
+            objectAnimator.repeatCount = 8
             objectAnimator.interpolator = AccelerateDecelerateInterpolator()
-
             objectAnimator.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
-                    //todo 点击重新加载
                     videoPlayLodingImageView.visibility = View.GONE
                     lodingText.visibility = View.GONE
+                    if(videoplay_webView.visibility != View.VISIBLE){
+                        description.visibility=View.VISIBLE
+                        Toast.makeText(applicationContext, "可能你的网络偷情养别人了.", Toast.LENGTH_SHORT).show()
+                    }
                     super.onAnimationEnd(animation)
                 }
             })
@@ -178,7 +181,7 @@ class VideoPlay : BaseActivity() {
              * 获取加载进度
              */
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                lodingText.text = "请稍等，这取决于你的网速,$newProgress%"
+                lodingText.text = "加载中\n$newProgress%"
                 if (newProgress == 100) {
                     runOnUiThread {
                         videoPlayLodingImageView.visibility = View.GONE
@@ -207,6 +210,10 @@ class VideoPlay : BaseActivity() {
                 videoplay_Container.visibility = View.GONE
                 super.onHideCustomView()
             }
+
+            override fun onReceivedTitle(view: WebView?, title1: String?) {
+                super.onReceivedTitle(view, title1)
+            }
         }
         videoplay_webView.webChromeClient = chromeClient
 
@@ -220,16 +227,20 @@ class VideoPlay : BaseActivity() {
         intent.putExtra("loadUrlTime", System.currentTimeMillis())
         videoplay_webView.addJavascriptInterface(SonicJavaScriptInterface(sonicSessionClient, intent), "sonic")
         webSettings.allowContentAccess = true
+        videoplay_webView.scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
+        webSettings.setNeedInitialFocus(false)//禁止webview上面控件获取焦点(黄色边框)
         webSettings.databaseEnabled = true
         webSettings.savePassword = false
         webSettings.saveFormData = false
-        webSettings.useWideViewPort = true
+        webSettings.useWideViewPort = false
         webSettings.setAppCacheEnabled(true)
         webSettings.javaScriptEnabled = true
         webSettings.useWideViewPort = true // 关键点
         webSettings.allowFileAccess = true // 允许访问文件
         webSettings.setSupportZoom(true) // 支持缩放
         webSettings.loadWithOverviewMode = true
+        webSettings.mediaPlaybackRequiresUserGesture = false
+
         webSettings.cacheMode = WebSettings.LOAD_NORMAL
         webSettings.cacheMode = WebSettings.LOAD_DEFAULT
         webSettings.domStorageEnabled = true
@@ -250,22 +261,7 @@ class VideoPlay : BaseActivity() {
     }
 
     @SuppressLint("WrongConstant")
-
-    /* //正则匹配网址URL
-   private fun getData() {
-       try {
-           val pattern = Pattern.compile("(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]")
-           val url = intent.getStringExtra("VIDEOURL")
-           val matcher = pattern.matcher(url)
-           while (matcher.find()) {
-               videoUrl = matcher.group()
-           }
-       } catch (e: IOException) {
-           intent.getStringExtra("VIDEOURL")
-       }
-   }*/
-
-    protected fun fullScreen() {
+    private fun fullScreen() {
         requestedOrientation = if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         } else {

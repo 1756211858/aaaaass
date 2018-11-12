@@ -49,6 +49,8 @@ class TopRanking : BaseActivity() {
                 currentDataSize += p0!!.size
                 setVideoList()
             }
+
+
         })
 
         //监听上滑刷新
