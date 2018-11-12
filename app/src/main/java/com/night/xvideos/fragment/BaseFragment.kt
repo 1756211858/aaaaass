@@ -6,30 +6,37 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import co.metalab.asyncawait.async
 import com.night.xvideos.main.Contract
 
 /**
  * Created by 9 on 2018/3/6.
  */
 
-abstract class BaseFragment : Fragment(),Contract.BaseFragment {
+abstract class BaseFragment : Fragment(), Contract.BaseFragment {
     protected var mcontext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mcontext = activity
+        mcontext = context
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
-        return layoutInflater.inflate(initView(),null,false)
+        if (view != null) {
+            val parent = view!!.parent as ViewGroup
+            if (parent != null) {
+                parent.removeView(view)
+            }
+            return view
+        }
+        return layoutInflater.inflate(initView(), container, false)
     }
 
     protected abstract fun initView(): Int
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         initData()
+        super.onActivityCreated(savedInstanceState)
     }
 
     override fun showNetWorkError() {

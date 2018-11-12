@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.webkit.WebView
+import co.metalab.asyncawait.async
 
 abstract class BaseActivity : AppCompatActivity() {
     private var view: View? = null
@@ -17,7 +18,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     //初始化数据
-    protected open fun initData(){
+    protected open fun initData() {
 
     }
 

@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
     <!--android:layout_height="match_parent"-->
     <android.support.v4.view.ViewPager
-        android:id="@+id/hotVideo_viewPager"
+        android:id="@+id/hotVideoViewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.design.widget.TabLayout
-        android:id="@+id/hotVideo_tabLayout"
+        android:id="@+id/hotVideoTabLayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         app:tabSelectedTextColor="@color/black"
@@ -29,7 +29,7 @@
 
     </android.support.v4.view.ViewPager>
     <FrameLayout
-        android:id="@+id/hotVideo_frameLayout"
+        android:id="@+id/hotVideoFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="60dp"

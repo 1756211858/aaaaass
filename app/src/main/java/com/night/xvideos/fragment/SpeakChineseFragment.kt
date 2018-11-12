@@ -48,6 +48,7 @@ class SpeakChineseFragment : BaseFragment() {
             return instance!!
         }
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
     }
@@ -80,21 +81,21 @@ class SpeakChineseFragment : BaseFragment() {
 
             override fun onLoadMore() {
                 if (mcontext?.let { isNetWorkAvailable(mContext = it) }!!) {
-                mBmobQuery?.order("-createdAt")
-                mBmobQuery?.setLimit(10)
-                mBmobQuery?.setSkip(position)
-                position += 10
-                //开始加载动画
-                startAnimation()
-                mBmobQuery?.findObjects(object : FindListener<SpeakChinese>() {
-                    override fun done(p0: MutableList<SpeakChinese>?, p1: BmobException?) {
-                        mChineseList = p0
-                        flag = true
-                        currentDataSize += p0?.size!!
-                        setVideoList()
-                        speakChineseRecyclerView.setPullLoadMoreCompleted()
-                    }
-                })
+                    mBmobQuery?.order("-createdAt")
+                    mBmobQuery?.setLimit(10)
+                    mBmobQuery?.setSkip(position)
+                    position += 10
+                    //开始加载动画
+                    startAnimation()
+                    mBmobQuery?.findObjects(object : FindListener<SpeakChinese>() {
+                        override fun done(p0: MutableList<SpeakChinese>?, p1: BmobException?) {
+                            mChineseList = p0
+                            flag = true
+                            currentDataSize += p0?.size!!
+                            setVideoList()
+                            speakChineseRecyclerView.setPullLoadMoreCompleted()
+                        }
+                    })
                 } else {
                     topRankingsRecyclerView.setPullLoadMoreCompleted()
                     Toast.makeText(mcontext, "网络连接失败", Toast.LENGTH_SHORT).show()
@@ -161,7 +162,7 @@ class SpeakChineseFragment : BaseFragment() {
     //初始化RecyclerView
     private fun initRecyclerView() {
         speakChineseRecyclerView.pullRefreshEnable = false
-        speakChineseRecyclerView.setStaggeredGridLayout(2)
+        speakChineseRecyclerView.setLinearLayout()
         speakChineseRecyclerView.setRefreshing(false)
         speakChineseRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
         speakChineseRecyclerView.setFooterViewTextColor(R.color.menu_transparent)

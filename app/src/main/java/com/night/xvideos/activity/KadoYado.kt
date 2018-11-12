@@ -36,6 +36,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
     private lateinit var text: String
     private lateinit var mSavePath: File
     private var mPresenter: Presenter? = null
+    var timeSpace: Long = 0
     override fun showNetWorkError() {
         MaterialDialog.Builder(this).title("无法连接Google，导致无法播放国外视频")
                 .content("首先找到本软件所提供的VPN地址，然后注册，测试可以访问Google后，就可以使用啦。")
@@ -63,15 +64,18 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
         adapter.setOnItemClickListener { _, position ->
             when (position) {
                 0 -> if (isNetWorkAvailable(mContext = applicationContext)) {
-                    // Log.e("mlog", )
-                    startActivity(intent.setClass(this, HotVideo::class.java))
-                } else {
-                    LongShow(applicationContext, "请连接网络并打开VPN")
+                    async {
+                        Thread.sleep(80)
+                        runOnUiThread {
+                            startActivity(intent.setClass(applicationContext, HotVideo::class.java))
+                        }
+                    }
                 }
+
                 1 -> if (isNetWorkAvailable(mContext = applicationContext)) {
                     startActivity(intent.setClass(this, TopRanking::class.java))
                 } else {
-                    LongShow(applicationContext, "请连接网络并打开VPN")
+                    LongShow(applicationContext, "请连接VPN")
                 }
                 2 -> startActivity(intent.setClass(this, Description::class.java))
                 3 -> ShortShow(this, "暂不支持$position")
@@ -113,7 +117,6 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
         val i = getVersionCode(applicationContext)
         if (code > i) {
             showDialog()
-            Log.e("mlog", "需要升级")
         }
     }
 
@@ -193,7 +196,6 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
     private fun installApk() {
         val apkFile = File(mSavePath, getVerName(applicationContext))
         if (!apkFile.exists()) {
-            Log.e("mlog", "没有找到apk")
             return
         }
         val command = arrayOf("chmod", "777", apkFile.path)

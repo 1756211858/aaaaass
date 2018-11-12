@@ -76,10 +76,10 @@ class VideoPlay : BaseActivity() {
             // u can comment following codes to feedback as a default mode.
             throw UnknownError("create session fail!")
         }
-        videoplay_webView.loadUrl(videoUrl)
-        videoplay_webView.addJavascriptInterface(this, "fullscreen")
-        videoplay_webView.addJavascriptInterface(JsObject(), "onClick")
-        videoplay_webView.webViewClient = object : WebViewClient() {
+        videoPlayWebView.loadUrl(videoUrl)
+        videoPlayWebView.addJavascriptInterface(this, "fullscreen")
+        videoPlayWebView.addJavascriptInterface(JsObject(), "onClick")
+        videoPlayWebView.webViewClient = object : WebViewClient() {
 
             override fun onPageStarted(p0: WebView?, p1: String?, p2: Bitmap?) {
                 runOnUiThread {
@@ -139,14 +139,18 @@ class VideoPlay : BaseActivity() {
             override fun onReceivedSslError(p0: WebView?, p1: SslErrorHandler?, p2: SslError?) {
                 p1?.proceed()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    videoplay_webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                    videoPlayWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                 }
             }
 
             override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
                 view?.loadUrl("file:///android_asset/videoError.html")
+
+
                 async {
-                    thread {
+                    runOnUiThread {
+                        videoPlayDescription.visibility = View.VISIBLE
+                        Toast.makeText(applicationContext, "可能你的网络偷情养别人了.", Toast.LENGTH_SHORT).show()
                         sleep(5000)
                         finish()
                     }
@@ -158,16 +162,12 @@ class VideoPlay : BaseActivity() {
             val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(videoPlayLodingImageView, "rotation", 0f, 360f)
             objectAnimator.duration = 1000
             objectAnimator.repeatMode = ValueAnimator.INFINITE
-            objectAnimator.repeatCount = 8
+            objectAnimator.repeatCount = 50
             objectAnimator.interpolator = AccelerateDecelerateInterpolator()
             objectAnimator.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
-                    videoPlayLodingImageView.visibility = View.GONE
-                    lodingText.visibility = View.GONE
-                    if(videoplay_webView.visibility != View.VISIBLE){
-                        description.visibility=View.VISIBLE
-                        Toast.makeText(applicationContext, "可能你的网络偷情养别人了.", Toast.LENGTH_SHORT).show()
-                    }
+                    /*videoPlayLodingImageView.visibility = View.GONE
+                    lodingText.visibility = View.GONE*/
                     super.onAnimationEnd(animation)
                 }
             })
@@ -193,9 +193,9 @@ class VideoPlay : BaseActivity() {
 
             override fun onShowCustomView(p0: View?, p1: WebChromeClient.CustomViewCallback?) {
                 fullScreen()
-                videoplay_webView.visibility = View.GONE
-                videoplay_Container.visibility = View.VISIBLE
-                videoplay_Container.addView(p0)
+                videoPlayWebView.visibility = View.GONE
+                videoplayContainer.visibility = View.VISIBLE
+                videoplayContainer.addView(p0)
                 callBack = p1
                 super.onShowCustomView(p0, p1)
             }
@@ -205,29 +205,30 @@ class VideoPlay : BaseActivity() {
                 if (callBack != null) {
                     callBack!!.onCustomViewHidden()
                 }
-                videoplay_webView.visibility = View.VISIBLE
-                videoplay_Container.removeAllViews()
-                videoplay_Container.visibility = View.GONE
+                videoPlayWebView.visibility = View.VISIBLE
+                videoplayContainer.removeAllViews()
+                videoplayContainer.visibility = View.GONE
                 super.onHideCustomView()
             }
 
             override fun onReceivedTitle(view: WebView?, title1: String?) {
-                super.onReceivedTitle(view, title1)
+
+                super.onReceivedTitle(view, videoTitle)
             }
         }
-        videoplay_webView.webChromeClient = chromeClient
+        videoPlayWebView.webChromeClient = chromeClient
 
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun initWebSetting() {
-        val webSettings = videoplay_webView.settings
+        val webSettings = videoPlayWebView.settings
         webSettings.javaScriptEnabled = true
-        videoplay_webView.removeJavascriptInterface("searchBoxJavaBridge_")
+        videoPlayWebView.removeJavascriptInterface("searchBoxJavaBridge_")
         intent.putExtra("loadUrlTime", System.currentTimeMillis())
-        videoplay_webView.addJavascriptInterface(SonicJavaScriptInterface(sonicSessionClient, intent), "sonic")
+        videoPlayWebView.addJavascriptInterface(SonicJavaScriptInterface(sonicSessionClient, intent), "sonic")
         webSettings.allowContentAccess = true
-        videoplay_webView.scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
+        videoPlayWebView.scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
         webSettings.setNeedInitialFocus(false)//禁止webview上面控件获取焦点(黄色边框)
         webSettings.databaseEnabled = true
         webSettings.savePassword = false
@@ -246,17 +247,17 @@ class VideoPlay : BaseActivity() {
         webSettings.domStorageEnabled = true
         webSettings.pluginState = WebSettings.PluginState.ON
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            videoplay_webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            videoPlayWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
         // step 5: webview is ready now, just tell session client to bind
         if (sonicSessionClient != null) {
-            sonicSessionClient!!.bindWebView(videoplay_webView)
+            sonicSessionClient!!.bindWebView(videoPlayWebView)
             sonicSessionClient!!.clientReady()
         } else { // default mode
 
             videoUrl = "https://www.xvideos.com/embedframe/${intent.getStringExtra("VIDEOURL")
                     .substring(6)}"
-            videoplay_webView.loadUrl(videoUrl)
+            videoPlayWebView.loadUrl(videoUrl)
         }
     }
 
@@ -298,29 +299,29 @@ class VideoPlay : BaseActivity() {
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
         super.onSaveInstanceState(outState, outPersistentState)
-        videoplay_webView.saveState(outState)
+        videoPlayWebView.saveState(outState)
         Log.e("mlog", "onSaveInstanceState")
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        videoplay_webView.restoreState(savedInstanceState)
+        videoPlayWebView.restoreState(savedInstanceState)
         Log.e("mlog", "onRestoreInstanceState")
 
     }
 
     override fun onPause() {
         super.onPause()
-        videoplay_webView.onPause()
-        videoplay_webView.pauseTimers()
+        videoPlayWebView.onPause()
+        videoPlayWebView.pauseTimers()
         Log.e("mlog", "onPause")
 
     }
 
     override fun onResume() {
         super.onResume()
-        videoplay_webView.onResume()
-        videoplay_webView.resumeTimers()
+        videoPlayWebView.onResume()
+        videoPlayWebView.resumeTimers()
         //sonicSession?.refresh()
         Log.e("mlog", "onResume")
 
@@ -332,11 +333,11 @@ class VideoPlay : BaseActivity() {
         /**
          * 防止内存泄露
          */
-        if (videoplay_webView != null) {
-            videoplay_webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null)
-            videoplay_webView.clearHistory()
-            videoplay_webView.removeAllViews()
-            videoplay_webView.destroy()
+        if (videoPlayWebView != null) {
+            videoPlayWebView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null)
+            videoPlayWebView.clearHistory()
+            videoPlayWebView.removeAllViews()
+            videoPlayWebView.destroy()
         }
         if (null != sonicSession) {
             sonicSession!!.destroy()

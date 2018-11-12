@@ -5,6 +5,7 @@ import android.os.PersistableBundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
 import com.night.xvideos.R
 import com.night.xvideos.fragment.BaseFragment
 import com.night.xvideos.fragment.BlackedFragment
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_hotvideo.*
 
 class HotVideo : BaseActivity() {
     private val titles = arrayOf("说中文的色情", "黑人", "中出")
-    private var fragmentPagerAdapter: FragmentPagerAdapter? = null
+    private var fragmentPagerAdapter: FragmentStatePagerAdapter? = null
     var fragmentList: MutableList<BaseFragment>? = mutableListOf()
     override fun setLayoutId(): Int {
         return R.layout.activity_hotvideo
@@ -30,12 +31,12 @@ class HotVideo : BaseActivity() {
         fragmentList?.add(CreampieFragment.get())
 
         for (i in 0 until titles.size) {
-            hotVideo_tabLayout.addTab(hotVideo_tabLayout.newTab())
-            hotVideo_tabLayout.getTabAt(i)?.text = titles[i]
+            hotVideoTabLayout.addTab(hotVideoTabLayout.newTab())
+            hotVideoTabLayout.getTabAt(i)?.text = titles[i]
         }
-        hotVideo_tabLayout.tabMode = TabLayout.MODE_FIXED
+        hotVideoTabLayout.tabMode = TabLayout.MODE_FIXED
 
-        fragmentPagerAdapter = object : FragmentPagerAdapter(this.supportFragmentManager) {
+        fragmentPagerAdapter = object : FragmentStatePagerAdapter(this.supportFragmentManager) {
             override fun getItem(position: Int): Fragment {
                 return fragmentList?.get(position)!!
             }
@@ -47,15 +48,11 @@ class HotVideo : BaseActivity() {
             override fun getPageTitle(position: Int): CharSequence? {
                 return titles[position]
             }
+
         }
-        hotVideo_tabLayout.setupWithViewPager(hotVideo_viewPager)
-        hotVideo_viewPager.adapter = fragmentPagerAdapter
-        hotVideo_viewPager.offscreenPageLimit=2
-        hotVideo_tabLayout.getTabAt(0)?.select()
-    }
-
-    override fun onDestroy() {
-
-        super.onDestroy()
+        hotVideoTabLayout.setupWithViewPager(hotVideoViewPager)
+        hotVideoViewPager.adapter = fragmentPagerAdapter
+        hotVideoViewPager.offscreenPageLimit = 3
+        hotVideoTabLayout.getTabAt(1)?.select()
     }
 }
