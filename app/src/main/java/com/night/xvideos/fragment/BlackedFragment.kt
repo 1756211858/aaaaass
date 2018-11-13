@@ -32,7 +32,6 @@ class BlackedFragment : BaseFragment() {
     private var position: Int = 10
     private val intent = Intent()
     private var currentDataSize: Int = 0
-    private var flag = false
 
     companion object {
         @SuppressLint("StaticFieldLeak")
@@ -80,25 +79,24 @@ class BlackedFragment : BaseFragment() {
 
             override fun onLoadMore() {
                 if (mcontext?.let { isNetWorkAvailable(mContext = it) }!!) {
-                mBmobQuery?.order("-createdAt")
-                mBmobQuery?.setLimit(10)
-                mBmobQuery?.setSkip(position)
-                position += 10
-                //开始加载动画
-                startAnimation()
-                mBmobQuery?.findObjects(object : FindListener<BlackMan>() {
-                    override fun done(p0: MutableList<BlackMan>?, p1: BmobException?) {
-                        mBlackManList = p0
-                        flag = true
-                        currentDataSize += p0?.size!!
-                        setVideoList()
-                        blackManRecyclerView.setPullLoadMoreCompleted()
-                    }
-                })
-            } else {
-                topRankingsRecyclerView.setPullLoadMoreCompleted()
-                Toast.makeText(mcontext, "网络连接失败", Toast.LENGTH_SHORT).show()
-            }
+                    mBmobQuery?.order("-createdAt")
+                    mBmobQuery?.setLimit(10)
+                    mBmobQuery?.setSkip(position)
+                    position += 10
+                    //开始加载动画
+                    startAnimation()
+                    mBmobQuery?.findObjects(object : FindListener<BlackMan>() {
+                        override fun done(p0: MutableList<BlackMan>?, p1: BmobException?) {
+                            mBlackManList = p0
+                            currentDataSize += p0?.size!!
+                            setVideoList()
+                            blackManRecyclerView.setPullLoadMoreCompleted()
+                        }
+                    })
+                } else {
+                    topRankingsRecyclerView.setPullLoadMoreCompleted()
+                    Toast.makeText(mcontext, "网络连接失败", Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }
@@ -111,14 +109,13 @@ class BlackedFragment : BaseFragment() {
             //设置Adapter中的数据和点击事件
             blackManLoading.visibility = View.GONE
             //假如adapter中没有数据，那就代表第一次加载数据。
-            if (!flag) {
+            if (mBlackManAdapter==null) {
                 mBlackManAdapter = BlackManAdapter(this.mcontext!!, mBlackManList!!)
                 blackManRecyclerView.setAdapter(mBlackManAdapter)
             } else {
                 mBlackManAdapter?.addFooter(currentDataSize - mBlackManList!!.size, mBlackManList!!)
             }
             mBlackManAdapter?.setOnItemClickListener { _, position ->
-
                 mBlackManAdapter!!.dataList[position].let {
                     val bundle = Bundle()
                     bundle.putString("VIDEOTITLE", it.title)
@@ -136,6 +133,7 @@ class BlackedFragment : BaseFragment() {
             }
         }
     }
+
     @SuppressLint("WrongConstant")
     private fun startAnimation() {
         blackManLoading.setImageResource(R.drawable.loding)
@@ -160,11 +158,11 @@ class BlackedFragment : BaseFragment() {
     //初始化RecyclerView
     private fun initRecyclerView() {
         //缓存数量
-        blackManRecyclerView.pullRefreshEnable=false
+        blackManRecyclerView.pullRefreshEnable = false
         blackManRecyclerView.setLinearLayout()
         blackManRecyclerView.setRefreshing(false)
         blackManRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
         blackManRecyclerView.setFooterViewTextColor(R.color.menu_transparent)
-        blackManRecyclerView.setFooterViewText(" ")
+
     }
 }

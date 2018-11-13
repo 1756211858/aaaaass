@@ -65,7 +65,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
             when (position) {
                 0 -> if (isNetWorkAvailable(mContext = applicationContext)) {
                     async {
-                        Thread.sleep(80)
+                        Thread.sleep(100)
                         runOnUiThread {
                             startActivity(intent.setClass(applicationContext, HotVideo::class.java))
                         }

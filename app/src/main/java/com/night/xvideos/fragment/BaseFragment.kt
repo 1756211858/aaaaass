@@ -22,13 +22,7 @@ abstract class BaseFragment : Fragment(), Contract.BaseFragment {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (view != null) {
-            val parent = view!!.parent as ViewGroup
-            if (parent != null) {
-                parent.removeView(view)
-            }
-            return view
-        }
+
         return layoutInflater.inflate(initView(), container, false)
     }
 

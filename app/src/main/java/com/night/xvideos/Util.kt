@@ -7,6 +7,8 @@ import com.night.xvideos.activity.KadoYado
 import java.io.IOException
 import android.net.wifi.WifiManager
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
 import com.night.xvideos.retrofit.ApiStore
 import com.night.xvideos.retrofit.ipAddressApi
 import retrofit2.Call
@@ -150,5 +152,3 @@ fun Any.analyzeIP(context: Context): Boolean {
     }
     return bool!!
 }
-
-

@@ -26,9 +26,9 @@ class HotVideo : BaseActivity() {
     }
 
     override fun initContentView() {
-        fragmentList?.add(SpeakChineseFragment.get())
-        fragmentList?.add(BlackedFragment.get())
-        fragmentList?.add(CreampieFragment.get())
+        fragmentList?.add(SpeakChineseFragment())
+        fragmentList?.add(BlackedFragment())
+        fragmentList?.add(CreampieFragment())
 
         for (i in 0 until titles.size) {
             hotVideoTabLayout.addTab(hotVideoTabLayout.newTab())

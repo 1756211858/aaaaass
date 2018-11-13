@@ -8,12 +8,10 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateInterpolator
-import android.widget.AdapterView
 import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
-import co.metalab.asyncawait.async
 import com.night.xvideos.R
 import com.night.xvideos.adapter.TopRankingsAdapter
 import com.night.xvideos.bean.TopRankings
@@ -31,7 +29,6 @@ class TopRanking : BaseActivity() {
     private val mBmobQuery: BmobQuery<TopRankings>? = BmobQuery<TopRankings>()
     private var position: Int = 10
     private var currentDataSize: Int = 0
-    private var flag = false
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -71,7 +68,6 @@ class TopRanking : BaseActivity() {
                     mBmobQuery?.findObjects(object : FindListener<TopRankings>() {
                         override fun done(p0: MutableList<TopRankings>?, p1: BmobException?) {
                             mTopRankingLists = p0
-                            flag = true
                             currentDataSize += p0?.size!!
                             setVideoList()
                             topRankingsRecyclerView.setPullLoadMoreCompleted()
@@ -93,7 +89,6 @@ class TopRanking : BaseActivity() {
         topRankingsRecyclerView.setRefreshing(false)
         topRankingsRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
         topRankingsRecyclerView.setFooterViewTextColor(R.color.menu_transparent)
-        topRankingsRecyclerView.setFooterViewText(" ")
     }
 
     @SuppressLint("WrongConstant")
@@ -126,7 +121,7 @@ class TopRanking : BaseActivity() {
             //设置Adapter中的数据和点击事件
             topRankingsLodingImageView.visibility = View.GONE
             //假如adapter中没有数据，那就代表第一次加载数据。
-            if (!flag) {
+            if (mTopRankingsAdapter == null) {
                 mTopRankingsAdapter = TopRankingsAdapter(applicationContext, mTopRankingLists!!)
                 topRankingsRecyclerView.setAdapter(mTopRankingsAdapter)
             } else {

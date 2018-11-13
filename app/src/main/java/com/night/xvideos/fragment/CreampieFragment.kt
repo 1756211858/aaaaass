@@ -32,7 +32,7 @@ class CreampieFragment : BaseFragment() {
     private var position: Int = 10
     private val intent = Intent()
     private var currentDataSize: Int = 0
-    private var flag = false
+
     companion object {
         @SuppressLint("StaticFieldLeak")
         private var instance: CreampieFragment? = null
@@ -47,9 +47,11 @@ class CreampieFragment : BaseFragment() {
             return instance!!
         }
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
     }
+
     @SuppressLint("InflateParams")
     override fun initView(): Int {
         return R.layout.fragment_creampie
@@ -76,22 +78,22 @@ class CreampieFragment : BaseFragment() {
             }
 
             override fun onLoadMore() {
+
                 if (mcontext?.let { isNetWorkAvailable(mContext = it) }!!) {
-                mBmobQuery?.order("-createdAt")
-                mBmobQuery?.setLimit(10)
-                mBmobQuery?.setSkip(position)
-                position += 10
-                //开始加载动画
-                startAnimation()
-                mBmobQuery?.findObjects(object : FindListener<Creampie>() {
-                    override fun done(p0: MutableList<Creampie>?, p1: BmobException?) {
-                        mCreampieList = p0
-                        flag = true
-                        currentDataSize += p0?.size!!
-                        setVideoList()
-                        creamPieRecyclerView.setPullLoadMoreCompleted()
-                    }
-                })
+                    mBmobQuery?.order("-createdAt")
+                    mBmobQuery?.setLimit(10)
+                    mBmobQuery?.setSkip(position)
+                    position += 10
+                    //开始加载动画
+                    startAnimation()
+                    mBmobQuery?.findObjects(object : FindListener<Creampie>() {
+                        override fun done(p0: MutableList<Creampie>?, p1: BmobException?) {
+                            mCreampieList = p0
+                            currentDataSize += p0?.size!!
+                            setVideoList()
+                            creamPieRecyclerView.setPullLoadMoreCompleted()
+                        }
+                    })
                 } else {
                     topRankingsRecyclerView.setPullLoadMoreCompleted()
                     Toast.makeText(mcontext, "网络连接失败", Toast.LENGTH_SHORT).show()
@@ -99,6 +101,7 @@ class CreampieFragment : BaseFragment() {
             }
         })
     }
+
     /**
      * 给RecyclerView填充数据和点击事件
      */
@@ -107,7 +110,7 @@ class CreampieFragment : BaseFragment() {
             //设置Adapter中的数据和点击事件
             creamPieLodingImageView.visibility = View.GONE
             //假如adapter中没有数据，那就代表第一次加载数据。
-            if (!flag) {
+            if (mCreapieAdapter==null) {
                 mCreapieAdapter = CreampieAdapter(this.mcontext!!, mCreampieList!!)
                 creamPieRecyclerView.setAdapter(mCreapieAdapter)
             } else {
@@ -156,11 +159,10 @@ class CreampieFragment : BaseFragment() {
 
     //初始化RecyclerView
     private fun initRecyclerView() {
-        creamPieRecyclerView.pullRefreshEnable=false
+        creamPieRecyclerView.pullRefreshEnable = false
         creamPieRecyclerView.setLinearLayout()
         creamPieRecyclerView.setRefreshing(false)
         creamPieRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
         creamPieRecyclerView.setFooterViewTextColor(R.color.menu_transparent)
-        creamPieRecyclerView.setFooterViewText(" ")
     }
 }

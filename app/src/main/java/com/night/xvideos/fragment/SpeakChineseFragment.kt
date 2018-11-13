@@ -7,8 +7,10 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
+import android.widget.LinearLayout
 import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
@@ -32,7 +34,6 @@ class SpeakChineseFragment : BaseFragment() {
     private var position: Int = 10
     private val intent = Intent()
     private var currentDataSize: Int = 0
-    private var flag = false
 
     companion object {
         @SuppressLint("StaticFieldLeak")
@@ -90,7 +91,6 @@ class SpeakChineseFragment : BaseFragment() {
                     mBmobQuery?.findObjects(object : FindListener<SpeakChinese>() {
                         override fun done(p0: MutableList<SpeakChinese>?, p1: BmobException?) {
                             mChineseList = p0
-                            flag = true
                             currentDataSize += p0?.size!!
                             setVideoList()
                             speakChineseRecyclerView.setPullLoadMoreCompleted()
@@ -112,7 +112,7 @@ class SpeakChineseFragment : BaseFragment() {
             //设置Adapter中的数据和点击事件
             speakChineseLodingImageView.visibility = View.GONE
             //假如adapter中没有数据，那就代表第一次加载数据。
-            if (!flag) {
+            if (mSpeakChineseAdapter==null) {
                 mSpeakChineseAdapter = SpeakChineseAdapter(this.mcontext!!, mChineseList!!)
                 speakChineseRecyclerView.setAdapter(mSpeakChineseAdapter)
             } else {
@@ -166,6 +166,5 @@ class SpeakChineseFragment : BaseFragment() {
         speakChineseRecyclerView.setRefreshing(false)
         speakChineseRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
         speakChineseRecyclerView.setFooterViewTextColor(R.color.menu_transparent)
-        speakChineseRecyclerView.setFooterViewText(" ")
     }
 }
