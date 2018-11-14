@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.app.FragmentStatePagerAdapter
 import com.night.xvideos.R
 import com.night.xvideos.fragment.BaseFragment
-import com.night.xvideos.fragment.BlackedFragment
+import com.night.xvideos.fragment.RecommendFragment
 import com.night.xvideos.fragment.CreampieFragment
 import com.night.xvideos.fragment.SpeakChineseFragment
 import kotlinx.android.synthetic.main.activity_hotvideo.*
@@ -27,7 +26,7 @@ class HotVideo : BaseActivity() {
 
     override fun initContentView() {
         fragmentList?.add(SpeakChineseFragment())
-        fragmentList?.add(BlackedFragment())
+        fragmentList?.add(RecommendFragment())
         fragmentList?.add(CreampieFragment())
 
         for (i in 0 until titles.size) {

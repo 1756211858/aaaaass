@@ -1,6 +1,6 @@
 package com.night.xvideos.bean
 
-class BlackMan {
+class Recommend {
     var title:String ?=null
     var imgUrl:String ?=null
     var videoUrl:String ?=null

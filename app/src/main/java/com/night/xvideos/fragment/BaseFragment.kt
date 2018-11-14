@@ -28,6 +28,10 @@ abstract class BaseFragment : Fragment(), Contract.BaseFragment {
 
     protected abstract fun initView(): Int
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         initData()
         super.onActivityCreated(savedInstanceState)

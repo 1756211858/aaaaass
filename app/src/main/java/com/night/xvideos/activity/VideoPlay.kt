@@ -23,15 +23,11 @@ import android.webkit.*
 import android.widget.Toast
 import com.night.xvideos.R
 import com.night.xvideos.webView.SonicJavaScriptInterface
-import com.night.xvideos.webView.SonicRuntimeImpl
 import com.night.xvideos.webView.SonicSessionClientImpl
-import com.tencent.sonic.sdk.SonicConfig
-import com.tencent.sonic.sdk.SonicEngine
 import com.tencent.sonic.sdk.SonicSession
-import com.tencent.sonic.sdk.SonicSessionConfig
 import kotlinx.android.synthetic.main.activity_videoplay.*
 import java.lang.Thread.sleep
-import kotlin.concurrent.thread
+
 
 @Suppress("DEPRECATION", "UNUSED_EXPRESSION")
 class VideoPlay : BaseActivity() {
@@ -61,21 +57,6 @@ class VideoPlay : BaseActivity() {
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
         //webView设置
         initWebSetting()
-        // step 1: Initialize sonic engine if necessary, or maybe u can do this when application created
-        if (!SonicEngine.isGetInstanceAllowed()) {
-            SonicEngine.createInstance(SonicRuntimeImpl(application), SonicConfig.Builder().build())
-        }
-
-        // step 2: Create SonicSession
-        sonicSession = SonicEngine.getInstance().createSession(videoUrl, SonicSessionConfig.Builder().build())
-        if (null != sonicSession) {
-            sonicSessionClient = SonicSessionClientImpl()
-            sonicSession!!.bindClient(sonicSessionClient)
-        } else {
-            // this only happen when a same sonic session is already running,
-            // u can comment following codes to feedback as a default mode.
-            throw UnknownError("create session fail!")
-        }
         videoPlayWebView.loadUrl(videoUrl)
         videoPlayWebView.addJavascriptInterface(this, "fullscreen")
         videoPlayWebView.addJavascriptInterface(JsObject(), "onClick")
@@ -333,15 +314,15 @@ class VideoPlay : BaseActivity() {
         /**
          * 防止内存泄露
          */
+        if (null != sonicSession) {
+            sonicSession!!.destroy()
+            sonicSession = null
+        }
         if (videoPlayWebView != null) {
             videoPlayWebView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null)
             videoPlayWebView.clearHistory()
             videoPlayWebView.removeAllViews()
             videoPlayWebView.destroy()
-        }
-        if (null != sonicSession) {
-            sonicSession!!.destroy()
-            sonicSession = null
         }
         super.onDestroy()
     }

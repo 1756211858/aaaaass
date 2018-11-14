@@ -22,6 +22,10 @@ abstract class BaseActivity : AppCompatActivity() {
 
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+    }
+
     abstract fun setLayoutId(): Int
     //webView相关设置
     protected open fun initWebSetting() {

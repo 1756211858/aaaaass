@@ -7,10 +7,8 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
-import android.widget.LinearLayout
 import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
@@ -30,10 +28,11 @@ import kotlinx.android.synthetic.main.fragment_speakchinese.*
 class SpeakChineseFragment : BaseFragment() {
     private var mSpeakChineseAdapter: SpeakChineseAdapter? = null
     private var mChineseList: MutableList<SpeakChinese>? = null
-    private val mBmobQuery: BmobQuery<SpeakChinese>? = BmobQuery<SpeakChinese>()
+    private val mBmobQuery: BmobQuery<SpeakChinese>? = BmobQuery()
     private var position: Int = 10
     private val intent = Intent()
     private var currentDataSize: Int = 0
+    private lateinit var objectAnimator: ObjectAnimator
 
     companion object {
         @SuppressLint("StaticFieldLeak")
@@ -48,10 +47,6 @@ class SpeakChineseFragment : BaseFragment() {
         fun get(): SpeakChineseFragment {
             return instance!!
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
     }
 
     @SuppressLint("InflateParams")
@@ -130,6 +125,7 @@ class SpeakChineseFragment : BaseFragment() {
                 startActivity(intent.setClass(context, VideoPlay::class.java))
             }
         } else {
+            objectAnimator.cancel()
             speakChineseLodingImageView.setImageResource(R.drawable.loding_error)
             Toast.makeText(mcontext, "点击图标重新加载", Toast.LENGTH_SHORT).show()
             speakChineseLodingImageView.setOnClickListener {
@@ -142,7 +138,7 @@ class SpeakChineseFragment : BaseFragment() {
     private fun startAnimation() {
         speakChineseLodingImageView.setImageResource(R.drawable.loding)
         speakChineseLodingImageView.visibility = View.VISIBLE
-        val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(speakChineseLodingImageView, "rotation", 0f, 360f)
+        objectAnimator = ObjectAnimator.ofFloat(speakChineseLodingImageView, "rotation", 0f, 360f)
         objectAnimator.duration = 1000
         objectAnimator.repeatMode = ValueAnimator.INFINITE
         objectAnimator.repeatCount = 8
@@ -150,9 +146,9 @@ class SpeakChineseFragment : BaseFragment() {
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 if (mSpeakChineseAdapter?.dataList?.size == 0) {
+                    objectAnimator.cancel()
                     speakChineseLodingImageView.setImageResource(R.drawable.loding_error)
                 }
-                //todo 点击重新加载
                 super.onAnimationEnd(animation)
             }
         })

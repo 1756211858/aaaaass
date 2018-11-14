@@ -20,18 +20,16 @@ import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_toprankings.*
 
 class TopRanking : BaseActivity() {
-    override fun setLayoutId(): Int {
-        return R.layout.activity_toprankings
-    }
-
     private var mTopRankingsAdapter: TopRankingsAdapter? = null
     private var mTopRankingLists: MutableList<TopRankings>? = null
     private val mBmobQuery: BmobQuery<TopRankings>? = BmobQuery<TopRankings>()
     private var position: Int = 10
     private var currentDataSize: Int = 0
+    private lateinit var objectAnimator: ObjectAnimator
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
+
+    override fun setLayoutId(): Int {
+        return R.layout.activity_toprankings
     }
 
     override fun initContentView() {
@@ -83,7 +81,6 @@ class TopRanking : BaseActivity() {
 
     //初始化RecyclerView
     private fun initRecyclerView() {
-        //缓存数量
         topRankingsRecyclerView.pullRefreshEnable = false
         topRankingsRecyclerView.setLinearLayout()
         topRankingsRecyclerView.setRefreshing(false)
@@ -95,8 +92,8 @@ class TopRanking : BaseActivity() {
     private fun startAnimation() {
         topRankingsLodingImageView.setImageResource(R.drawable.loding)
         topRankingsLodingImageView.visibility = View.VISIBLE
-        val objectAnimator: ObjectAnimator = ObjectAnimator
-                .ofFloat(topRankingsLodingImageView, "rotation", 0f, 360f)
+        objectAnimator = ObjectAnimator.ofFloat(topRankingsLodingImageView,
+                "rotation", 0f, 360f)
         objectAnimator.duration = 1000
         objectAnimator.repeatMode = ValueAnimator.INFINITE
         objectAnimator.repeatCount = 8
@@ -104,23 +101,18 @@ class TopRanking : BaseActivity() {
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 if (mTopRankingsAdapter?.dataList?.size == 0) {
+                    objectAnimator.cancel()
                     topRankingsLodingImageView.setImageResource(R.drawable.loding_error)
                 }
-                //todo 点击重新加载
                 super.onAnimationEnd(animation)
             }
         })
         objectAnimator.start()
     }
 
-    /**
-     * 给RecyclerView填充数据和点击事件
-     */
     private fun setVideoList() {
         if (mTopRankingLists?.size!! >= 1) {
-            //设置Adapter中的数据和点击事件
             topRankingsLodingImageView.visibility = View.GONE
-            //假如adapter中没有数据，那就代表第一次加载数据。
             if (mTopRankingsAdapter == null) {
                 mTopRankingsAdapter = TopRankingsAdapter(applicationContext, mTopRankingLists!!)
                 topRankingsRecyclerView.setAdapter(mTopRankingsAdapter)
@@ -136,7 +128,7 @@ class TopRanking : BaseActivity() {
                     intent.putExtras(bundle)
                 }
                 startActivity(intent.setClass(applicationContext, VideoPlay::class.java))
-            }, listener2 = { _: View, i: Int ->
+            }, listener2 = { _: View, _: Int ->
                 Toast.makeText(applicationContext, "长按上传错误视频ID", Toast.LENGTH_SHORT).show()
             })
         } else {

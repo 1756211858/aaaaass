@@ -11,13 +11,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.night.xvideos.R
-import com.night.xvideos.bean.BlackMan
+import com.night.xvideos.bean.Recommend
 import kotlinx.android.synthetic.main.video_item.view.*
 
 /**
  * 热门视频界面
  */
-class BlackManAdapter(private var context: Context, var dataList: MutableList<BlackMan>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecommendAdapter(private var context: Context, var dataList: MutableList<Recommend>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
     val options = RequestOptions()
             .error(R.drawable.thumb2).diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -40,7 +40,7 @@ class BlackManAdapter(private var context: Context, var dataList: MutableList<Bl
         mClickListener = listener
     }
 
-    fun addFooter(position: Int, list: MutableList<BlackMan>) {
+    fun addFooter(position: Int, list: MutableList<Recommend>) {
         dataList.addAll(position, list)
         notifyItemInserted(position)
         notifyItemRangeChanged(10, 10)
@@ -64,7 +64,7 @@ class BlackManAdapter(private var context: Context, var dataList: MutableList<Bl
         }
 
         @SuppressLint("SetTextI18n")
-        fun bind(bean: BlackMan) {
+        fun bind(bean: Recommend) {
             Glide.with(context)
                     .load(bean.imgUrl)
                     .apply(options)

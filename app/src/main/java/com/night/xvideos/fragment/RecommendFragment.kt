@@ -15,8 +15,8 @@ import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
 import com.night.xvideos.R
 import com.night.xvideos.activity.VideoPlay
-import com.night.xvideos.adapter.BlackManAdapter
-import com.night.xvideos.bean.BlackMan
+import com.night.xvideos.adapter.RecommendAdapter
+import com.night.xvideos.bean.Recommend
 import com.night.xvideos.isNetWorkAvailable
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_toprankings.*
@@ -25,36 +25,18 @@ import kotlinx.android.synthetic.main.fragment_blacked.*
 /**
  * 黑人频道
  */
-class BlackedFragment : BaseFragment() {
-    private var mBlackManAdapter: BlackManAdapter? = null
-    private var mBlackManList: MutableList<BlackMan>? = null
-    private val mBmobQuery: BmobQuery<BlackMan>? = BmobQuery<BlackMan>()
+class RecommendFragment : BaseFragment() {
+    private var mRecommendAdapter: RecommendAdapter? = null
+    private var mRecommendList: MutableList<Recommend>? = null
+    private val mBmobQuery: BmobQuery<Recommend>? = BmobQuery()
     private var position: Int = 10
     private val intent = Intent()
     private var currentDataSize: Int = 0
-
-    companion object {
-        @SuppressLint("StaticFieldLeak")
-        private var instance: BlackedFragment? = null
-            get() {
-                if (field == null) {
-                    field = BlackedFragment()
-                }
-                return field
-            }
-
-        fun get(): BlackedFragment {
-            return instance!!
-        }
-    }
+    private lateinit var objectAnimator: ObjectAnimator
 
     @SuppressLint("InflateParams")
     override fun initView(): Int {
         return R.layout.fragment_blacked
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
     }
 
     override fun initData() {
@@ -63,9 +45,9 @@ class BlackedFragment : BaseFragment() {
         startAnimation()
         mBmobQuery?.order("-createdAt")
         mBmobQuery?.setLimit(10)
-        mBmobQuery?.findObjects(object : FindListener<BlackMan>() {
-            override fun done(p0: MutableList<BlackMan>?, p1: BmobException?) {
-                mBlackManList = p0
+        mBmobQuery?.findObjects(object : FindListener<Recommend>() {
+            override fun done(p0: MutableList<Recommend>?, p1: BmobException?) {
+                mRecommendList = p0
                 currentDataSize += p0!!.size
                 setVideoList()
             }
@@ -85,9 +67,9 @@ class BlackedFragment : BaseFragment() {
                     position += 10
                     //开始加载动画
                     startAnimation()
-                    mBmobQuery?.findObjects(object : FindListener<BlackMan>() {
-                        override fun done(p0: MutableList<BlackMan>?, p1: BmobException?) {
-                            mBlackManList = p0
+                    mBmobQuery?.findObjects(object : FindListener<Recommend>() {
+                        override fun done(p0: MutableList<Recommend>?, p1: BmobException?) {
+                            mRecommendList = p0
                             currentDataSize += p0?.size!!
                             setVideoList()
                             blackManRecyclerView.setPullLoadMoreCompleted()
@@ -105,18 +87,18 @@ class BlackedFragment : BaseFragment() {
      * 给RecyclerView填充数据和点击事件
      */
     private fun setVideoList() {
-        if (mBlackManList?.size!! >= 1) {
+        if (mRecommendList?.size!! >= 1) {
             //设置Adapter中的数据和点击事件
             blackManLoading.visibility = View.GONE
             //假如adapter中没有数据，那就代表第一次加载数据。
-            if (mBlackManAdapter==null) {
-                mBlackManAdapter = BlackManAdapter(this.mcontext!!, mBlackManList!!)
-                blackManRecyclerView.setAdapter(mBlackManAdapter)
+            if (mRecommendAdapter == null) {
+                mRecommendAdapter = RecommendAdapter(this.mcontext!!, mRecommendList!!)
+                blackManRecyclerView.setAdapter(mRecommendAdapter)
             } else {
-                mBlackManAdapter?.addFooter(currentDataSize - mBlackManList!!.size, mBlackManList!!)
+                mRecommendAdapter?.addFooter(currentDataSize - mRecommendList!!.size, mRecommendList!!)
             }
-            mBlackManAdapter?.setOnItemClickListener { _, position ->
-                mBlackManAdapter!!.dataList[position].let {
+            mRecommendAdapter?.setOnItemClickListener { _, position ->
+                mRecommendAdapter!!.dataList[position].let {
                     val bundle = Bundle()
                     bundle.putString("VIDEOTITLE", it.title)
                     bundle.putString("VIDEOIMGURL", it.imgUrl)
@@ -126,6 +108,7 @@ class BlackedFragment : BaseFragment() {
                 startActivity(intent.setClass(context, VideoPlay::class.java))
             }
         } else {
+            objectAnimator.cancel()
             blackManLoading.setImageResource(R.drawable.loding_error)
             Toast.makeText(mcontext, "点击图标重新加载", Toast.LENGTH_SHORT).show()
             blackManLoading.setOnClickListener {
@@ -138,17 +121,17 @@ class BlackedFragment : BaseFragment() {
     private fun startAnimation() {
         blackManLoading.setImageResource(R.drawable.loding)
         blackManLoading.visibility = View.VISIBLE
-        val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(blackManLoading, "rotation", 0f, 360f)
+        objectAnimator = ObjectAnimator.ofFloat(blackManLoading, "rotation", 0f, 360f)
         objectAnimator.duration = 1000
         objectAnimator.repeatMode = ValueAnimator.INFINITE
         objectAnimator.repeatCount = 8
         objectAnimator.interpolator = AccelerateInterpolator()
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                if (mBlackManAdapter?.dataList?.size == 0) {
+                if (mRecommendAdapter?.dataList?.size == 0) {
                     blackManLoading.setImageResource(R.drawable.loding_error)
+                    objectAnimator.cancel()
                 }
-                //todo 点击重新加载
                 super.onAnimationEnd(animation)
             }
         })

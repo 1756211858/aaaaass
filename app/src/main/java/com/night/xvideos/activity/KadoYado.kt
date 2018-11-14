@@ -26,6 +26,7 @@ import java.net.URL
 import java.text.NumberFormat
 
 
+@Suppress("DEPRECATION")
 /**
  * 显示4个按钮的功能页
  */
@@ -121,6 +122,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
     }
 
     private fun showDialog() {
+        @Suppress("DEPRECATION")
         MaterialDialog.Builder(this)
                 .title("2.0版本").content(text)
                 .positiveText("立即更新").positiveColor(resources.getColor(R.color.menu_item_blue_dark))
@@ -153,9 +155,8 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
                 .build()
         progressBar.show()
         async {
-            //todo 下载apk
             try {
-                val mPath = "/data/data/com.night.xvideos/files"
+                val mPath = application.filesDir.path
                 //val mPath="/mnt/sdcard/Download/"
                 mSavePath = File(mPath)
                 if (!mSavePath.exists()) {

@@ -28,29 +28,11 @@ import kotlinx.android.synthetic.main.fragment_creampie.*
 class CreampieFragment : BaseFragment() {
     private var mCreapieAdapter: CreampieAdapter? = null
     private var mCreampieList: MutableList<Creampie>? = null
-    private val mBmobQuery: BmobQuery<Creampie>? = BmobQuery<Creampie>()
+    private val mBmobQuery: BmobQuery<Creampie>? = BmobQuery()
     private var position: Int = 10
     private val intent = Intent()
     private var currentDataSize: Int = 0
-
-    companion object {
-        @SuppressLint("StaticFieldLeak")
-        private var instance: CreampieFragment? = null
-            get() {
-                if (field == null) {
-                    field = CreampieFragment()
-                }
-                return field
-            }
-
-        fun get(): CreampieFragment {
-            return instance!!
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-    }
+    private lateinit var objectAnimator: ObjectAnimator
 
     @SuppressLint("InflateParams")
     override fun initView(): Int {
@@ -140,7 +122,7 @@ class CreampieFragment : BaseFragment() {
     private fun startAnimation() {
         creamPieLodingImageView.setImageResource(R.drawable.loding)
         creamPieLodingImageView.visibility = View.VISIBLE
-        val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(creamPieLodingImageView, "rotation", 0f, 360f)
+        objectAnimator= ObjectAnimator.ofFloat(creamPieLodingImageView, "rotation", 0f, 360f)
         objectAnimator.duration = 1000
         objectAnimator.repeatMode = ValueAnimator.INFINITE
         objectAnimator.repeatCount = 8
@@ -148,9 +130,9 @@ class CreampieFragment : BaseFragment() {
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 if (mCreapieAdapter?.dataList?.size == 0) {
+                    objectAnimator.cancel()
                     creamPieLodingImageView.setImageResource(R.drawable.loding_error)
                 }
-                //todo 点击重新加载
                 super.onAnimationEnd(animation)
             }
         })

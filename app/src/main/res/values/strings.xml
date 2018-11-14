@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">xVideos</string>
+    <string name="app_name">Setting</string>
     <string name="kkFast_1">KKFast Network是基于V2Ray平台的网络加速服务</string>
     <string name="kkFast_2">什么是V2ray？</string>
     <string name="kkFast_3">"\n"  按照V2ray官方的介绍，Project V 提供了单一的内核和多种界面操作方式。内核（V2Ray）用于实际的网络交互、路由等针对网络数据的处理，而外围的用户界面程序提供了方便直接的操作流程。
