@@ -6,9 +6,14 @@ import android.widget.Toast
 import com.night.xvideos.activity.KadoYado
 import java.io.IOException
 import android.net.wifi.WifiManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import cn.bmob.v3.exception.BmobException
+import cn.bmob.v3.listener.SaveListener
+import com.afollestad.materialdialogs.MaterialDialog
+import com.night.xvideos.bean.ErrorVideo
 import com.night.xvideos.retrofit.ApiStore
 import com.night.xvideos.retrofit.ipAddressApi
 import retrofit2.Call
@@ -151,4 +156,24 @@ fun Any.analyzeIP(context: Context): Boolean {
         e.printStackTrace()
     }
     return bool!!
+}
+fun Any.showErrorVieoDialog(mContext: Context,errorVideo:ErrorVideo,
+                               title:String,videoUrl:String,className:String){
+    val dialog = MaterialDialog.Builder(mContext)
+            .title("报告视频错误")
+            .content("谢谢你帮助作者删除无效视频，wish you happines！")
+            .negativeText("取消").negativeColor(mContext.resources.getColor(R.color.black))
+            .positiveText("确定").positiveColor(mContext.resources.getColor(R.color.buttonColor))
+            .onPositive { _, _ ->
+                errorVideo.videoUrl = videoUrl
+                errorVideo.title = title
+                errorVideo.className=className
+                errorVideo.save(object : SaveListener<String>() {
+                    override fun done(p0: String?, p1: BmobException?) {
+                        Toast.makeText(mContext, "上传成功.", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+            .cancelable(false)
+    dialog.show()
 }

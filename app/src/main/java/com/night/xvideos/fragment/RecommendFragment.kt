@@ -16,8 +16,10 @@ import cn.bmob.v3.listener.FindListener
 import com.night.xvideos.R
 import com.night.xvideos.activity.VideoPlay
 import com.night.xvideos.adapter.RecommendAdapter
+import com.night.xvideos.bean.ErrorVideo
 import com.night.xvideos.bean.Recommend
 import com.night.xvideos.isNetWorkAvailable
+import com.night.xvideos.showErrorVieoDialog
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_toprankings.*
 import kotlinx.android.synthetic.main.fragment_blacked.*
@@ -33,6 +35,7 @@ class RecommendFragment : BaseFragment() {
     private val intent = Intent()
     private var currentDataSize: Int = 0
     private lateinit var objectAnimator: ObjectAnimator
+    private var errorVideo: ErrorVideo = ErrorVideo()
 
     @SuppressLint("InflateParams")
     override fun initView(): Int {
@@ -44,7 +47,7 @@ class RecommendFragment : BaseFragment() {
         //开始动画
         startAnimation()
         mBmobQuery?.order("-createdAt")
-        mBmobQuery?.setLimit(10)
+        mBmobQuery?.setLimit(100)
         mBmobQuery?.findObjects(object : FindListener<Recommend>() {
             override fun done(p0: MutableList<Recommend>?, p1: BmobException?) {
                 mRecommendList = p0
@@ -62,9 +65,9 @@ class RecommendFragment : BaseFragment() {
             override fun onLoadMore() {
                 if (mcontext?.let { isNetWorkAvailable(mContext = it) }!!) {
                     mBmobQuery?.order("-createdAt")
-                    mBmobQuery?.setLimit(10)
+                    mBmobQuery?.setLimit(100)
                     mBmobQuery?.setSkip(position)
-                    position += 10
+                    position += 100
                     //开始加载动画
                     startAnimation()
                     mBmobQuery?.findObjects(object : FindListener<Recommend>() {
@@ -97,7 +100,7 @@ class RecommendFragment : BaseFragment() {
             } else {
                 mRecommendAdapter?.addFooter(currentDataSize - mRecommendList!!.size, mRecommendList!!)
             }
-            mRecommendAdapter?.setOnItemClickListener { _, position ->
+            mRecommendAdapter?.setOnItemClickListener({ _, position ->
                 mRecommendAdapter!!.dataList[position].let {
                     val bundle = Bundle()
                     bundle.putString("VIDEOTITLE", it.title)
@@ -106,7 +109,12 @@ class RecommendFragment : BaseFragment() {
                     intent.putExtras(bundle)
                 }
                 startActivity(intent.setClass(context, VideoPlay::class.java))
-            }
+            }, { _, position ->
+                showErrorVieoDialog(this.mcontext!!, errorVideo,
+                        mRecommendAdapter!!.dataList[position].title!!,
+                        mRecommendAdapter!!.dataList[position].videoUrl!!,
+                        "RecommendFragment")
+            })
         } else {
             objectAnimator.cancel()
             blackManLoading.setImageResource(R.drawable.loding_error)

@@ -7,5 +7,4 @@ class TopRankings : BmobObject() {
     var imgUrl: String? = null
     var videoUrl: String? = null
     var duration: String? = null
-    var id:String ?=null
 }

@@ -70,6 +70,7 @@
 
     <!--斗鱼-->
     <color name="toolBarColor">#fe7c31</color>
+    <color name="buttonColor">#116cb4</color>
 
 
 </resources>

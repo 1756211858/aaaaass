@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.video_item.view.*
  */
 class SpeakChineseAdapter(private var context: Context, var dataList: MutableList<SpeakChinese>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
+    private var mLongClickListener: ((View, Int) -> Unit)? = null
     val options = RequestOptions()
             .error(R.drawable.thumb2)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -38,8 +39,9 @@ class SpeakChineseAdapter(private var context: Context, var dataList: MutableLis
 
     }
 
-    fun setOnItemClickListener(listener: ((View, Int) -> Unit)?) {
+    fun setOnItemListener(listener: ((View, Int) -> Unit)?, listener2: ((View, Int) -> Unit)?) {
         mClickListener = listener
+        mLongClickListener = listener2
     }
 
     fun addFooter(position: Int, list: MutableList<SpeakChinese>) {
@@ -54,9 +56,19 @@ class SpeakChineseAdapter(private var context: Context, var dataList: MutableLis
 
 
     inner class ViewHolder(itemView: View, private var mClickListener: ((View, Int) -> Unit)?)
-        : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
+
+
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            if (v != null) {
+                mLongClickListener?.invoke(v, layoutPosition)
+            }
+            return true
         }
 
         override fun onClick(v: View?) {

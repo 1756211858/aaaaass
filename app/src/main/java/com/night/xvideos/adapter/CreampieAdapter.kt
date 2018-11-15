@@ -19,9 +19,12 @@ import kotlinx.android.synthetic.main.video_item.view.*
  */
 class CreampieAdapter(private var context: Context, var dataList: MutableList<Creampie>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
+    private var mLongClickListener: ((View, Int) -> Unit)? = null
+
     val options = RequestOptions()
             .error(R.drawable.thumb2)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //造成性能下降，先删除
         //holder.setIsRecyclable(false)
@@ -37,14 +40,15 @@ class CreampieAdapter(private var context: Context, var dataList: MutableList<Cr
 
     }
 
-    fun setOnItemClickListener(listener: ((View, Int) -> Unit)?) {
+    fun setOnItemClickListener(listener: ((View, Int) -> Unit)?, listener2: ((View, Int) -> Unit)?) {
         mClickListener = listener
+        mLongClickListener = listener
     }
 
-    fun addFooter(position: Int,list:MutableList<Creampie>){
-        dataList.addAll(position,list)
+    fun addFooter(position: Int, list: MutableList<Creampie>) {
+        dataList.addAll(position, list)
         notifyItemInserted(position)
-        notifyItemRangeChanged(10,10)
+        notifyItemRangeChanged(10, 10)
     }
 
     override fun getItemCount(): Int {
@@ -53,9 +57,18 @@ class CreampieAdapter(private var context: Context, var dataList: MutableList<Cr
 
 
     inner class ViewHolder(itemView: View, private var mClickListener: ((View, Int) -> Unit)?)
-        : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
+
+
         init {
             itemView.setOnClickListener(this)
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            if (v != null) {
+                mLongClickListener?.invoke(v, layoutPosition)
+            }
+            return true
         }
 
         override fun onClick(v: View?) {

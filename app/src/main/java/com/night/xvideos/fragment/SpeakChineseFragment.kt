@@ -16,8 +16,10 @@ import cn.bmob.v3.listener.FindListener
 import com.night.xvideos.R
 import com.night.xvideos.activity.VideoPlay
 import com.night.xvideos.adapter.SpeakChineseAdapter
+import com.night.xvideos.bean.ErrorVideo
 import com.night.xvideos.bean.SpeakChinese
 import com.night.xvideos.isNetWorkAvailable
+import com.night.xvideos.showErrorVieoDialog
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_toprankings.*
 import kotlinx.android.synthetic.main.fragment_speakchinese.*
@@ -33,7 +35,7 @@ class SpeakChineseFragment : BaseFragment() {
     private val intent = Intent()
     private var currentDataSize: Int = 0
     private lateinit var objectAnimator: ObjectAnimator
-
+    private var errorVideo:ErrorVideo= ErrorVideo()
     companion object {
         @SuppressLint("StaticFieldLeak")
         private var instance: SpeakChineseFragment? = null
@@ -60,7 +62,7 @@ class SpeakChineseFragment : BaseFragment() {
         //开始动画
         startAnimation()
         mBmobQuery?.order("-createdAt")
-        mBmobQuery?.setLimit(10)
+        mBmobQuery?.setLimit(100)
         mBmobQuery?.findObjects(object : FindListener<SpeakChinese>() {
             override fun done(p0: MutableList<SpeakChinese>?, p1: BmobException?) {
                 mChineseList = p0
@@ -78,9 +80,9 @@ class SpeakChineseFragment : BaseFragment() {
             override fun onLoadMore() {
                 if (mcontext?.let { isNetWorkAvailable(mContext = it) }!!) {
                     mBmobQuery?.order("-createdAt")
-                    mBmobQuery?.setLimit(10)
+                    mBmobQuery?.setLimit(100)
                     mBmobQuery?.setSkip(position)
-                    position += 10
+                    position += 100
                     //开始加载动画
                     startAnimation()
                     mBmobQuery?.findObjects(object : FindListener<SpeakChinese>() {
@@ -113,8 +115,7 @@ class SpeakChineseFragment : BaseFragment() {
             } else {
                 mSpeakChineseAdapter?.addFooter(currentDataSize - mChineseList!!.size, mChineseList!!)
             }
-            mSpeakChineseAdapter?.setOnItemClickListener { _, position ->
-
+            mSpeakChineseAdapter?.setOnItemListener( { _, position ->
                 mSpeakChineseAdapter!!.dataList[position].let {
                     val bundle = Bundle()
                     bundle.putString("VIDEOTITLE", it.title)
@@ -123,7 +124,12 @@ class SpeakChineseFragment : BaseFragment() {
                     intent.putExtras(bundle)
                 }
                 startActivity(intent.setClass(context, VideoPlay::class.java))
-            }
+            },{_,position->
+                showErrorVieoDialog(this.mcontext!!,errorVideo,
+                        mSpeakChineseAdapter!!.dataList[position].title!!,
+                        mSpeakChineseAdapter!!.dataList[position].videoUrl!!,
+                        "SpeakChineseFragment")
+            })
         } else {
             objectAnimator.cancel()
             speakChineseLodingImageView.setImageResource(R.drawable.loding_error)

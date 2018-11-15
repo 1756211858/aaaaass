@@ -6,16 +6,21 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
+import cn.bmob.v3.listener.SaveListener
+import com.afollestad.materialdialogs.MaterialDialog
 import com.night.xvideos.R
 import com.night.xvideos.adapter.TopRankingsAdapter
+import com.night.xvideos.bean.ErrorVideo
 import com.night.xvideos.bean.TopRankings
 import com.night.xvideos.isNetWorkAvailable
+import com.night.xvideos.showErrorVieoDialog
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_toprankings.*
 
@@ -26,7 +31,7 @@ class TopRanking : BaseActivity() {
     private var position: Int = 10
     private var currentDataSize: Int = 0
     private lateinit var objectAnimator: ObjectAnimator
-
+    private var errorVideo: ErrorVideo = ErrorVideo()
 
     override fun setLayoutId(): Int {
         return R.layout.activity_toprankings
@@ -37,15 +42,13 @@ class TopRanking : BaseActivity() {
         //开始动画
         startAnimation()
         mBmobQuery?.order("-createdAt")
-        mBmobQuery?.setLimit(10)
+        mBmobQuery?.setLimit(100)
         mBmobQuery?.findObjects(object : FindListener<TopRankings>() {
             override fun done(p0: MutableList<TopRankings>?, p1: BmobException?) {
                 mTopRankingLists = p0
                 currentDataSize += p0!!.size
                 setVideoList()
             }
-
-
         })
 
         //监听上滑刷新
@@ -58,9 +61,9 @@ class TopRanking : BaseActivity() {
                 //检测网络是否可用
                 if (isNetWorkAvailable(applicationContext)) {
                     mBmobQuery?.order("-createdAt")
-                    mBmobQuery?.setLimit(10)
+                    mBmobQuery?.setLimit(100)
                     mBmobQuery?.setSkip(position)
-                    position += 10
+                    position += 100
                     //开始加载动画
                     startAnimation()
                     mBmobQuery?.findObjects(object : FindListener<TopRankings>() {
@@ -128,8 +131,21 @@ class TopRanking : BaseActivity() {
                     intent.putExtras(bundle)
                 }
                 startActivity(intent.setClass(applicationContext, VideoPlay::class.java))
-            }, listener2 = { _: View, _: Int ->
-                Toast.makeText(applicationContext, "长按上传错误视频ID", Toast.LENGTH_SHORT).show()
+            }, listener2 = { _: View, i: Int ->
+                val dialog = MaterialDialog.Builder(this)
+                        .title("报告视频错误")
+                        .content("谢谢你帮助作者删除无效视频，wish you happines！")
+                        .negativeText("取消").negativeColor(resources.getColor(R.color.black))
+                        .positiveText("确定").positiveColor(resources.getColor(R.color.buttonColor))
+                        .onPositive { _, _ ->
+                            showErrorVieoDialog(this, errorVideo,
+                                    mTopRankingsAdapter!!.dataList[position].title!!,
+                                    mTopRankingsAdapter!!.dataList[position].videoUrl!!,
+                                    "TopRanking")
+                        }
+                        .cancelable(false)
+                dialog.show()
+
             })
         } else {
             topRankingsLodingImageView.setImageResource(R.drawable.loding_error)

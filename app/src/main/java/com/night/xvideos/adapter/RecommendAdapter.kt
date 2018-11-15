@@ -19,8 +19,11 @@ import kotlinx.android.synthetic.main.video_item.view.*
  */
 class RecommendAdapter(private var context: Context, var dataList: MutableList<Recommend>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
+    private var mLongClickListener: ((View, Int) -> Unit)? = null
+
     val options = RequestOptions()
             .error(R.drawable.thumb2).diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //造成性能下降，先删除
         //holder.setIsRecyclable(false)
@@ -36,8 +39,9 @@ class RecommendAdapter(private var context: Context, var dataList: MutableList<R
 
     }
 
-    fun setOnItemClickListener(listener: ((View, Int) -> Unit)?) {
+    fun setOnItemClickListener(listener: ((View, Int) -> Unit)?, listener2: ((View, Int) -> Unit)?) {
         mClickListener = listener
+        mLongClickListener = listener2
     }
 
     fun addFooter(position: Int, list: MutableList<Recommend>) {
@@ -52,9 +56,18 @@ class RecommendAdapter(private var context: Context, var dataList: MutableList<R
 
 
     inner class ViewHolder(itemView: View, private var mClickListener: ((View, Int) -> Unit)?)
-        : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
+
+
         init {
             itemView.setOnClickListener(this)
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            if (v != null) {
+                mLongClickListener?.invoke(v, layoutPosition)
+            }
+            return true
         }
 
         override fun onClick(v: View?) {

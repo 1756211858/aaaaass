@@ -17,7 +17,9 @@ import com.night.xvideos.R
 import com.night.xvideos.activity.VideoPlay
 import com.night.xvideos.adapter.CreampieAdapter
 import com.night.xvideos.bean.Creampie
+import com.night.xvideos.bean.ErrorVideo
 import com.night.xvideos.isNetWorkAvailable
+import com.night.xvideos.showErrorVieoDialog
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_toprankings.*
 import kotlinx.android.synthetic.main.fragment_creampie.*
@@ -26,13 +28,14 @@ import kotlinx.android.synthetic.main.fragment_creampie.*
  * 中出频道
  */
 class CreampieFragment : BaseFragment() {
-    private var mCreapieAdapter: CreampieAdapter? = null
+    private var mCreampieAdapter: CreampieAdapter? = null
     private var mCreampieList: MutableList<Creampie>? = null
     private val mBmobQuery: BmobQuery<Creampie>? = BmobQuery()
     private var position: Int = 10
     private val intent = Intent()
     private var currentDataSize: Int = 0
     private lateinit var objectAnimator: ObjectAnimator
+    private var errorVideo: ErrorVideo = ErrorVideo()
 
     @SuppressLint("InflateParams")
     override fun initView(): Int {
@@ -44,7 +47,7 @@ class CreampieFragment : BaseFragment() {
         //开始动画
         startAnimation()
         mBmobQuery?.order("-createdAt")
-        mBmobQuery?.setLimit(10)
+        mBmobQuery?.setLimit(100)
         mBmobQuery?.findObjects(object : FindListener<Creampie>() {
             override fun done(p0: MutableList<Creampie>?, p1: BmobException?) {
                 mCreampieList = p0
@@ -63,9 +66,9 @@ class CreampieFragment : BaseFragment() {
 
                 if (mcontext?.let { isNetWorkAvailable(mContext = it) }!!) {
                     mBmobQuery?.order("-createdAt")
-                    mBmobQuery?.setLimit(10)
+                    mBmobQuery?.setLimit(100)
                     mBmobQuery?.setSkip(position)
-                    position += 10
+                    position += 100
                     //开始加载动画
                     startAnimation()
                     mBmobQuery?.findObjects(object : FindListener<Creampie>() {
@@ -92,15 +95,15 @@ class CreampieFragment : BaseFragment() {
             //设置Adapter中的数据和点击事件
             creamPieLodingImageView.visibility = View.GONE
             //假如adapter中没有数据，那就代表第一次加载数据。
-            if (mCreapieAdapter==null) {
-                mCreapieAdapter = CreampieAdapter(this.mcontext!!, mCreampieList!!)
-                creamPieRecyclerView.setAdapter(mCreapieAdapter)
+            if (mCreampieAdapter==null) {
+                mCreampieAdapter = CreampieAdapter(this.mcontext!!, mCreampieList!!)
+                creamPieRecyclerView.setAdapter(mCreampieAdapter)
             } else {
-                mCreapieAdapter?.addFooter(currentDataSize - mCreampieList!!.size, mCreampieList!!)
+                mCreampieAdapter?.addFooter(currentDataSize - mCreampieList!!.size, mCreampieList!!)
             }
-            mCreapieAdapter?.setOnItemClickListener { _, position ->
+            mCreampieAdapter?.setOnItemClickListener( { _, position ->
 
-                mCreapieAdapter!!.dataList[position].let {
+                mCreampieAdapter!!.dataList[position].let {
                     val bundle = Bundle()
                     bundle.putString("VIDEOTITLE", it.title)
                     bundle.putString("VIDEOIMGURL", it.imgUrl)
@@ -108,7 +111,13 @@ class CreampieFragment : BaseFragment() {
                     intent.putExtras(bundle)
                 }
                 startActivity(intent.setClass(context, VideoPlay::class.java))
-            }
+            },{_,position->
+                showErrorVieoDialog(this.mcontext!!, errorVideo,
+                        mCreampieAdapter!!.dataList[position].title!!,
+                        mCreampieAdapter!!.dataList[position].videoUrl!!,
+                        "CreampieFragment")
+
+            })
         } else {
             creamPieLodingImageView.setImageResource(R.drawable.loding_error)
             Toast.makeText(mcontext, "点击图标重新加载", Toast.LENGTH_SHORT).show()
@@ -129,7 +138,7 @@ class CreampieFragment : BaseFragment() {
         objectAnimator.interpolator = AccelerateInterpolator()
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                if (mCreapieAdapter?.dataList?.size == 0) {
+                if (mCreampieAdapter?.dataList?.size == 0) {
                     objectAnimator.cancel()
                     creamPieLodingImageView.setImageResource(R.drawable.loding_error)
                 }
