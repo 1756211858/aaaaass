@@ -16,4 +16,6 @@
     <string name="kkFast_6">他们的后台系统自带语言选项，如下图：</string>
     <string name="kkFast_7">点击继续后即可转到注册~结账页面，请务必填写正确的邮箱（以后找回密码用得到）其他名字、地址、手机随便填写，仅支持支付宝付款。</string>
     <string name="kkFast_8">点击【结账】然后会转到支付宝收款页面，然后用手机支付宝扫码支付就完成购买了。</string>
+    <string name="buy">一键购买</string>
+    <string name="download">一键下载</string>
 </resources>

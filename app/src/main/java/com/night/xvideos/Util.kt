@@ -45,10 +45,10 @@ fun Any.getJs(): String {
 /**
  * 获取当前的app版本
  */
-fun Any.getVersionCode(mContext: Context): Int {
-    var versionCode = 0
+fun Any.getVersionCode(mContext: Context): Float {
+    var versionCode = 0.0F
     try {
-        versionCode = mContext.packageManager.getPackageInfo(mContext.packageName, 0).versionCode
+        versionCode = mContext.packageManager.getPackageInfo(mContext.packageName, 0).versionCode.toFloat()
     } catch (e: IOException) {
         e.printStackTrace()
     }

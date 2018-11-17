@@ -2,23 +2,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.night.xvideos">
-    <!--允许联网 -->
+
+    <!-- 允许联网 -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!--获取GSM（2g）、WCDMA（联通3g）等网络状态的信息  -->
+    <!-- 获取GSM（2g）、WCDMA（联通3g）等网络状态的信息 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <!--获取wifi网络状态的信息 -->
+    <!-- 获取wifi网络状态的信息 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <!--保持CPU 运转，屏幕和键盘灯有可能是关闭的,用于文件上传和下载 -->
+    <!-- 保持CPU 运转，屏幕和键盘灯有可能是关闭的,用于文件上传和下载 -->
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <!--获取sd卡写的权限，用于文件上传和下载-->
+    <!-- 获取sd卡写的权限，用于文件上传和下载 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <!--允许读取手机状态 用于创建BmobInstallation-->
+    <!-- 允许读取手机状态 用于创建BmobInstallation -->
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <!--在sdcard中创建/删除文件的权限 -->
+    <!-- 在sdcard中创建/删除文件的权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <!--7.0以上自动安装必加权限，不加后果就是安装界面闪退-->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- 7.0以上自动安装必加权限，不加后果就是安装界面闪退 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/app_setting"
@@ -26,13 +28,13 @@
         android:roundIcon="@mipmap/app_setting"
         android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <!--api>=24的使用FileProvider安装-->
+
+        <!-- api>=24的使用FileProvider安装 -->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.night.xvideos.update.provider"
             android:exported="false"
-            android:grantUriPermissions="true"
-            >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/fileprovider"
@@ -41,35 +43,32 @@
 
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.Splash"
-
-            >
+            android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.KadoYado"
-            android:theme="@style/AppTheme"
-            />
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".activity.HotVideo"
-            android:theme="@style/AppTheme"
-            />
+            android:theme="@style/AppTheme"/>
         <activity
-            android:name="com.night.xvideos.activity.VideoPlay"
+            android:name=".activity.VideoPlay"
             android:configChanges="orientation|keyboardHidden|screenSize|navigation"
-            android:theme="@style/AppTheme.videoPlay"
-
-            />
+            android:theme="@style/AppTheme.videoPlay"/>
+        <activity
+            android:name=".activity.TopRanking"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".activity.Description"
-            android:theme="@style/AppTheme"
-            />
-        <activity android:name=".activity.TopRanking"
-            android:theme="@style/AppTheme"
-            />
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".activity.MyDetail"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

@@ -102,7 +102,6 @@ class CreampieFragment : BaseFragment() {
                 mCreampieAdapter?.addFooter(currentDataSize - mCreampieList!!.size, mCreampieList!!)
             }
             mCreampieAdapter?.setOnItemClickListener( { _, position ->
-
                 mCreampieAdapter!!.dataList[position].let {
                     val bundle = Bundle()
                     bundle.putString("VIDEOTITLE", it.title)

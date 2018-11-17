@@ -48,7 +48,8 @@ class TopRankingsAdapter(private var context: Context, var dataList: MutableList
     fun addFooter(position: Int, list: MutableList<TopRankings>) {
         dataList.addAll(position, list)
         notifyItemInserted(position)
-        notifyItemRangeChanged(10, 10)
+        notifyItemRangeChanged(dataList.size-100, 100)
+
     }
 
     override fun getItemCount(): Int {
@@ -73,7 +74,7 @@ class TopRankingsAdapter(private var context: Context, var dataList: MutableList
         }
 
         override fun onLongClick(v: View?): Boolean {
-            if (mClickListener != null && itemView != null) {
+            if (mLongClickListener != null && v != null) {
                 mLongClickListener?.invoke(v!!, layoutPosition)
             }
             return true

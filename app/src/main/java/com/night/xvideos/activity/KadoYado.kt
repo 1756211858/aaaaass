@@ -24,6 +24,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 import java.text.NumberFormat
+import com.flurry.android.FlurryAgent
 
 
 @Suppress("DEPRECATION")
@@ -33,7 +34,7 @@ import java.text.NumberFormat
 class KadoYado : BaseActivity(), Contract.KadoYado {
     private var channelList: MutableList<ChannelBean>? = mutableListOf()
     private lateinit var apkUrl: String
-    private var code: Int = 0
+    private var code: Float = 0.0F
     private lateinit var text: String
     private lateinit var mSavePath: File
     private var mPresenter: Presenter? = null
@@ -51,6 +52,9 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
     override fun initData() {
         queryData()
         mPresenter = Presenter(applicationContext, this, null)
+        FlurryAgent.Builder()
+                .withLogEnabled(true)
+                .build(this, "3MDN6QFKRXNB2B39FCGJ")
         //分析ip地址是否属于国外
         //analyzeIP(applicationContext)
     }
@@ -79,7 +83,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
                     LongShow(applicationContext, "请连接VPN")
                 }
                 2 -> startActivity(intent.setClass(this, Description::class.java))
-                3 -> ShortShow(this, "暂不支持$position")
+                3 -> startActivity(intent.setClass(this, MyDetail::class.java))
             }
         }
         swipe_target.setAdapter(adapter)
@@ -97,7 +101,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
             override fun done(p0: MutableList<update>?, p1: BmobException?) {
                 if (p1 == null) {
                     apkUrl = p0!![0].apk.url
-                    code = p0[0].code.toInt()
+                    code = p0[0].code.toFloat()
                     text = p0[0].text
                     check()
                     Log.e("mlog", apkUrl)
@@ -114,7 +118,6 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
      * 判断版本大小
      */
     private fun check() {
-
         val i = getVersionCode(applicationContext)
         if (code > i) {
             showDialog()
@@ -124,7 +127,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
     private fun showDialog() {
         @Suppress("DEPRECATION")
         MaterialDialog.Builder(this)
-                .title("2.0版本").content(text)
+                .title("1.1版本").content(text)
                 .positiveText("立即更新").positiveColor(resources.getColor(R.color.menu_item_blue_dark))
                 .onPositive { _, _ ->
                     //下载apk文件

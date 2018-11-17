@@ -20,13 +20,14 @@ class Description : BaseActivity() {
         Glide.with(applicationContext).load(R.drawable.k4).into(imageView4)
         Glide.with(applicationContext).load(R.drawable.k5).into(imageView5)
         Glide.with(applicationContext).load(R.drawable.k6).into(imageView6)
-        kkFast_buy1.setOnClickListener {
+
+        buyButton.setOnClickListener {
             val uri = Uri.parse("https://client.kkfast.com/aff.php?aff=46")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         }
-        kkFast_buy2.setOnClickListener {
-            val uri = Uri.parse("https://client.kkfast.com/aff.php?aff=46")
+        downloadButton.setOnClickListener {
+            val uri = Uri.parse("https://github.com/SmokeJeason/downloadAPK")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         }
