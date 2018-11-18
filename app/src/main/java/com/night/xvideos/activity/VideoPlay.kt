@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.*
+import android.os.SystemClock.sleep
 import co.metalab.asyncawait.async
 import android.util.Log
 import android.view.*
@@ -16,7 +17,6 @@ import java.io.IOException
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.webkit.*
-import android.widget.Toast
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.night.xvideos.R
@@ -24,6 +24,8 @@ import com.night.xvideos.webView.SonicJavaScriptInterface
 import com.night.xvideos.webView.SonicSessionClientImpl
 import com.tencent.sonic.sdk.SonicSession
 import kotlinx.android.synthetic.main.activity_videoplay.*
+import java.util.*
+import kotlin.concurrent.thread
 
 
 @Suppress("DEPRECATION", "UNUSED_EXPRESSION")
@@ -67,7 +69,28 @@ class VideoPlay : BaseActivity() {
 
             override fun onPageStarted(p0: WebView?, p1: String?, p2: Bitmap?) {
                 p0?.visibility = View.GONE
+                async {
+                    val timer = java.util.Timer(true)
+                    val timerTask = object : TimerTask() {
+                        override fun run() {
+                            runOnUiThread {
+                                if (videoPlayWebView.progress < 20) {
+                                    videoPlayDescription.visibility = View.VISIBLE
+                                    videoPlayWebView.visibility = View.GONE
+                                    videoPlayLodingImageView.visibility = View.GONE
+                                    lodingText.visibility = View.GONE
 
+                                    thread {
+                                        sleep(5000)
+                                        finish()
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                    timer.schedule(timerTask, 5000)
+                }
                 super.onPageStarted(p0, p1, p2)
             }
 
@@ -110,7 +133,9 @@ class VideoPlay : BaseActivity() {
                 async {
                     blockAds(p0)
                     p0?.loadUrl(getJs())
-                    Thread.sleep(100)
+                    thread {
+                        sleep(100)
+                    }
                     p0?.visibility = View.VISIBLE
                 }
             }
@@ -122,7 +147,7 @@ class VideoPlay : BaseActivity() {
                 }
             }
 
-            override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
+            /*override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
                 view?.loadUrl("file:///android_asset/videoError.html")
                 videoPlayDescription.visibility = View.VISIBLE
                 Toast.makeText(applicationContext, "检查VPN", Toast.LENGTH_SHORT).show()
@@ -130,45 +155,46 @@ class VideoPlay : BaseActivity() {
                     Thread.sleep(3000)
                     finish()
                 }
-            }
+            }*/
         }
 
-        chromeClient = object : WebChromeClient() {
-                override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                    lodingText.text = "加载中\n$newProgress%"
-                    if (newProgress == 100) {
-                        videoPlayLodingImageView.visibility = View.GONE
-                        lodingText.visibility = View.GONE
-                        cooperation.visibility = View.GONE
+        chromeClient =
+                object : WebChromeClient() {
+                    override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                        lodingText.text = "加载中\n$newProgress%"
+                        if (newProgress == 100) {
+                            videoPlayLodingImageView.visibility = View.GONE
+                            lodingText.visibility = View.GONE
+                            cooperation.visibility = View.GONE
+                        }
+                        super.onProgressChanged(view, newProgress)
                     }
-                    super.onProgressChanged(view, newProgress)
+
+                    override fun onShowCustomView(p0: View?, p1: WebChromeClient.CustomViewCallback?) {
+                        fullScreen()
+                        videoPlayWebView.visibility = View.GONE
+                        videoplayContainer.visibility = View.VISIBLE
+                        videoplayContainer.addView(p0)
+                        callBack = p1
+                        super.onShowCustomView(p0, p1)
+                    }
+
+                    override fun onHideCustomView() {
+                        fullScreen()
+                        if (callBack != null) {
+                            callBack!!.onCustomViewHidden()
+                        }
+                        videoPlayWebView.visibility = View.VISIBLE
+                        videoplayContainer.removeAllViews()
+                        videoplayContainer.visibility = View.GONE
+                        super.onHideCustomView()
+                    }
+
+                    override fun onReceivedTitle(view: WebView?, title1: String?) {
+
+                        super.onReceivedTitle(view, videoTitle)
+                    }
                 }
-
-            override fun onShowCustomView(p0: View?, p1: WebChromeClient.CustomViewCallback?) {
-                fullScreen()
-                videoPlayWebView.visibility = View.GONE
-                videoplayContainer.visibility = View.VISIBLE
-                videoplayContainer.addView(p0)
-                callBack = p1
-                super.onShowCustomView(p0, p1)
-            }
-
-            override fun onHideCustomView() {
-                fullScreen()
-                if (callBack != null) {
-                    callBack!!.onCustomViewHidden()
-                }
-                videoPlayWebView.visibility = View.VISIBLE
-                videoplayContainer.removeAllViews()
-                videoplayContainer.visibility = View.GONE
-                super.onHideCustomView()
-            }
-
-            override fun onReceivedTitle(view: WebView?, title1: String?) {
-
-                super.onReceivedTitle(view, videoTitle)
-            }
-        }
         videoPlayWebView.webChromeClient = chromeClient
     }
 
