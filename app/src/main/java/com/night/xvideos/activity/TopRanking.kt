@@ -15,6 +15,7 @@ import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
 
 import com.night.xvideos.R
+import com.night.xvideos.ShortShow
 import com.night.xvideos.adapter.TopRankingsAdapter
 import com.night.xvideos.bean.ErrorVideo
 import com.night.xvideos.bean.TopRankings
@@ -22,6 +23,8 @@ import com.night.xvideos.isNetWorkAvailable
 import com.night.xvideos.showErrorVieoDialog
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_toprankings.*
+import kotlinx.android.synthetic.main.fragment_recommend.*
+import kotlinx.android.synthetic.main.fragment_speakchinese.*
 
 class TopRanking : BaseActivity() {
     private var mTopRankingsAdapter: TopRankingsAdapter? = null
@@ -139,12 +142,10 @@ class TopRanking : BaseActivity() {
                         mTopRankingsAdapter!!.dataList[position].videoUrl!!,
                         "SpeakChineseFragment")
             })
-        } else {
-            topRankingsLodingImageView.setImageResource(R.drawable.loding_error)
-            Toast.makeText(applicationContext, "点击图标重新加载", Toast.LENGTH_SHORT).show()
-            topRankingsLodingImageView.setOnClickListener {
-                initData()
-            }
+        }else {
+            topRankingsLodingImageView.visibility=View.GONE
+            objectAnimator.cancel()
+            this.ShortShow(this,"没有更多啦")
         }
     }
 }

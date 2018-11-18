@@ -23,6 +23,8 @@ import com.night.xvideos.showErrorVieoDialog
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_toprankings.*
 import kotlinx.android.synthetic.main.fragment_creampie.*
+import kotlinx.android.synthetic.main.fragment_recommend.*
+import kotlinx.android.synthetic.main.fragment_speakchinese.*
 
 /**
  * 中出频道
@@ -119,12 +121,10 @@ class CreampieFragment : BaseFragment() {
                         "CreampieFragment")
 
             })
-        } else {
-            creamPieLodingImageView.setImageResource(R.drawable.loding_error)
-            Toast.makeText(mcontext, "点击图标重新加载", Toast.LENGTH_SHORT).show()
-            creamPieLodingImageView.setOnClickListener {
-                initData()
-            }
+        }else {
+            creamPieLodingImageView.visibility=View.GONE
+            objectAnimator.cancel()
+            Toast.makeText(mcontext, "没有更多啦", Toast.LENGTH_SHORT).show()
         }
     }
 

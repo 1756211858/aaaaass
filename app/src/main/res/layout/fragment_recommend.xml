@@ -23,7 +23,7 @@
         >
 
         <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
-            android:id="@+id/blackManRecyclerView"
+            android:id="@+id/recommendRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +34,7 @@
         </com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView>
 
         <ImageView
-            android:id="@+id/blackManLoading"
+            android:id="@+id/recommendLodingImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

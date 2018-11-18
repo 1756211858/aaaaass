@@ -47,9 +47,9 @@ class SpeakChineseAdapter(private var context: Context,
     }
 
     fun addFooter(position: Int, list: MutableList<SpeakChinese>) {
-        if(dataList.size>200){
+       /* if(dataList.size>200){
             dataList.clear()
-        }
+        }*/
         dataList.addAll(position, list)
         notifyItemInserted(position)
         notifyItemRangeChanged(dataList.size-100, 100)

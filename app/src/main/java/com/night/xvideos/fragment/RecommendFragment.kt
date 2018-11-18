@@ -22,7 +22,8 @@ import com.night.xvideos.isNetWorkAvailable
 import com.night.xvideos.showErrorVieoDialog
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
 import kotlinx.android.synthetic.main.activity_toprankings.*
-import kotlinx.android.synthetic.main.fragment_blacked.*
+import kotlinx.android.synthetic.main.fragment_recommend.*
+import kotlinx.android.synthetic.main.fragment_speakchinese.*
 
 /**
  * 黑人频道
@@ -39,7 +40,7 @@ class RecommendFragment : BaseFragment() {
 
     @SuppressLint("InflateParams")
     override fun initView(): Int {
-        return R.layout.fragment_blacked
+        return R.layout.fragment_recommend
     }
 
     override fun initData() {
@@ -57,7 +58,7 @@ class RecommendFragment : BaseFragment() {
         })
 
         //监听上滑刷新
-        blackManRecyclerView.setOnPullLoadMoreListener(object :
+        recommendRecyclerView.setOnPullLoadMoreListener(object :
                 PullLoadMoreRecyclerView.PullLoadMoreListener {
             override fun onRefresh() {
 
@@ -76,12 +77,13 @@ class RecommendFragment : BaseFragment() {
                             mRecommendList = p0
                             currentDataSize += p0?.size!!
                             setVideoList()
-                            blackManRecyclerView.setPullLoadMoreCompleted()
+                            recommendRecyclerView.setPullLoadMoreCompleted()
                         }
                     })
-                } else {
-                    topRankingsRecyclerView.setPullLoadMoreCompleted()
-                    Toast.makeText(mcontext, "网络连接失败", Toast.LENGTH_SHORT).show()
+                }else {
+                    recommendLodingImageView.visibility=View.GONE
+                    objectAnimator.cancel()
+                    Toast.makeText(mcontext, "没有更多啦", Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -93,11 +95,11 @@ class RecommendFragment : BaseFragment() {
     private fun setVideoList() {
         if (mRecommendList?.size!! >= 1) {
             //设置Adapter中的数据和点击事件
-            blackManLoading.visibility = View.GONE
+            recommendLodingImageView.visibility = View.GONE
             //假如adapter中没有数据，那就代表第一次加载数据。
             if (mRecommendAdapter == null) {
                 mRecommendAdapter = RecommendAdapter(this.mcontext!!, mRecommendList!!)
-                blackManRecyclerView.setAdapter(mRecommendAdapter)
+                recommendRecyclerView.setAdapter(mRecommendAdapter)
             } else {
                 mRecommendAdapter?.addFooter(currentDataSize - mRecommendList!!.size,
                         mRecommendList!!)
@@ -118,20 +120,17 @@ class RecommendFragment : BaseFragment() {
                         "RecommendFragment")
             })
         } else {
+            recommendLodingImageView.visibility=View.GONE
             objectAnimator.cancel()
-            blackManLoading.setImageResource(R.drawable.loding_error)
-            Toast.makeText(mcontext, "点击图标重新加载", Toast.LENGTH_SHORT).show()
-            blackManLoading.setOnClickListener {
-                initData()
-            }
+            Toast.makeText(mcontext, "没有更多啦", Toast.LENGTH_SHORT).show()
         }
     }
 
     @SuppressLint("WrongConstant")
     private fun startAnimation() {
-        blackManLoading.setImageResource(R.drawable.loding)
-        blackManLoading.visibility = View.VISIBLE
-        objectAnimator = ObjectAnimator.ofFloat(blackManLoading,
+        recommendLodingImageView.setImageResource(R.drawable.loding)
+        recommendLodingImageView.visibility = View.VISIBLE
+        objectAnimator = ObjectAnimator.ofFloat(recommendLodingImageView,
                 "rotation", 0f, 360f)
         objectAnimator.duration = 1000
         objectAnimator.repeatMode = ValueAnimator.INFINITE
@@ -140,7 +139,7 @@ class RecommendFragment : BaseFragment() {
         objectAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 if (mRecommendAdapter?.dataList?.size == 0) {
-                    blackManLoading.setImageResource(R.drawable.loding_error)
+                    recommendLodingImageView.setImageResource(R.drawable.loding_error)
                     objectAnimator.cancel()
                 }
                 super.onAnimationEnd(animation)
@@ -152,11 +151,11 @@ class RecommendFragment : BaseFragment() {
     //初始化RecyclerView
     private fun initRecyclerView() {
         //缓存数量
-        blackManRecyclerView.pullRefreshEnable = false
-        blackManRecyclerView.setLinearLayout()
-        blackManRecyclerView.setRefreshing(false)
-        blackManRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
-        blackManRecyclerView.setFooterViewTextColor(R.color.menu_transparent)
+        recommendRecyclerView.pullRefreshEnable = false
+        recommendRecyclerView.setLinearLayout()
+        recommendRecyclerView.setRefreshing(false)
+        recommendRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
+        recommendRecyclerView.setFooterViewTextColor(R.color.menu_transparent)
 
     }
 }

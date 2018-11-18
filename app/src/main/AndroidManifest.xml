@@ -61,7 +61,7 @@
         <activity
             android:name=".activity.VideoPlay"
             android:configChanges="orientation|keyboardHidden|screenSize|navigation"
-            android:theme="@style/AppTheme.videoPlay"/>
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".activity.TopRanking"
             android:theme="@style/AppTheme"/>

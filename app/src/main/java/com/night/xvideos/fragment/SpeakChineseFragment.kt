@@ -133,9 +133,9 @@ class SpeakChineseFragment : BaseFragment() {
                         "SpeakChineseFragment")
             })
         } else {
+            speakChineseLodingImageView.visibility=View.GONE
             objectAnimator.cancel()
             Toast.makeText(mcontext, "没有更多啦", Toast.LENGTH_SHORT).show()
-
         }
     }
 
@@ -168,4 +168,5 @@ class SpeakChineseFragment : BaseFragment() {
         speakChineseRecyclerView.setFooterViewBackgroundColor(R.color.menu_transparent)
         speakChineseRecyclerView.setFooterViewTextColor(R.color.menu_transparent)
     }
+
 }

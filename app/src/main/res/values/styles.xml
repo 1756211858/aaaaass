@@ -18,10 +18,6 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <style name="AppTheme.videoPlay" parent="AppTheme">
-        <item name="android:windowFullscreen">true</item>
-    </style>
-
     <style name="TranslucentStatus" parent="AppTheme">
         <item name="android:windowTranslucentStatus">true</item>
     </style>
