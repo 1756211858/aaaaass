@@ -1,7 +1,5 @@
 package com.night.xvideos.activity
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -26,7 +24,6 @@ import com.night.xvideos.webView.SonicJavaScriptInterface
 import com.night.xvideos.webView.SonicSessionClientImpl
 import com.tencent.sonic.sdk.SonicSession
 import kotlinx.android.synthetic.main.activity_videoplay.*
-import java.util.*
 
 
 @Suppress("DEPRECATION", "UNUSED_EXPRESSION")

@@ -131,21 +131,12 @@ class TopRanking : BaseActivity() {
                     intent.putExtras(bundle)
                 }
                 startActivity(intent.setClass(applicationContext, VideoPlay::class.java))
-            }, listener2 = { _: View, i: Int ->
-                val dialog = MaterialDialog.Builder(this)
-                        .title("报告视频错误")
-                        .content("谢谢你帮助作者删除无效视频，wish you happines！")
-                        .negativeText("取消").negativeColor(resources.getColor(R.color.black))
-                        .positiveText("确定").positiveColor(resources.getColor(R.color.buttonColor))
-                        .onPositive { _, _ ->
-                            showErrorVieoDialog(this, errorVideo,
-                                    mTopRankingsAdapter!!.dataList[position].title!!,
-                                    mTopRankingsAdapter!!.dataList[position].videoUrl!!,
-                                    "TopRanking")
-                        }
-                        .cancelable(false)
-                dialog.show()
+            }, listener2 = { _: View, _: Int ->
 
+                showErrorVieoDialog(this,errorVideo,
+                        mTopRankingsAdapter!!.dataList[position].title!!,
+                        mTopRankingsAdapter!!.dataList[position].videoUrl!!,
+                        "SpeakChineseFragment")
             })
         } else {
             topRankingsLodingImageView.setImageResource(R.drawable.loding_error)
