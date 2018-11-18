@@ -72,7 +72,8 @@ class SpeakChineseFragment : BaseFragment() {
         })
 
         //监听上滑刷新
-        speakChineseRecyclerView.setOnPullLoadMoreListener(object : PullLoadMoreRecyclerView.PullLoadMoreListener {
+        speakChineseRecyclerView.setOnPullLoadMoreListener(object :
+                PullLoadMoreRecyclerView.PullLoadMoreListener {
             override fun onRefresh() {
 
             }
@@ -113,7 +114,8 @@ class SpeakChineseFragment : BaseFragment() {
                 mSpeakChineseAdapter = SpeakChineseAdapter(this.mcontext!!, mChineseList!!)
                 speakChineseRecyclerView.setAdapter(mSpeakChineseAdapter)
             } else {
-                mSpeakChineseAdapter?.addFooter(currentDataSize - mChineseList!!.size, mChineseList!!)
+                mSpeakChineseAdapter?.addFooter(currentDataSize - mChineseList!!.size,
+                        mChineseList!!)
             }
             mSpeakChineseAdapter?.setOnItemListener( { _, position ->
                 mSpeakChineseAdapter!!.dataList[position].let {
@@ -132,11 +134,8 @@ class SpeakChineseFragment : BaseFragment() {
             })
         } else {
             objectAnimator.cancel()
-            speakChineseLodingImageView.setImageResource(R.drawable.loding_error)
-            Toast.makeText(mcontext, "点击图标重新加载", Toast.LENGTH_SHORT).show()
-            speakChineseLodingImageView.setOnClickListener {
-                initData()
-            }
+            Toast.makeText(mcontext, "没有更多啦", Toast.LENGTH_SHORT).show()
+
         }
     }
 

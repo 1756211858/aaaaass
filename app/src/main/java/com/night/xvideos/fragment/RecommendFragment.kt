@@ -57,7 +57,8 @@ class RecommendFragment : BaseFragment() {
         })
 
         //监听上滑刷新
-        blackManRecyclerView.setOnPullLoadMoreListener(object : PullLoadMoreRecyclerView.PullLoadMoreListener {
+        blackManRecyclerView.setOnPullLoadMoreListener(object :
+                PullLoadMoreRecyclerView.PullLoadMoreListener {
             override fun onRefresh() {
 
             }
@@ -98,7 +99,8 @@ class RecommendFragment : BaseFragment() {
                 mRecommendAdapter = RecommendAdapter(this.mcontext!!, mRecommendList!!)
                 blackManRecyclerView.setAdapter(mRecommendAdapter)
             } else {
-                mRecommendAdapter?.addFooter(currentDataSize - mRecommendList!!.size, mRecommendList!!)
+                mRecommendAdapter?.addFooter(currentDataSize - mRecommendList!!.size,
+                        mRecommendList!!)
             }
             mRecommendAdapter?.setOnItemClickListener({ _, position ->
                 mRecommendAdapter!!.dataList[position].let {
@@ -129,7 +131,8 @@ class RecommendFragment : BaseFragment() {
     private fun startAnimation() {
         blackManLoading.setImageResource(R.drawable.loding)
         blackManLoading.visibility = View.VISIBLE
-        objectAnimator = ObjectAnimator.ofFloat(blackManLoading, "rotation", 0f, 360f)
+        objectAnimator = ObjectAnimator.ofFloat(blackManLoading,
+                "rotation", 0f, 360f)
         objectAnimator.duration = 1000
         objectAnimator.repeatMode = ValueAnimator.INFINITE
         objectAnimator.repeatCount = 8

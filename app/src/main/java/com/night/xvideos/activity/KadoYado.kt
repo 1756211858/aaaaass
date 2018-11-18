@@ -28,9 +28,6 @@ import com.flurry.android.FlurryAgent
 
 
 @Suppress("DEPRECATION")
-/**
- * 显示4个按钮的功能页
- */
 class KadoYado : BaseActivity(), Contract.KadoYado {
     private var channelList: MutableList<ChannelBean>? = mutableListOf()
     private lateinit var apkUrl: String

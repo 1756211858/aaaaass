@@ -21,7 +21,8 @@ abstract class BaseFragment : Fragment(), Contract.BaseFragment {
         mcontext = context
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
 
         return layoutInflater.inflate(initView(), container, false)
     }

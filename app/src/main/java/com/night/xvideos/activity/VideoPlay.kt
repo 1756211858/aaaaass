@@ -20,8 +20,6 @@ import android.webkit.*
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.night.xvideos.R
-import com.night.xvideos.webView.SonicJavaScriptInterface
-import com.night.xvideos.webView.SonicSessionClientImpl
 import com.tencent.sonic.sdk.SonicSession
 import kotlinx.android.synthetic.main.activity_videoplay.*
 import java.util.*
@@ -36,7 +34,6 @@ class VideoPlay : BaseActivity() {
     private var chromeClient: WebChromeClient? = null
     private var callBack: WebChromeClient.CustomViewCallback? = null
     private var sonicSession: SonicSession? = null
-    private var sonicSessionClient: SonicSessionClientImpl? = null
 
     @SuppressLint("WrongConstant")
     override fun setLayoutId(): Int {
@@ -120,12 +117,6 @@ class VideoPlay : BaseActivity() {
                     }
                 }
 
-                if (sonicSession != null) {
-                    val requestResponse = sonicSessionClient?.requestResource(url)
-                    if (requestResponse is WebResourceResponse) {
-                        return requestResponse
-                    }
-                }
                 return null
             }
 
@@ -143,11 +134,15 @@ class VideoPlay : BaseActivity() {
             override fun onReceivedSslError(p0: WebView?, p1: SslErrorHandler?, p2: SslError?) {
                 p1?.proceed()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    videoPlayWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                    videoPlayWebView.settings
+                            .mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                 }
             }
 
-            override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
+            override fun onReceivedError(view: WebView?, errorCode: Int,
+                                         description: String?, failingUrl: String?) {
+                view?.visibility=View.GONE
+
                 runOnUiThread {
                     videoPlayDescription.visibility = View.VISIBLE
                     videoPlayWebView.visibility = View.GONE
@@ -170,12 +165,13 @@ class VideoPlay : BaseActivity() {
                         if (newProgress == 100) {
                             videoPlayLodingImageView.visibility = View.GONE
                             lodingText.visibility = View.GONE
-                            cooperation.visibility = View.GONE
+                            //cooperation.visibility = View.GONE
                         }
                         super.onProgressChanged(view, newProgress)
                     }
 
-                    override fun onShowCustomView(p0: View?, p1: WebChromeClient.CustomViewCallback?) {
+                    override fun onShowCustomView(p0: View?,
+                                                  p1: WebChromeClient.CustomViewCallback?) {
                         fullScreen()
                         videoPlayWebView.visibility = View.GONE
                         videoplayContainer.visibility = View.VISIBLE
@@ -220,7 +216,6 @@ class VideoPlay : BaseActivity() {
         webSettings.javaScriptEnabled = true
         videoPlayWebView.removeJavascriptInterface("searchBoxJavaBridge_")
         intent.putExtra("loadUrlTime", System.currentTimeMillis())
-        videoPlayWebView.addJavascriptInterface(SonicJavaScriptInterface(sonicSessionClient, intent), "sonic")
         webSettings.allowContentAccess = true
         videoPlayWebView.scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
         webSettings.setNeedInitialFocus(false)//禁止webview上面控件获取焦点(黄色边框)
@@ -244,14 +239,9 @@ class VideoPlay : BaseActivity() {
             videoPlayWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
-        if (sonicSessionClient != null) {
-            sonicSessionClient!!.bindWebView(videoPlayWebView)
-            sonicSessionClient!!.clientReady()
-        } else {
             videoUrl = "https://www.xvideos.com/embedframe/${intent.getStringExtra("VIDEOURL")
                     .substring(6)}"
             videoPlayWebView.loadUrl(videoUrl)
-        }
     }
 
     @SuppressLint("WrongConstant")

@@ -17,7 +17,9 @@ import kotlinx.android.synthetic.main.video_item.view.*
 /**
  * 热门视频界面
  */
-class CreampieAdapter(private var context: Context, var dataList: MutableList<Creampie>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CreampieAdapter(private var context: Context,
+                      var dataList: MutableList<Creampie>)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
     private var mLongClickListener: ((View, Int) -> Unit)? = null
 
@@ -41,7 +43,8 @@ class CreampieAdapter(private var context: Context, var dataList: MutableList<Cr
 
     }
 
-    fun setOnItemClickListener(listener: ((View, Int) -> Unit)?, listener2: ((View, Int) -> Unit)?) {
+    fun setOnItemClickListener(listener: ((View, Int) -> Unit)?,
+                               listener2: ((View, Int) -> Unit)?) {
         mClickListener = listener
         mLongClickListener = listener2
     }
@@ -57,7 +60,8 @@ class CreampieAdapter(private var context: Context, var dataList: MutableList<Cr
     }
 
 
-    inner class ViewHolder(itemView: View, private var mClickListener: ((View, Int) -> Unit)?,
+    inner class ViewHolder(itemView: View,
+                           private var mClickListener: ((View, Int) -> Unit)?,
                            private var mLongClickListener: ((View, Int) -> Unit)?)
         : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
 

@@ -13,7 +13,9 @@ import kotlinx.android.synthetic.main.channel_item.view.*
 /**
  * 第一个主界面
  */
-class ChannelAdapter(private var context: Context, var list: MutableList<ChannelBean>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChannelAdapter(private var context: Context,
+                     private var list: MutableList<ChannelBean>) :
+        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //holder.setIsRecyclable(false)
@@ -36,8 +38,9 @@ class ChannelAdapter(private var context: Context, var list: MutableList<Channel
     }
 
 
-    inner class ChannelViewHolder(itemView: View, private var mClickListener: ((View, Int) -> Unit)?)
-        : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class ChannelViewHolder(itemView: View,
+                                  private var mClickListener: ((View, Int) -> Unit)?) :
+            RecyclerView.ViewHolder(itemView), View.OnClickListener {
         init {
             itemView.setOnClickListener(this)
         }

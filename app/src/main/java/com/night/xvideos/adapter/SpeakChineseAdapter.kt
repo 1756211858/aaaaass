@@ -17,7 +17,9 @@ import kotlinx.android.synthetic.main.video_item.view.*
 /**
  * 热门视频界面
  */
-class SpeakChineseAdapter(private var context: Context, var dataList: MutableList<SpeakChinese>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SpeakChineseAdapter(private var context: Context,
+                          var dataList: MutableList<SpeakChinese>) :
+        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
     private var mLongClickListener: ((View, Int) -> Unit)? = null
     val options = RequestOptions()
@@ -45,6 +47,9 @@ class SpeakChineseAdapter(private var context: Context, var dataList: MutableLis
     }
 
     fun addFooter(position: Int, list: MutableList<SpeakChinese>) {
+        if(dataList.size>200){
+            dataList.clear()
+        }
         dataList.addAll(position, list)
         notifyItemInserted(position)
         notifyItemRangeChanged(dataList.size-100, 100)

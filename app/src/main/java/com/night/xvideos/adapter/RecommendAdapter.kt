@@ -17,7 +17,9 @@ import kotlinx.android.synthetic.main.video_item.view.*
 /**
  * 热门视频界面
  */
-class RecommendAdapter(private var context: Context, var dataList: MutableList<Recommend>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecommendAdapter(private var context: Context,
+                       var dataList: MutableList<Recommend>) :
+        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mClickListener: ((View, Int) -> Unit)? = null
     private var mLongClickListener: ((View, Int) -> Unit)? = null
 
@@ -39,7 +41,8 @@ class RecommendAdapter(private var context: Context, var dataList: MutableList<R
 
     }
 
-    fun setOnItemClickListener(listener: ((View, Int) -> Unit)?, listener2: ((View, Int) -> Unit)?) {
+    fun setOnItemClickListener(listener: ((View, Int) -> Unit)?,
+                               listener2: ((View, Int) -> Unit)?) {
         mClickListener = listener
         mLongClickListener = listener2
     }
@@ -68,7 +71,7 @@ class RecommendAdapter(private var context: Context, var dataList: MutableList<R
 
         override fun onLongClick(v: View?): Boolean {
             if (mLongClickListener != null && v != null) {
-                mLongClickListener?.invoke(v!!, layoutPosition)
+                mLongClickListener?.invoke(v, layoutPosition)
             }
             return true
         }

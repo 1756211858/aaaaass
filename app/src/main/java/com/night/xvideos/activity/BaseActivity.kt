@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.webkit.WebView
-import co.metalab.asyncawait.async
 
 abstract class BaseActivity : AppCompatActivity() {
     var view: View? = null

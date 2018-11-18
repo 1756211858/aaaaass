@@ -39,7 +39,8 @@ fun Any.LongShow(mContext: Context, content: String) {
  */
 fun Any.getJs(): String {
     //#hlsplayer > div.buttons-bar.right > img:nth-child(4)
-    return "javascript:document.getElementsByClassName('buttons-bar.right')[3].addEventListener('click',function(){onClick.fullscreen();return false;});"
+    return "javascript:document.getElementsByClassName('buttons-bar.right')" +
+            "[3].addEventListener('click',function(){onClick.fullscreen();return false;});"
 }
 
 /**
@@ -48,7 +49,9 @@ fun Any.getJs(): String {
 fun Any.getVersionCode(mContext: Context): Float {
     var versionCode = 0.0F
     try {
-        versionCode = mContext.packageManager.getPackageInfo(mContext.packageName, 0).versionCode.toFloat()
+        versionCode = mContext.packageManager
+                .getPackageInfo(mContext.packageName, 0)
+                .versionCode.toFloat()
     } catch (e: IOException) {
         e.printStackTrace()
     }
@@ -61,7 +64,8 @@ fun Any.getVersionCode(mContext: Context): Float {
 fun Any.getVerName(mContext: Context): String {
     var verName = ""
     try {
-        verName = mContext.packageManager.getPackageInfo(mContext.packageName, 0).versionName + ".apk"
+        verName = mContext.packageManager
+                .getPackageInfo(mContext.packageName, 0).versionName + ".apk"
     } catch (e: IOException) {
         e.printStackTrace()
     }
@@ -87,7 +91,8 @@ fun Any.isNetWorkAvailable(mContext: Context): Boolean {
  */
 fun getIPAddress(context: Context): String? {
     val info = (context
-            .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo
+            .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+            .activeNetworkInfo
     if (info != null && info.isConnected) {
         if (info.type == ConnectivityManager.TYPE_MOBILE) {//当前使用2G/3G/4G网络
             try {
@@ -157,8 +162,9 @@ fun Any.analyzeIP(context: Context): Boolean {
     }
     return bool!!
 }
-fun Any.showErrorVieoDialog(mContext: Context,errorVideo:ErrorVideo,
-                               title:String,videoUrl:String,className:String){
+
+fun Any.showErrorVieoDialog(mContext: Context, errorVideo: ErrorVideo,
+                            title: String, videoUrl: String, className: String) {
     val dialog = MaterialDialog.Builder(mContext)
             .title("报告视频错误")
             .content("谢谢你帮助作者删除无效视频，wish you happines！")
@@ -167,7 +173,7 @@ fun Any.showErrorVieoDialog(mContext: Context,errorVideo:ErrorVideo,
             .onPositive { _, _ ->
                 errorVideo.videoUrl = videoUrl
                 errorVideo.title = title
-                errorVideo.className=className
+                errorVideo.className = className
                 errorVideo.save(object : SaveListener<String>() {
                     override fun done(p0: String?, p1: BmobException?) {
                         Toast.makeText(mContext, "上传成功.", Toast.LENGTH_SHORT).show()
@@ -175,5 +181,5 @@ fun Any.showErrorVieoDialog(mContext: Context,errorVideo:ErrorVideo,
                 })
             }
             .cancelable(false)
-    dialog.show()
+            .show()
 }

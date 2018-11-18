@@ -57,7 +57,8 @@ class CreampieFragment : BaseFragment() {
         })
 
         //监听上滑刷新
-        creamPieRecyclerView.setOnPullLoadMoreListener(object : PullLoadMoreRecyclerView.PullLoadMoreListener {
+        creamPieRecyclerView.setOnPullLoadMoreListener(object :
+                PullLoadMoreRecyclerView.PullLoadMoreListener {
             override fun onRefresh() {
 
             }
@@ -99,7 +100,8 @@ class CreampieFragment : BaseFragment() {
                 mCreampieAdapter = CreampieAdapter(this.mcontext!!, mCreampieList!!)
                 creamPieRecyclerView.setAdapter(mCreampieAdapter)
             } else {
-                mCreampieAdapter?.addFooter(currentDataSize - mCreampieList!!.size, mCreampieList!!)
+                mCreampieAdapter?.addFooter(currentDataSize - mCreampieList!!.size,
+                        mCreampieList!!)
             }
             mCreampieAdapter?.setOnItemClickListener( { _, position ->
                 mCreampieAdapter!!.dataList[position].let {
@@ -130,7 +132,8 @@ class CreampieFragment : BaseFragment() {
     private fun startAnimation() {
         creamPieLodingImageView.setImageResource(R.drawable.loding)
         creamPieLodingImageView.visibility = View.VISIBLE
-        objectAnimator= ObjectAnimator.ofFloat(creamPieLodingImageView, "rotation", 0f, 360f)
+        objectAnimator= ObjectAnimator.ofFloat(creamPieLodingImageView,
+                "rotation", 0f, 360f)
         objectAnimator.duration = 1000
         objectAnimator.repeatMode = ValueAnimator.INFINITE
         objectAnimator.repeatCount = 8

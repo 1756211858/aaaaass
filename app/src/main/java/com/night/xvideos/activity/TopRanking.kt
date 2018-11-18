@@ -13,8 +13,7 @@ import android.widget.Toast
 import cn.bmob.v3.BmobQuery
 import cn.bmob.v3.exception.BmobException
 import cn.bmob.v3.listener.FindListener
-import cn.bmob.v3.listener.SaveListener
-import com.afollestad.materialdialogs.MaterialDialog
+
 import com.night.xvideos.R
 import com.night.xvideos.adapter.TopRankingsAdapter
 import com.night.xvideos.bean.ErrorVideo
@@ -27,7 +26,7 @@ import kotlinx.android.synthetic.main.activity_toprankings.*
 class TopRanking : BaseActivity() {
     private var mTopRankingsAdapter: TopRankingsAdapter? = null
     private var mTopRankingLists: MutableList<TopRankings>? = null
-    private val mBmobQuery: BmobQuery<TopRankings>? = BmobQuery<TopRankings>()
+    private val mBmobQuery: BmobQuery<TopRankings>? = BmobQuery()
     private var position: Int = 10
     private var currentDataSize: Int = 0
     private lateinit var objectAnimator: ObjectAnimator
@@ -52,7 +51,8 @@ class TopRanking : BaseActivity() {
         })
 
         //监听上滑刷新
-        topRankingsRecyclerView.setOnPullLoadMoreListener(object : PullLoadMoreRecyclerView.PullLoadMoreListener {
+        topRankingsRecyclerView.setOnPullLoadMoreListener(object :
+                PullLoadMoreRecyclerView.PullLoadMoreListener {
             override fun onRefresh() {
 
             }
@@ -120,7 +120,8 @@ class TopRanking : BaseActivity() {
                 mTopRankingsAdapter = TopRankingsAdapter(applicationContext, mTopRankingLists!!)
                 topRankingsRecyclerView.setAdapter(mTopRankingsAdapter)
             } else {
-                mTopRankingsAdapter?.addFooter(currentDataSize - mTopRankingLists!!.size, mTopRankingLists!!)
+                mTopRankingsAdapter?.addFooter(currentDataSize - mTopRankingLists!!.size,
+                        mTopRankingLists!!)
             }
             mTopRankingsAdapter?.setOnItemListener(listener = { view: View, i: Int ->
                 mTopRankingsAdapter!!.dataList[i].let {
