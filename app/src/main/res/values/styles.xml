@@ -37,4 +37,9 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowActionBar">false</item>
     </style>
+    <style name="CustomTabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+
+    </style>
 </resources>

@@ -24,7 +24,7 @@
 
     <!--Home Button text -->
     <color name="homeButton_text">#1833ed</color>
-    <color name="gary">#515151</color>
+    <color name="gary">#8b8989</color>
     <color name="blue_dark">#1565C0</color>
     <!-- notification text -->
     <color name="bottom_text">#c1c0c0</color>

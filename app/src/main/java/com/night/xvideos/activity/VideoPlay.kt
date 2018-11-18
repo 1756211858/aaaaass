@@ -147,15 +147,20 @@ class VideoPlay : BaseActivity() {
                 }
             }
 
-            /*override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
-                view?.loadUrl("file:///android_asset/videoError.html")
-                videoPlayDescription.visibility = View.VISIBLE
-                Toast.makeText(applicationContext, "检查VPN", Toast.LENGTH_SHORT).show()
-                async {
-                    Thread.sleep(3000)
-                    finish()
+            override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
+                runOnUiThread {
+                    videoPlayDescription.visibility = View.VISIBLE
+                    videoPlayWebView.visibility = View.GONE
+                    videoPlayLodingImageView.visibility = View.GONE
+                    lodingText.visibility = View.GONE
+
+                    thread {
+                        sleep(5000)
+                        finish()
+                    }
                 }
-            }*/
+                super.onReceivedError(view, errorCode, description, failingUrl)
+            }
         }
 
         chromeClient =

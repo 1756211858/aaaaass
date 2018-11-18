@@ -13,7 +13,7 @@ import com.night.xvideos.fragment.SpeakChineseFragment
 import kotlinx.android.synthetic.main.activity_hotvideo.*
 
 class HotVideo : BaseActivity() {
-    private val titles = arrayOf("说中文的色情", "黑人", "中出")
+    private val titles = arrayOf("说中文的色情", "推荐", "中出")
     private var fragmentPagerAdapter: FragmentStatePagerAdapter? = null
     var fragmentList: MutableList<BaseFragment>? = mutableListOf()
     override fun setLayoutId(): Int {
