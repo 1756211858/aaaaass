@@ -7,7 +7,7 @@ import android.webkit.WebView
 import co.metalab.asyncawait.async
 
 abstract class BaseActivity : AppCompatActivity() {
-    private var view: View? = null
+    var view: View? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         view = layoutInflater.inflate(setLayoutId(), null)

@@ -1,0 +1,43 @@
+{
+  "project_info": {
+    "project_number": "884926397587",
+    "firebase_url": "https://xvideos-cf49f.firebaseio.com",
+    "project_id": "xvideos-cf49f",
+    "storage_bucket": "xvideos-cf49f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:884926397587:android:9065b01017f99b6a",
+        "android_client_info": {
+          "package_name": "com.night.xvideos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "884926397587-1oqdajkfagp91a4f48q6uet3c9frcjs3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCODKgAQ9EETysF507Nrk3ZvlJzgHzRAbI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      },
+      "admob_app_id": "ca-app-pub-3830415602342543~4104387117"
+    }
+  ],
+  "configuration_version": "1"
+}

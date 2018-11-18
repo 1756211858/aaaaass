@@ -25,6 +25,7 @@ class CreampieAdapter(private var context: Context, var dataList: MutableList<Cr
             .error(R.drawable.thumb2)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
 
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //造成性能下降，先删除
         //holder.setIsRecyclable(false)
@@ -36,19 +37,19 @@ class CreampieAdapter(private var context: Context, var dataList: MutableList<Cr
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder(LayoutInflater.from(context)
                 .inflate(R.layout.video_item, parent, false)
-                , mClickListener)
+                , mClickListener, mLongClickListener)
 
     }
 
     fun setOnItemClickListener(listener: ((View, Int) -> Unit)?, listener2: ((View, Int) -> Unit)?) {
         mClickListener = listener
-        mLongClickListener = listener
+        mLongClickListener = listener2
     }
 
     fun addFooter(position: Int, list: MutableList<Creampie>) {
         dataList.addAll(position, list)
         notifyItemInserted(position)
-        notifyItemRangeChanged(10, 10)
+        notifyItemRangeChanged(dataList.size - 100, 100)
     }
 
     override fun getItemCount(): Int {
@@ -56,16 +57,18 @@ class CreampieAdapter(private var context: Context, var dataList: MutableList<Cr
     }
 
 
-    inner class ViewHolder(itemView: View, private var mClickListener: ((View, Int) -> Unit)?)
+    inner class ViewHolder(itemView: View, private var mClickListener: ((View, Int) -> Unit)?,
+                           private var mLongClickListener: ((View, Int) -> Unit)?)
         : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
 
 
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
 
         override fun onLongClick(v: View?): Boolean {
-            if (v != null) {
+            if (mLongClickListener != null && v != null) {
                 mLongClickListener?.invoke(v, layoutPosition)
             }
             return true

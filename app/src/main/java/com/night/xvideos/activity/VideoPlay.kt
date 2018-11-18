@@ -126,8 +126,6 @@ class VideoPlay : BaseActivity() {
 
             override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
                 view?.loadUrl("file:///android_asset/videoError.html")
-
-
                 async {
                     runOnUiThread {
                         videoPlayDescription.visibility = View.VISIBLE
@@ -145,28 +143,17 @@ class VideoPlay : BaseActivity() {
             objectAnimator.repeatMode = ValueAnimator.INFINITE
             objectAnimator.repeatCount = 50
             objectAnimator.interpolator = AccelerateDecelerateInterpolator()
-            objectAnimator.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    /*videoPlayLodingImageView.visibility = View.GONE
-                    lodingText.visibility = View.GONE*/
-                    super.onAnimationEnd(animation)
-                }
-            })
             objectAnimator.start()
         }
-        /**
-         * 设置WebChromeClient类
-         */
+
         chromeClient = object : WebChromeClient() {
-            /**
-             * 获取加载进度
-             */
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 lodingText.text = "加载中\n$newProgress%"
                 if (newProgress == 100) {
                     runOnUiThread {
                         videoPlayLodingImageView.visibility = View.GONE
                         lodingText.visibility = View.GONE
+                        cooperation.visibility = View.GONE
                     }
                 }
                 super.onProgressChanged(view, newProgress)
@@ -222,19 +209,19 @@ class VideoPlay : BaseActivity() {
         webSettings.setSupportZoom(true) // 支持缩放
         webSettings.loadWithOverviewMode = true
         webSettings.mediaPlaybackRequiresUserGesture = false
-
         webSettings.cacheMode = WebSettings.LOAD_NORMAL
         webSettings.cacheMode = WebSettings.LOAD_DEFAULT
         webSettings.domStorageEnabled = true
         webSettings.pluginState = WebSettings.PluginState.ON
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             videoPlayWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
-        // step 5: webview is ready now, just tell session client to bind
+
         if (sonicSessionClient != null) {
             sonicSessionClient!!.bindWebView(videoPlayWebView)
             sonicSessionClient!!.clientReady()
-        } else { // default mode
+        } else {
 
             videoUrl = "https://www.xvideos.com/embedframe/${intent.getStringExtra("VIDEOURL")
                     .substring(6)}"
@@ -281,13 +268,11 @@ class VideoPlay : BaseActivity() {
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
         super.onSaveInstanceState(outState, outPersistentState)
         videoPlayWebView.saveState(outState)
-        Log.e("mlog", "onSaveInstanceState")
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
         videoPlayWebView.restoreState(savedInstanceState)
-        Log.e("mlog", "onRestoreInstanceState")
 
     }
 
@@ -295,7 +280,6 @@ class VideoPlay : BaseActivity() {
         super.onPause()
         videoPlayWebView.onPause()
         videoPlayWebView.pauseTimers()
-        Log.e("mlog", "onPause")
 
     }
 
@@ -303,17 +287,10 @@ class VideoPlay : BaseActivity() {
         super.onResume()
         videoPlayWebView.onResume()
         videoPlayWebView.resumeTimers()
-        //sonicSession?.refresh()
-        Log.e("mlog", "onResume")
-
     }
 
 
     override fun onDestroy() {
-        Log.e("mlog", "onDestroy")
-        /**
-         * 防止内存泄露
-         */
         if (null != sonicSession) {
             sonicSession!!.destroy()
             sonicSession = null
