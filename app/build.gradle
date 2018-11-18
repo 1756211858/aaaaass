@@ -17,6 +17,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk{abiFilters "armeabi"}
     }
+
     configurations{
         all*.exclude group:'com.squareup.okio'
         all*.exclude group:'com.android.support',module:'support-v13'
@@ -70,9 +71,12 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     compile 'com.flurry.android:analytics:11.4.0@aar'
 
+    implementation 'com.google.android.gms:play-services-ads:17.1.1'
+    compile 'com.google.firebase:firebase-core:16.0.5'
 }
 kotlin {
     experimental {
         coroutines "enable"
     }
 }
+apply plugin: 'com.google.gms.google-services'

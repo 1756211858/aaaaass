@@ -28,7 +28,9 @@
         android:roundIcon="@mipmap/app_setting"
         android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3830415602342543~4104387117"/>
         <!-- api>=24的使用FileProvider安装 -->
         <provider
             android:name="android.support.v4.content.FileProvider"

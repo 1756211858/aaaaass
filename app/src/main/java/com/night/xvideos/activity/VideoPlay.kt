@@ -9,10 +9,8 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.net.http.SslError
-import android.os.Build
-import android.os.Bundle
+import android.os.*
 import co.metalab.asyncawait.async
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.*
 import com.night.xvideos.getJs
@@ -21,12 +19,14 @@ import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.webkit.*
 import android.widget.Toast
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.night.xvideos.R
 import com.night.xvideos.webView.SonicJavaScriptInterface
 import com.night.xvideos.webView.SonicSessionClientImpl
 import com.tencent.sonic.sdk.SonicSession
 import kotlinx.android.synthetic.main.activity_videoplay.*
-import java.lang.Thread.sleep
+import java.util.*
 
 
 @Suppress("DEPRECATION", "UNUSED_EXPRESSION")
@@ -38,6 +38,7 @@ class VideoPlay : BaseActivity() {
     private var callBack: WebChromeClient.CustomViewCallback? = null
     private var sonicSession: SonicSession? = null
     private var sonicSessionClient: SonicSessionClientImpl? = null
+
     @SuppressLint("WrongConstant")
     override fun setLayoutId(): Int {
         return R.layout.activity_videoplay
@@ -45,6 +46,9 @@ class VideoPlay : BaseActivity() {
 
     @SuppressLint("WrongConstant", "JavascriptInterface")
     override fun initContentView() {
+        val adView = AdView(this)
+        adView.adSize = AdSize.BANNER
+        adView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
         videoTitle = intent.getStringExtra("VIDEOTITLE")
         videoImgUrl = intent.getStringExtra("VIDEOIMGURL")
         videoUrl = "https://www.xvideos.com/embedframe/${intent.getStringExtra("VIDEOURL")
@@ -57,16 +61,16 @@ class VideoPlay : BaseActivity() {
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
         //webView设置
         initWebSetting()
+        initLodingView()
+
         videoPlayWebView.loadUrl(videoUrl)
         videoPlayWebView.addJavascriptInterface(this, "fullscreen")
         videoPlayWebView.addJavascriptInterface(JsObject(), "onClick")
         videoPlayWebView.webViewClient = object : WebViewClient() {
 
             override fun onPageStarted(p0: WebView?, p1: String?, p2: Bitmap?) {
-                runOnUiThread {
-                    p0?.visibility = View.GONE
-                    //屏蔽设置
-                }
+                p0?.visibility = View.GONE
+
                 super.onPageStarted(p0, p1, p2)
             }
 
@@ -111,9 +115,6 @@ class VideoPlay : BaseActivity() {
                     p0?.loadUrl(getJs())
                     Thread.sleep(100)
                     p0?.visibility = View.VISIBLE
-                    if (sonicSession != null) {
-                        sonicSession!!.sessionClient.pageFinish(videoUrl)
-                    }
                 }
             }
 
@@ -126,38 +127,25 @@ class VideoPlay : BaseActivity() {
 
             override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
                 view?.loadUrl("file:///android_asset/videoError.html")
+                videoPlayDescription.visibility = View.VISIBLE
+                Toast.makeText(applicationContext, "检查VPN", Toast.LENGTH_SHORT).show()
                 async {
-                    runOnUiThread {
-                        videoPlayDescription.visibility = View.VISIBLE
-                        Toast.makeText(applicationContext, "可能你的网络偷情养别人了.", Toast.LENGTH_SHORT).show()
-                        sleep(5000)
-                        finish()
-                    }
+                    Thread.sleep(3000)
+                    finish()
                 }
             }
         }
-        runOnUiThread {
-            videoPlayLodingImageView.setImageResource(R.drawable.loding)
-            val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(videoPlayLodingImageView, "rotation", 0f, 360f)
-            objectAnimator.duration = 1000
-            objectAnimator.repeatMode = ValueAnimator.INFINITE
-            objectAnimator.repeatCount = 50
-            objectAnimator.interpolator = AccelerateDecelerateInterpolator()
-            objectAnimator.start()
-        }
 
         chromeClient = object : WebChromeClient() {
-            override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                lodingText.text = "加载中\n$newProgress%"
-                if (newProgress == 100) {
-                    runOnUiThread {
+                override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                    lodingText.text = "加载中\n$newProgress%"
+                    if (newProgress == 100) {
                         videoPlayLodingImageView.visibility = View.GONE
                         lodingText.visibility = View.GONE
                         cooperation.visibility = View.GONE
                     }
+                    super.onProgressChanged(view, newProgress)
                 }
-                super.onProgressChanged(view, newProgress)
-            }
 
             override fun onShowCustomView(p0: View?, p1: WebChromeClient.CustomViewCallback?) {
                 fullScreen()
@@ -185,7 +173,17 @@ class VideoPlay : BaseActivity() {
             }
         }
         videoPlayWebView.webChromeClient = chromeClient
+    }
 
+    @SuppressLint("WrongConstant")
+    private fun initLodingView() {
+        videoPlayLodingImageView.setImageResource(R.drawable.loding)
+        val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(videoPlayLodingImageView, "rotation", 0f, 360f)
+        objectAnimator.duration = 1000
+        objectAnimator.repeatMode = ValueAnimator.INFINITE
+        objectAnimator.repeatCount = 50
+        objectAnimator.interpolator = AccelerateDecelerateInterpolator()
+        objectAnimator.start()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -222,7 +220,6 @@ class VideoPlay : BaseActivity() {
             sonicSessionClient!!.bindWebView(videoPlayWebView)
             sonicSessionClient!!.clientReady()
         } else {
-
             videoUrl = "https://www.xvideos.com/embedframe/${intent.getStringExtra("VIDEOURL")
                     .substring(6)}"
             videoPlayWebView.loadUrl(videoUrl)

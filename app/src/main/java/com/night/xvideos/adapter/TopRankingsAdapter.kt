@@ -25,6 +25,7 @@ class TopRankingsAdapter(private var context: Context, var dataList: MutableList
     val options = RequestOptions()
             .error(R.drawable.thumb2)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //造成性能下降，先删除
         //holder.setIsRecyclable(false)
@@ -48,7 +49,7 @@ class TopRankingsAdapter(private var context: Context, var dataList: MutableList
     fun addFooter(position: Int, list: MutableList<TopRankings>) {
         dataList.addAll(position, list)
         notifyItemInserted(position)
-        notifyItemRangeChanged(dataList.size-100, 100)
+        notifyItemRangeChanged(dataList.size - 100, 100)
 
     }
 
@@ -67,17 +68,17 @@ class TopRankingsAdapter(private var context: Context, var dataList: MutableList
             itemView.setOnLongClickListener(this)
         }
 
+        override fun onLongClick(v: View?): Boolean {
+            if (mLongClickListener != null && v != null) {
+                mLongClickListener?.invoke(v, layoutPosition)
+            }
+            return true
+        }
+
         override fun onClick(v: View?) {
             if (v != null) {
                 mClickListener?.invoke(v, layoutPosition)
             }
-        }
-
-        override fun onLongClick(v: View?): Boolean {
-            if (mLongClickListener != null && v != null) {
-                mLongClickListener?.invoke(v!!, layoutPosition)
-            }
-            return true
         }
 
         @SuppressLint("SetTextI18n")
