@@ -37,10 +37,16 @@ fun Any.LongShow(mContext: Context, content: String) {
 /**
  * 网页的全屏按钮监听
  */
-fun Any.getJs(): String {
+fun Any.getFullScreenJS(): String {
     //#hlsplayer > div.buttons-bar.right > img:nth-child(4)
     return "javascript:document.getElementsByClassName('buttons-bar.right')" +
             "[3].addEventListener('click',function(){onClick.fullscreen();return false;});"
+}
+/**
+ *添加一个view
+ */
+fun Any.setView():String{
+    return "javascript:document.getElementsByClassName(‘’)"
 }
 
 /**

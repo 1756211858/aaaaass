@@ -12,18 +12,23 @@ import android.os.SystemClock.sleep
 import co.metalab.asyncawait.async
 import android.util.Log
 import android.view.*
-import com.night.xvideos.getJs
 import java.io.IOException
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.webkit.*
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
+import com.ironsource.mediationsdk.IronSource
+import com.ironsource.mediationsdk.integration.IntegrationHelper
 import com.night.xvideos.R
-import com.tencent.sonic.sdk.SonicSession
 import kotlinx.android.synthetic.main.activity_videoplay.*
 import java.util.*
 import kotlin.concurrent.thread
+import com.ironsource.mediationsdk.ISBannerSize
+import android.widget.FrameLayout
+import android.app.ActionBar
+import com.ironsource.mediationsdk.IronSourceBannerLayout
+import com.ironsource.mediationsdk.logger.IronSourceError
+import com.ironsource.mediationsdk.sdk.BannerListener
+import com.night.xvideos.getFullScreenJS
 
 
 @Suppress("DEPRECATION", "UNUSED_EXPRESSION")
@@ -33,7 +38,6 @@ class VideoPlay : BaseActivity() {
     private lateinit var videoImgUrl: String
     private var chromeClient: WebChromeClient? = null
     private var callBack: WebChromeClient.CustomViewCallback? = null
-    private var sonicSession: SonicSession? = null
 
     @SuppressLint("WrongConstant")
     override fun setLayoutId(): Int {
@@ -42,9 +46,7 @@ class VideoPlay : BaseActivity() {
 
     @SuppressLint("WrongConstant", "JavascriptInterface")
     override fun initContentView() {
-        val adView = AdView(this)
-        adView.adSize = AdSize.BANNER
-        adView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
+        showAD()
         videoTitle = intent.getStringExtra("VIDEOTITLE")
         videoImgUrl = intent.getStringExtra("VIDEOIMGURL")
         videoUrl = "https://www.xvideos.com/embedframe/${intent.getStringExtra("VIDEOURL")
@@ -56,32 +58,31 @@ class VideoPlay : BaseActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
         //webView设置
-        initWebSetting()
-        initLodingView()
 
+        initLodingView()
+        initWebSetting()
         videoPlayWebView.loadUrl(videoUrl)
         videoPlayWebView.addJavascriptInterface(this, "fullscreen")
         videoPlayWebView.addJavascriptInterface(JsObject(), "onClick")
         videoPlayWebView.webViewClient = object : WebViewClient() {
 
             override fun onPageStarted(p0: WebView?, p1: String?, p2: Bitmap?) {
-                p0?.visibility = View.GONE
                 async {
                     val timer = java.util.Timer(true)
                     val timerTask = object : TimerTask() {
                         override fun run() {
                             runOnUiThread {
                                 if (videoPlayWebView.progress < 20) {
+                                    videoPlayWebView.visibility = View.GONE
+                                    p0?.visibility = View.GONE
                                     videoPlayDescription.visibility = View.VISIBLE
                                     videoPlayWebView.visibility = View.GONE
                                     videoPlayLodingImageView.visibility = View.GONE
                                     lodingText.visibility = View.GONE
-
                                     thread {
                                         sleep(5000)
                                         finish()
                                     }
-
                                 }
                             }
                         }
@@ -89,6 +90,18 @@ class VideoPlay : BaseActivity() {
                     timer.schedule(timerTask, 5000)
                 }
                 super.onPageStarted(p0, p1, p2)
+            }
+
+            override fun onPageFinished(p0: WebView?, p1: String?) {
+                Log.e("mlog", p1)
+                async {
+                    blockAds(p0)
+                    p0?.loadUrl(getFullScreenJS())
+                    thread {
+                        sleep(100)
+                    }
+
+                }
             }
 
             override fun shouldOverrideUrlLoading(p0: WebView?, p1: String?): Boolean {
@@ -120,15 +133,11 @@ class VideoPlay : BaseActivity() {
                 return null
             }
 
-            override fun onPageFinished(p0: WebView?, p1: String?) {
-                async {
-                    blockAds(p0)
-                    p0?.loadUrl(getJs())
-                    thread {
-                        sleep(100)
-                    }
-                    p0?.visibility = View.VISIBLE
-                }
+            override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
+                    view?.visibility = View.GONE
+                    videoPlayWebView?.visibility = View.GONE
+
+                super.onReceivedHttpError(view, request, errorResponse)
             }
 
             override fun onReceivedSslError(p0: WebView?, p1: SslErrorHandler?, p2: SslError?) {
@@ -141,14 +150,13 @@ class VideoPlay : BaseActivity() {
 
             override fun onReceivedError(view: WebView?, errorCode: Int,
                                          description: String?, failingUrl: String?) {
-                view?.visibility=View.GONE
 
                 runOnUiThread {
-                    videoPlayDescription.visibility = View.VISIBLE
+                    view?.visibility = View.GONE
                     videoPlayWebView.visibility = View.GONE
+                    videoPlayDescription.visibility = View.VISIBLE
                     videoPlayLodingImageView.visibility = View.GONE
                     lodingText.visibility = View.GONE
-
                     thread {
                         sleep(5000)
                         finish()
@@ -165,6 +173,8 @@ class VideoPlay : BaseActivity() {
                         if (newProgress == 100) {
                             videoPlayLodingImageView.visibility = View.GONE
                             lodingText.visibility = View.GONE
+                            videoPlayWebView.visibility = View.VISIBLE
+                            view?.visibility = View.VISIBLE
                             //cooperation.visibility = View.GONE
                         }
                         super.onProgressChanged(view, newProgress)
@@ -193,10 +203,50 @@ class VideoPlay : BaseActivity() {
 
                     override fun onReceivedTitle(view: WebView?, title1: String?) {
 
-                        super.onReceivedTitle(view, videoTitle)
+                        super.onReceivedTitle(view, title1)
                     }
                 }
         videoPlayWebView.webChromeClient = chromeClient
+    }
+
+    private lateinit var banner: IronSourceBannerLayout
+    private fun showAD() {
+        IronSource.init(this, "813c1085", IronSource.AD_UNIT.BANNER)
+        IntegrationHelper.validateIntegration(this)
+        banner = IronSource.createBanner(this, object :
+                ISBannerSize(ActionBar.LayoutParams.MATCH_PARENT, 120) {})
+        val layoutParams = FrameLayout
+                .LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT)
+        ADContainer.addView(banner, 0, layoutParams)
+        banner.bannerListener = object : BannerListener {
+            override fun onBannerAdLoaded() {
+                // Called after a banner ad has been successfully loaded
+            }
+
+            override fun onBannerAdLoadFailed(error: IronSourceError) {
+                // Called after a banner has attempted to load an ad but failed.
+                runOnUiThread { ADContainer.removeAllViews() }
+            }
+
+            override fun onBannerAdClicked() {
+                // Called after a banner has been clicked.
+            }
+
+            override fun onBannerAdScreenPresented() {
+                // Called when a banner is about to present a full screen content.
+            }
+
+            override fun onBannerAdScreenDismissed() {
+                // Called after a full screen content has been dismissed
+            }
+
+            override fun onBannerAdLeftApplication() {
+                // Called when a user would be taken out of the application context.
+            }
+        }
+
+        IronSource.loadBanner(banner)
     }
 
     @SuppressLint("WrongConstant")
@@ -239,9 +289,9 @@ class VideoPlay : BaseActivity() {
             videoPlayWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
-            videoUrl = "https://www.xvideos.com/embedframe/${intent.getStringExtra("VIDEOURL")
-                    .substring(6)}"
-            videoPlayWebView.loadUrl(videoUrl)
+        videoUrl = "https://www.xvideos.com/embedframe/${intent.getStringExtra("VIDEOURL")
+                .substring(6)}"
+        videoPlayWebView.loadUrl(videoUrl)
     }
 
     @SuppressLint("WrongConstant")
@@ -306,16 +356,13 @@ class VideoPlay : BaseActivity() {
 
 
     override fun onDestroy() {
-        if (null != sonicSession) {
-            sonicSession!!.destroy()
-            sonicSession = null
-        }
         if (videoPlayWebView != null) {
             videoPlayWebView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null)
             videoPlayWebView.clearHistory()
             videoPlayWebView.removeAllViews()
             videoPlayWebView.destroy()
         }
+        IronSource.destroyBanner(banner)
         super.onDestroy()
     }
 }

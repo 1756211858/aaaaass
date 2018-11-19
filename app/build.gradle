@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+
     compileSdkVersion 27
     buildToolsVersion '28.0.3'
     useLibrary 'org.apache.http.legacy'
@@ -12,15 +13,18 @@ android {
         applicationId "com.night.xvideos"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        ndk{abiFilters "armeabi"}
+        ndk { abiFilters "armeabi" }
     }
-
-    configurations{
-        all*.exclude group:'com.squareup.okio'
-        all*.exclude group:'com.android.support',module:'support-v13'
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    configurations {
+        all*.exclude group: 'com.squareup.okio'
+        all*.exclude group: 'com.android.support', module: 'support-v13'
     }
     buildTypes {
         release {
@@ -31,6 +35,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.android.gms:play-services-ads:17.1.1'
     configurations.all {
         exclude group: 'com.android.support', module: 'support-v13'
     }
@@ -60,23 +65,17 @@ dependencies {
     compile 'cn.bmob.android:bmob-sdk:3.6.6'
     //bmob-push：Bmob的推送包
     compile 'cn.bmob.android:bmob-push:0.8'
-    //bmob-im：Bmob的即时通讯包，注意每个版本的im依赖特定版本的bmob-sdk，具体的依赖关系可查看下面注释[2]
-    compile 'cn.bmob.android:bmob-im:2.1.0@aar'
     //如果你想应用能够兼容Android6.0，请添加此依赖(org.apache.http.legacy.jar)
     compile 'cn.bmob.android:http-legacy:1.0'
-    compile 'cn.bmob.android:bmob-sdk:3.6.6'
     compile 'com.afollestad.material-dialogs:core:0.9.6.0'
     compile 'com.afollestad.material-dialogs:commons:0.9.4.4'
-    compile 'com.tencent.sonic:sdk:3.0.0'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     compile 'com.flurry.android:analytics:11.4.0@aar'
+    compile 'com.ironsource.sdk:mediationsdk:6.7.12@jar'
 
-    implementation 'com.google.android.gms:play-services-ads:17.1.1'
-    compile 'com.google.firebase:firebase-core:16.0.5'
 }
 kotlin {
     experimental {
         coroutines "enable"
     }
 }
-apply plugin: 'com.google.gms.google-services'

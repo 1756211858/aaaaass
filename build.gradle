@@ -21,6 +21,9 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
+        maven {
+            url "https://dl.bintray.com/ironsource-mobile/android-sdk"
+        }
         maven { url "https://maven.google.com" }
         maven { url "https://jitpack.io" }
         maven { url "https://raw.github.com/bmob/bmob-android-sdk/master" }

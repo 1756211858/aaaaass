@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.webkit.WebView
+import com.ironsource.mediationsdk.IronSource
 
 abstract class BaseActivity : AppCompatActivity() {
     var view: View? = null
@@ -29,6 +30,16 @@ abstract class BaseActivity : AppCompatActivity() {
     //webView相关设置
     protected open fun initWebSetting() {
 
+    }
+
+    override fun onResume() {
+        IronSource.onResume(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        IronSource.onPause(this)
+        super.onPause()
     }
 
     //屏蔽广告

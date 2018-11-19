@@ -124,7 +124,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
     private fun showDialog() {
         @Suppress("DEPRECATION")
         MaterialDialog.Builder(this)
-                .title("1.1版本").content(text)
+                .title("检测到新版本").content(text)
                 .positiveText("立即更新").positiveColor(resources.getColor(R.color.menu_item_blue_dark))
                 .onPositive { _, _ ->
                     //下载apk文件
