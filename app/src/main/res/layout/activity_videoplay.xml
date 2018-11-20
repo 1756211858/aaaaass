@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/VideoLayout"
@@ -21,6 +22,24 @@
         android:background="@color/white"
         tools:context=".MainActivity"
         >
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/videoPlayADView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="500dp"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3830415602342543/6212896896"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </com.google.android.gms.ads.AdView>
 
         <TextView
             android:id="@+id/videoPlayDescription"
@@ -44,16 +63,16 @@
             android:id="@+id/videoPlayLodingImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:foregroundGravity="center"
             android:background="@drawable/loding"
+            android:foregroundGravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.278"/>
+            app:layout_constraintVertical_bias="0.433"/>
 
         <TextView
-            android:id="@+id/lodingText"
+            android:id="@+id/videoPlayLodingText"
             android:layout_width="361dp"
             android:layout_height="54dp"
             android:layout_marginStart="147dp"
@@ -79,10 +98,10 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintVertical_bias="0.497">
         </WebView>
 
         <FrameLayout
@@ -117,16 +136,22 @@
                app:layout_constraintTop_toTopOf="parent"
                app:layout_constraintVertical_bias="0.037"/>-->
 
-        <FrameLayout
-            android:id="@+id/ADContainer"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginTop="32dp"
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/videoPlayADView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="500dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3830415602342543/5324456676"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/videoPlayWebView"
-            app:layout_constraintVertical_bias="0.0"/>
+            app:layout_constraintTop_toTopOf="parent">
+        </com.google.android.gms.ads.AdView>
     </android.support.constraint.ConstraintLayout>
 </FrameLayout>

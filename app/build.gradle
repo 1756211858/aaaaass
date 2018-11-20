@@ -13,8 +13,8 @@ android {
         applicationId "com.night.xvideos"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 3
-        versionName "1.2"
+        versionCode 4
+        versionName "1.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk { abiFilters "armeabi" }
     }
@@ -72,10 +72,15 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     compile 'com.flurry.android:analytics:11.4.0@aar'
     compile 'com.ironsource.sdk:mediationsdk:6.7.12@jar'
-
+    compile 'com.google.firebase:firebase-ads:17.1.1'
+    implementation 'com.google.android.gms:play-services-ads:17.1.1'
+    compile 'com.google.android.gms:play-services-base:16.0.1'
+    compile 'com.google.firebase:firebase-auth:16.0.5'
+    compile 'com.google.firebase:firebase-core:16.0.5'
 }
 kotlin {
     experimental {
         coroutines "enable"
     }
 }
+apply plugin: 'com.google.gms.google-services'

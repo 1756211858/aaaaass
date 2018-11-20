@@ -18,13 +18,16 @@ import com.night.xvideos.bean.ChannelBean
 import com.night.xvideos.main.Contract
 import com.night.xvideos.main.Presenter
 import com.night.xvideos.update.update
-import kotlinx.android.synthetic.main.activity_channel.*
+import kotlinx.android.synthetic.main.activity_kado.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 import java.text.NumberFormat
 import com.flurry.android.FlurryAgent
+import com.google.android.gms.ads.AdRequest
+
+
 
 
 @Suppress("DEPRECATION")
@@ -43,10 +46,12 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
     }
 
     override fun setLayoutId(): Int {
-        return R.layout.activity_channel
+        return R.layout.activity_kado
     }
 
     override fun initData() {
+        val adRequest = AdRequest.Builder().build()
+        ad_view.loadAd(adRequest)
         queryData()
         mPresenter = Presenter(applicationContext, this, null)
         FlurryAgent.Builder()
@@ -57,6 +62,7 @@ class KadoYado : BaseActivity(), Contract.KadoYado {
     }
 
     override fun initContentView() {
+
         swipe_target.setStaggeredGridLayout(2)
         channelList?.add(ChannelBean(R.mipmap.video, "热门视频"))
         channelList?.add(ChannelBean(R.mipmap.hot, "热门排行"))
