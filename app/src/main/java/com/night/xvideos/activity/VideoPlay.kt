@@ -29,6 +29,7 @@ import com.ironsource.mediationsdk.IronSourceBannerLayout
 import com.ironsource.mediationsdk.logger.IronSourceError
 import com.ironsource.mediationsdk.sdk.BannerListener
 import com.night.xvideos.getFullScreenJS
+import com.night.xvideos.isVpnUsed
 
 
 @Suppress("DEPRECATION", "UNUSED_EXPRESSION")
@@ -61,7 +62,13 @@ class VideoPlay : BaseActivity() {
 
         initLodingView()
         initWebSetting()
-        videoPlayWebView.loadUrl(videoUrl)
+        if(isVpnUsed()){
+            videoPlayWebView.loadUrl(videoUrl)
+        }else{
+            videoPlayWebView.visibility=View.GONE
+            videoPlayLodingImageView.visibility=View.VISIBLE
+            videoPlayDescription.visibility=View.VISIBLE
+        }
         videoPlayWebView.addJavascriptInterface(this, "fullscreen")
         videoPlayWebView.addJavascriptInterface(JsObject(), "onClick")
         videoPlayWebView.webViewClient = object : WebViewClient() {
@@ -150,7 +157,6 @@ class VideoPlay : BaseActivity() {
 
             override fun onReceivedError(view: WebView?, errorCode: Int,
                                          description: String?, failingUrl: String?) {
-
                 runOnUiThread {
                     view?.visibility = View.GONE
                     videoPlayWebView.visibility = View.GONE

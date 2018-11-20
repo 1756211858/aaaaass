@@ -23,6 +23,7 @@ import retrofit2.Retrofit
 import java.net.Inet4Address
 import java.net.NetworkInterface
 import java.net.SocketException
+import java.util.*
 
 
 fun Any.ShortShow(mContext: Context, content: String) {
@@ -42,10 +43,11 @@ fun Any.getFullScreenJS(): String {
     return "javascript:document.getElementsByClassName('buttons-bar.right')" +
             "[3].addEventListener('click',function(){onClick.fullscreen();return false;});"
 }
+
 /**
  *添加一个view
  */
-fun Any.setView():String{
+fun Any.setView(): String {
     return "javascript:document.getElementsByClassName(‘’)"
 }
 
@@ -188,4 +190,25 @@ fun Any.showErrorVieoDialog(mContext: Context, errorVideo: ErrorVideo,
             }
             .cancelable(false)
             .show()
+}
+
+fun isVpnUsed(): Boolean {
+    try {
+        val niList = NetworkInterface.getNetworkInterfaces()
+        if (niList != null) {
+            for (intf in Collections.list(niList)) {
+                if (!intf.isUp || intf.interfaceAddresses.size == 0) {
+                    continue
+                }
+                Log.d("-----", "isVpnUsed() NetworkInterface Name: " + intf.name)
+                if ("tun0" == intf.name || "ppp0" == intf.name) {
+                    return true // The VPN is up
+                }
+            }
+        }
+    } catch (e: Throwable) {
+        e.printStackTrace()
+    }
+
+    return false
 }
