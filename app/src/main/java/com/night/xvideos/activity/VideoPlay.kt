@@ -49,7 +49,7 @@ class VideoPlay : BaseActivity() {
 
     @SuppressLint("WrongConstant", "JavascriptInterface")
     override fun initContentView() {
-        initLodingView()
+        showLodingView()
         showAD()
         videoTitle = intent.getStringExtra("VIDEOTITLE")
         videoImgUrl = intent.getStringExtra("VIDEOIMGURL")
@@ -66,7 +66,6 @@ class VideoPlay : BaseActivity() {
         videoPlayWebView.addJavascriptInterface(this, "fullscreen")
         videoPlayWebView.addJavascriptInterface(JsObject(), "onClick")
         videoPlayWebView.webViewClient = object : WebViewClient() {
-
             override fun onPageStarted(p0: WebView?, p1: String?, p2: Bitmap?) {
                 async {
                     val timer = java.util.Timer(true)
@@ -74,8 +73,6 @@ class VideoPlay : BaseActivity() {
                         override fun run() {
                             runOnUiThread {
                                 if (videoPlayWebView.progress < 20) {
-                                    videoPlayWebView.visibility = View.GONE
-                                    p0?.visibility = View.GONE
                                     videoPlayDescription.visibility = View.VISIBLE
                                     videoPlayWebView.visibility = View.GONE
                                     videoPlayLodingImageView.visibility = View.GONE
@@ -135,7 +132,6 @@ class VideoPlay : BaseActivity() {
                 return null
             }
 
-
             override fun onReceivedSslError(p0: WebView?, p1: SslErrorHandler?, p2: SslError?) {
                 p1?.proceed()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -148,11 +144,9 @@ class VideoPlay : BaseActivity() {
                                          description: String?, failingUrl: String?) {
                 view?.loadUrl("file:///android_asset/videoError.html")
                 runOnUiThread {
-
                     videoPlayDescription.visibility = View.VISIBLE
                     videoPlayLodingImageView.visibility = View.GONE
                     videoPlayLodingText.visibility = View.GONE
-
                 }
                 super.onReceivedError(view, errorCode, description, failingUrl)
             }
@@ -208,9 +202,7 @@ class VideoPlay : BaseActivity() {
      * 判断当前网络
      */
     private fun setNetWorkState() {
-        if (isVpnUsed()) {
-            videoPlayWebView.loadUrl(videoUrl)
-        } else {
+        if (!isVpnUsed()) {
             runOnUiThread {
                 videoPlayLodingText.visibility = View.GONE
                 videoPlayLodingImageView.visibility = View.GONE
@@ -231,7 +223,7 @@ class VideoPlay : BaseActivity() {
     }
 
     @SuppressLint("WrongConstant")
-    private fun initLodingView() {
+    private fun showLodingView() {
         videoPlayLodingImageView.setImageResource(R.drawable.loding)
         val objectAnimator: ObjectAnimator = ObjectAnimator.ofFloat(videoPlayLodingImageView, "rotation", 0f, 360f)
         objectAnimator.duration = 1000
@@ -310,6 +302,7 @@ class VideoPlay : BaseActivity() {
             Log.e("mlog", s)
         }
     }
+
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
         super.onSaveInstanceState(outState, outPersistentState)

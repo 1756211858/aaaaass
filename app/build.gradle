@@ -10,11 +10,12 @@ android {
     buildToolsVersion '28.0.3'
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
+        multiDexEnabled true
         applicationId "com.night.xvideos"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 4
-        versionName "1.5"
+        versionCode 6
+        versionName "2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk { abiFilters "armeabi" }
     }
@@ -31,6 +32,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    dexOptions {
+        incremental =true
+        javaMaxHeapSize "4g" //此处可根据电脑本身配置 数值越大 当然越快
+        preDexLibraries = false
     }
 }
 
@@ -77,6 +83,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-base:16.0.1'
     compile 'com.google.firebase:firebase-auth:16.0.5'
     compile 'com.google.firebase:firebase-core:16.0.5'
+    implementation 'com.android.support:multidex:1.0.3'
 }
 kotlin {
     experimental {
