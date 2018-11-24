@@ -16,23 +16,13 @@ import java.io.IOException
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.webkit.*
-import com.ironsource.mediationsdk.IronSource
-import com.ironsource.mediationsdk.integration.IntegrationHelper
 import com.night.xvideos.R
 import kotlinx.android.synthetic.main.activity_videoplay.*
 import java.util.*
 import kotlin.concurrent.thread
-import com.ironsource.mediationsdk.ISBannerSize
-import android.widget.FrameLayout
-import android.app.ActionBar
 import com.google.android.gms.ads.AdRequest
-import com.ironsource.mediationsdk.IronSourceBannerLayout
-import com.ironsource.mediationsdk.logger.IronSourceError
-import com.ironsource.mediationsdk.sdk.BannerListener
 import com.night.xvideos.getFullScreenJS
 import com.night.xvideos.isVpnUsed
-import kotlinx.android.synthetic.main.activity_kado.*
-
 
 @Suppress("DEPRECATION", "UNUSED_EXPRESSION")
 class VideoPlay : BaseActivity() {
@@ -66,6 +56,7 @@ class VideoPlay : BaseActivity() {
         videoPlayWebView.addJavascriptInterface(this, "fullscreen")
         videoPlayWebView.addJavascriptInterface(JsObject(), "onClick")
         videoPlayWebView.webViewClient = object : WebViewClient() {
+
             override fun onPageStarted(p0: WebView?, p1: String?, p2: Bitmap?) {
                 async {
                     val timer = java.util.Timer(true)
@@ -128,7 +119,6 @@ class VideoPlay : BaseActivity() {
                         e.printStackTrace()
                     }
                 }
-
                 return null
             }
 
@@ -154,6 +144,7 @@ class VideoPlay : BaseActivity() {
 
         chromeClient =
                 object : WebChromeClient() {
+
                     override fun onProgressChanged(view: WebView?, newProgress: Int) {
                         videoPlayLodingText.text = "加载中\n$newProgress%"
                         if (newProgress == 100) {
@@ -257,7 +248,7 @@ class VideoPlay : BaseActivity() {
         webSettings.cacheMode = WebSettings.LOAD_DEFAULT
         webSettings.domStorageEnabled = true
         webSettings.pluginState = WebSettings.PluginState.ON
-
+        webSettings.layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             videoPlayWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
