@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
     <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         app:layout_constraintBottom_toTopOf="@+id/scrollView2"
@@ -14,14 +17,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="KKFast说明文档"
         app:titleTextColor="@color/black"/>
+
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="60dp"
-        android:layout_marginTop="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -38,9 +42,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="@string/kkFast_1"
                 android:textSize="14sp"
-                android:layout_marginTop="16dp"
                 />
 
             <TextView
@@ -142,17 +146,17 @@
         </LinearLayout>
     </ScrollView>
 
-<!--    <view
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="504dp"
-        android:background="@color/gary"
-        app:layout_constraintBottom_toTopOf="@+id/Home_RadioGroup"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"/>-->
+    <!--    <view
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="504dp"
+            android:background="@color/gary"
+            app:layout_constraintBottom_toTopOf="@+id/Home_RadioGroup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"/>-->
 
     <RadioGroup
         android:id="@+id/Home_RadioGroup"

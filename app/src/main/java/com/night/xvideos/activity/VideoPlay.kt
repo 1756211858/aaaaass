@@ -142,7 +142,7 @@ class VideoPlay : BaseActivity() {
 
             override fun onReceivedError(view: WebView?, errorCode: Int,
                                          description: String?, failingUrl: String?) {
-                view?.loadUrl("file:///android_asset/videoError.html")
+                view?.loadUrl("file:///android_asset/videoPlayLodingError.html")
                 runOnUiThread {
                     videoPlayDescription.visibility = View.VISIBLE
                     videoPlayLodingImageView.visibility = View.GONE
