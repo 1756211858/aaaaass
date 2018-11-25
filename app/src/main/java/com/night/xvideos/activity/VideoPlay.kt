@@ -32,6 +32,7 @@ class VideoPlay : BaseActivity() {
     private var chromeClient: WebChromeClient? = null
     private var callBack: WebChromeClient.CustomViewCallback? = null
 
+    
     @SuppressLint("WrongConstant")
     override fun setLayoutId(): Int {
         return R.layout.activity_videoplay
