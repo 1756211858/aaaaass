@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="软件需要配合翻墙使用,不会的朋友看软件说明."
+        android:text="HelloWorld"
         android:maxLines="2"
         android:maxEms="9"
         android:textColor="@color/white"

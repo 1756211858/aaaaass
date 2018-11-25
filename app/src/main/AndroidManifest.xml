@@ -28,66 +28,16 @@
         android:roundIcon="@mipmap/app_setting"
         android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3830415602342543~4104387117"/>
-        <!-- api>=24的使用FileProvider安装 -->
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.night.xvideos.update.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/fileprovider"
-                tools:replace="android:resource"/>
-        </provider>
+
 
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.Splash">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.KadoYado"
-            android:theme="@style/AppTheme"/>
-        <activity
-            android:name=".activity.HotVideo"
-            android:theme="@style/AppTheme"/>
-        <activity
-            android:name=".activity.VideoPlay"
-            android:configChanges="orientation|keyboardHidden|screenSize|navigation"
-            android:theme="@style/AppTheme"/>
-        <activity
-            android:name=".activity.TopRanking"
-            android:theme="@style/AppTheme"/>
-        <activity
-            android:name=".activity.Description"
-            android:theme="@style/AppTheme"/>
-        <activity
-            android:name=".activity.MyDetail"
-            android:theme="@style/AppTheme"/>
-        <meta-data android:name="com.google.android.gms.version"
-                   android:value="@integer/google_play_services_version" />
-        <activity
-            android:name="com.ironsource.sdk.controller.ControllerActivity"
-            android:configChanges="orientation|screenSize"
-            android:hardwareAccelerated="true"/>
-        <activity
-            android:name="com.ironsource.sdk.controller.InterstitialActivity"
-            android:configChanges="orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:theme="@android:style/Theme.Translucent"/>
-        <activity
-            android:name="com.ironsource.sdk.controller.OpenUrlActivity"
-            android:configChanges="orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:theme="@android:style/Theme.Translucent"/>
     </application>
-
-
 </manifest>
